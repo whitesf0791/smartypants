@@ -1,0 +1,3469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMART Recovery — Complete Toolbox Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  /* ── CENGAGE REACT MAGMA DESIGN TOKENS ── */
+  :root {
+    /*
+     * Dark mode: neutral-first surfaces (L 0.006-0.018 per eye-strain
+     * research). Brand identity through accents, not background saturation.
+     * Text reduced from pure white to eliminate halation at 18:1 contrast.
+     */
+    --bg:          #13131A;  /* near-neutral dark, L=0.0068 */
+    --bg-card:     #1C1C2A;  /* desaturated surface, L=0.0124 */
+    --bg-card2:    #232336;  /* elevated surface, L=0.0183 */
+    --border:      rgba(110, 116, 190, 0.18);
+    --border-accent: rgba(110, 116, 190, 0.36);
+    --text:        #DCDCEC;  /* soft off-white, 13.6:1 on bg */
+    --text-muted:  #8E94C0;  /* periwinkle-gray, 6.3:1 [AA] */
+    --text-dim:    #7278B0;  /* label color, 4.4:1 [AA large] */
+    --text-heading: #ECEEF8; /* near-white heading */
+    --text-strong: #C4C8E0;  /* strong/emphasis elements */
+
+    /* 4-point accent colors — dark mode (bright semantic colors) */
+    --amber:       #FEE449;  /* secondary500 — motivation / yellow */
+    --amber-light: #FEDA0D;  /* secondary600 */
+    --amber-dim:   rgba(254, 228, 73, 0.12);
+    --rose:        #FF337A;  /* danger bright — urges */
+    --rose-dim:    rgba(255, 51, 122, 0.10);
+    --blue:        #2FB3FF;  /* info bright — thinking */
+    --blue-dim:    rgba(47, 179, 255, 0.10);
+    --sage:        #3EDD6E;  /* success bright — balance */
+    --sage-dim:    rgba(62, 221, 110, 0.10);
+
+    /* Typography — Work Sans throughout */
+    --font-display: 'Work Sans', Helvetica, sans-serif;
+    --font-body:    'Work Sans', Helvetica, sans-serif;
+
+    /* Toggle */
+    --toggle-bg:   #292F7C;  /* primary600 */
+    --toggle-knob: #5D65CB;  /* primary400 */
+  }
+
+  /* ── LIGHT MODE — Magma neutral surfaces + primary accents ── */
+  html.light {
+    --bg:          #F5F5F5;  /* neutral200 */
+    --bg-card:     #FFFFFF;  /* neutral100 */
+    --bg-card2:    #F5F5F5;  /* neutral200 */
+    --border:      #D4D4D4;  /* neutral300 */
+    --border-accent: #8D8D8D; /* neutral400 */
+    --text:        #2D2D2D;  /* neutral800 */
+    --text-muted:  #5A5A5A;  /* neutral600 */
+    --text-dim:    #707070;  /* neutral500, 5.0:1 on white [AA] */
+    --text-heading: #000000; /* neutral900 */
+    --text-strong: #2D2D2D;  /* neutral800 */
+
+    /* 4-point accent colors — light mode (dark semantic colors) */
+    --amber:       #292F7C;  /* primary600 — motivation */
+    --amber-light: #3942B0;  /* primary500 */
+    --amber-dim:   rgba(41, 47, 124, 0.08);
+    --rose:        #8F0033;  /* danger dark */
+    --rose-dim:    rgba(143, 0, 51, 0.08);
+    --blue:        #005F96;  /* info dark */
+    --blue-dim:    rgba(0, 95, 150, 0.08);
+    --sage:        #136A2D;  /* success dark */
+    --sage-dim:    rgba(19, 106, 45, 0.08);
+
+    --toggle-bg:   #E8E9F8;  /* primary100 */
+    --toggle-knob: #3942B0;  /* primary500 */
+  }
+
+  /* Light mode hardcoded-color overrides */
+  html.light header h1,
+  html.light .tool-name,
+  html.light .point-title    { color: #000000; }
+  html.light .tool-index h2,
+  html.light .ov-title       { color: #2D2D2D; }
+  html.light .step-content strong,
+  html.light .acronym-def strong { color: #2D2D2D; }
+  html.light td:first-child  { color: #292F7C; }
+  html.light .formula-line strong { color: #292F7C; }
+  html.light .ex-item strong                          { color: #292F7C; }
+  html.light .p2-section .ex-item strong,
+  html.light .p2-section .example-block .ex-item strong { color: #8F0033; }
+  html.light .p3-section .ex-item strong,
+  html.light .p3-section .example-block .ex-item strong { color: #005F96; }
+  html.light .p4-section .ex-item strong              { color: #136A2D; }
+  html.light .key-points li strong { color: #2D2D2D; }
+  html.light .cat-label      { color: #136A2D; }
+  html.light .ov-num         { opacity: 0.65; }
+  html.light .point-number   { opacity: 0.13; }
+  html.light nav             { box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+  /* ── RESET ── */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
+    min-height: 100vh;
+    font-weight: 400;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1A1E51, #3942B0 45%, #FEE449);
+  }
+  .header-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--amber);
+    font-family: var(--font-body);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 4vw, 44px);
+    font-weight: 700;
+    color: var(--text-heading);
+    line-height: 1.15;
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+  }
+  header p {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 680px;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+  .program-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+  }
+  .badge {
+    font-size: 11px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: 1px solid;
+  }
+  .badge-amber { color: var(--amber); border-color: var(--amber); background: var(--amber-dim); }
+  .badge-rose  { color: var(--rose);  border-color: var(--rose);  background: var(--rose-dim); }
+  .badge-blue  { color: var(--blue);  border-color: var(--blue);  background: var(--blue-dim); }
+  .badge-sage  { color: var(--sage);  border-color: var(--sage);  background: var(--sage-dim); }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav ul { list-style: none; display: flex; flex-wrap: wrap; }
+  nav a {
+    display: block;
+    padding: 14px 18px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  nav a:hover { color: var(--text); border-color: var(--border-accent); }
+  nav a.p1:hover { color: var(--amber); border-color: var(--amber); }
+  nav a.p2:hover { color: var(--rose);  border-color: var(--rose); }
+  nav a.p3:hover { color: var(--blue);  border-color: var(--blue); }
+  nav a.p4:hover { color: var(--sage);  border-color: var(--sage); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 48px; }
+
+  /* ── POINT SECTIONS ── */
+  .point-section {
+    padding: 56px 0 20px;
+    border-top: 1px solid var(--border);
+  }
+  .point-section:first-of-type { border-top: none; }
+
+  .point-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+  .point-number {
+    font-family: var(--font-display);
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 0.85;
+    flex-shrink: 0;
+    opacity: 0.18;
+    letter-spacing: -0.04em;
+  }
+  .p1-section .point-number { color: var(--amber); }
+  .p2-section .point-number { color: var(--rose); }
+  .p3-section .point-number { color: var(--blue); }
+  .p4-section .point-number { color: var(--sage); }
+
+  .point-title-group { padding-top: 4px; }
+  .point-label {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-family: var(--font-body);
+  }
+  .p1-section .point-label { color: var(--amber); }
+  .p2-section .point-label { color: var(--rose); }
+  .p3-section .point-label { color: var(--blue); }
+  .p4-section .point-label { color: var(--sage); }
+
+  .point-title {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 700;
+    color: var(--text-heading);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .point-desc {
+    color: var(--text-muted);
+    font-size: 14.5px;
+    margin-top: 8px;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  /* ── TOOL CARDS ── */
+  .tool-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .tool-card:hover {
+    border-color: var(--border-accent);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  .tool-card-header {
+    padding: 20px 24px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .tool-type {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    font-family: var(--font-body);
+  }
+  .type-tool  { background: var(--sage-dim);  color: var(--sage);  border: 1px solid rgba(62,221,110,0.25); }
+  .type-sheet { background: var(--blue-dim);  color: var(--blue);  border: 1px solid rgba(47,179,255,0.25); }
+
+  html.light .type-tool  { background: var(--sage-dim);  color: var(--sage); border-color: rgba(19,106,45,0.25); }
+  html.light .type-sheet { background: var(--blue-dim);  color: var(--blue); border-color: rgba(0,95,150,0.25); }
+
+  .tool-name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-heading);
+    letter-spacing: -0.01em;
+  }
+  .tool-body { padding: 22px 24px; }
+
+  .tool-summary {
+    color: var(--text-muted);
+    font-size: 14.5px;
+    margin-bottom: 20px;
+    font-weight: 400;
+    line-height: 1.65;
+    border-left: 3px solid var(--border-accent);
+    padding-left: 14px;
+  }
+
+  /* ── CONTENT BLOCKS ── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-body);
+  }
+
+  .steps { margin-bottom: 20px; }
+  .step {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 0 14px;
+    margin-bottom: 12px;
+    align-items: start;
+  }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    font-family: var(--font-body);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .p1-section .step-num { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(254,228,73,0.35); }
+  .p2-section .step-num { background: var(--rose-dim);  color: var(--rose);  border: 1px solid rgba(255,51,122,0.35); }
+  .p3-section .step-num { background: var(--blue-dim);  color: var(--blue);  border: 1px solid rgba(47,179,255,0.35); }
+  .p4-section .step-num { background: var(--sage-dim);  color: var(--sage);  border: 1px solid rgba(62,221,110,0.35); }
+
+  html.light .p1-section .step-num { border-color: rgba(41,47,124,0.25); }
+  html.light .p2-section .step-num { border-color: rgba(143,0,51,0.25); }
+  html.light .p3-section .step-num { border-color: rgba(0,95,150,0.25); }
+  html.light .p4-section .step-num { border-color: rgba(19,106,45,0.25); }
+
+  .step-content strong {
+    display: block;
+    color: var(--text-strong);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .step-content p, .step-content ul { font-size: 14px; color: var(--text-muted); }
+  .step-content ul { padding-left: 16px; }
+  .step-content li { margin-bottom: 3px; }
+
+  .key-points { margin-bottom: 20px; }
+  .key-points ul { padding-left: 0; list-style: none; display: grid; gap: 5px; }
+  .key-points li {
+    font-size: 14px; color: var(--text-muted);
+    padding-left: 18px; position: relative;
+  }
+  .key-points li::before { content: '—'; position: absolute; left: 0; color: var(--text-dim); }
+
+  .example-block {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+  }
+  .p1-section .example-block { border-left-color: var(--amber); }
+  .p2-section .example-block { border-left-color: var(--rose); }
+  .p3-section .example-block { border-left-color: var(--blue); }
+  .p4-section .example-block { border-left-color: var(--sage); }
+
+  .example-block .ex-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 10px;
+    font-family: var(--font-body);
+  }
+  .example-block .ex-item { margin-bottom: 6px; font-size: 13.5px; color: var(--text-muted); }
+  .example-block .ex-item strong { color: var(--amber); font-weight: 600; }
+  .p2-section .example-block .ex-item strong { color: var(--rose); }
+  .p3-section .example-block .ex-item strong { color: var(--blue); }
+  .p4-section .example-block .ex-item strong { color: var(--sage); }
+
+  .reflection-block {
+    background: var(--sage-dim);
+    border: 1px solid rgba(62,221,110,0.18);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  html.light .reflection-block { border-color: rgba(19,106,45,0.2); }
+
+  .reflection-block .r-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--sage); margin-bottom: 10px;
+    font-family: var(--font-body);
+  }
+  .reflection-block ul { padding-left: 0; list-style: none; display: grid; gap: 5px; }
+  .reflection-block li {
+    font-size: 13.5px; color: var(--text-muted);
+    padding-left: 16px; position: relative;
+  }
+  .reflection-block li::before {
+    content: '?'; position: absolute; left: 0;
+    color: var(--sage); font-size: 12px; font-weight: 700; top: 1px;
+  }
+
+  .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th {
+    text-align: left; padding: 10px 14px;
+    background: var(--bg-card2);
+    color: var(--text-dim);
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    font-weight: 700; border-bottom: 1px solid var(--border);
+    font-family: var(--font-body);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted); vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: var(--amber); font-weight: 600; }
+
+  .acronym-grid { display: grid; gap: 10px; margin-bottom: 20px; }
+  .acronym-row {
+    display: grid; grid-template-columns: 52px 1fr;
+    gap: 14px; align-items: start;
+  }
+  .acronym-letter {
+    font-family: var(--font-display);
+    font-size: 30px; font-weight: 700;
+    line-height: 1; text-align: center; padding: 8px 0;
+    letter-spacing: -0.03em;
+  }
+  .p1-section .acronym-letter { color: var(--amber); }
+  .p2-section .acronym-letter { color: var(--rose); }
+  .p3-section .acronym-letter { color: var(--blue); }
+  .p4-section .acronym-letter { color: var(--sage); }
+
+  .acronym-def strong { display: block; color: var(--text-strong); font-size: 14px; margin-bottom: 3px; font-weight: 600; }
+  .acronym-def p { font-size: 13.5px; color: var(--text-muted); }
+
+  .formula-block {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    font-size: 15px;
+  }
+  .formula-line { margin-bottom: 8px; color: var(--text-muted); }
+  .formula-line strong { color: var(--amber); font-weight: 700; }
+  .formula-line:last-child { margin-bottom: 0; }
+
+  /* ── OVERVIEW ── */
+  .overview-section {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+  }
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 28px 0 0;
+  }
+  .overview-card { background: var(--bg-card); padding: 22px 20px; }
+  .ov-num {
+    font-family: var(--font-display);
+    font-size: 40px; font-weight: 700; line-height: 1;
+    margin-bottom: 8px; opacity: 0.85;
+    letter-spacing: -0.04em;
+  }
+  .ov-c1 .ov-num { color: var(--amber); }
+  .ov-c2 .ov-num { color: var(--rose); }
+  .ov-c3 .ov-num { color: var(--blue); }
+  .ov-c4 .ov-num { color: var(--sage); }
+  .ov-title { font-size: 13px; font-weight: 700; color: var(--text-strong); margin-bottom: 6px; }
+  .ov-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+
+  .tool-index { padding: 28px 0 44px; }
+  .tool-index h2 {
+    font-family: var(--font-display);
+    font-size: 16px; font-weight: 700;
+    color: var(--text-strong);
+    margin-bottom: 14px; letter-spacing: -0.01em;
+  }
+  .index-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 6px;
+  }
+  .index-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-muted);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .index-item:hover { border-color: var(--border-accent); color: var(--text); background: var(--bg-card2); }
+  .index-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .d-amber { background: var(--amber); }
+  .d-rose  { background: var(--rose); }
+  .d-blue  { background: var(--blue); }
+  .d-sage  { background: var(--sage); }
+
+  /* ── CAT-LABEL ── */
+  .cat-label { color: var(--sage); font-weight: 600; }
+
+  /* ── UTILITY ── */
+  .tool-content-section { margin-bottom: 20px; }
+
+  /* ── THEME TOGGLE ── */
+  .theme-toggle {
+    position: fixed; bottom: 24px; right: 24px; z-index: 200;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 8px 14px 8px 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    user-select: none;
+  }
+  .theme-toggle:hover { border-color: var(--border-accent); }
+
+  .toggle-track {
+    width: 36px; height: 20px; border-radius: 10px;
+    background: var(--toggle-bg);
+    position: relative; transition: background 0.3s;
+    flex-shrink: 0; border: 1px solid var(--border);
+  }
+  .toggle-knob {
+    position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--toggle-knob);
+    transition: transform 0.25s cubic-bezier(0.4,0,0.2,1), background 0.3s;
+  }
+  html.light .toggle-knob { transform: translateX(16px); }
+
+  .toggle-label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-dim); font-family: var(--font-body);
+    white-space: nowrap;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  footer a { color: var(--amber); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 700px) {
+    header, nav, footer { padding-left: 20px; padding-right: 20px; }
+    .container { padding: 0 20px; }
+    nav a { padding: 12px 10px; font-size: 11px; }
+    .tool-card-header, .tool-body { padding: 16px 16px; }
+    .point-number { font-size: 52px; }
+  }
+
+  /* ── CRISIS RESOURCES ─────────────────────────────── */
+  .crisis-banner {
+    background: rgba(224, 0, 77, 0.06);
+    border: 1px solid rgba(224, 0, 77, 0.22);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+  }
+  html.light .crisis-banner { background: rgba(143,0,51,0.05); border-color: rgba(143,0,51,0.2); }
+  .crisis-banner-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--rose);
+    margin-bottom: 12px; font-family: var(--font-body);
+  }
+  .crisis-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .crisis-item {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 12px 14px;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  .crisis-item:hover { border-color: var(--rose); }
+  .crisis-item-label { font-size: 11px; font-weight: 700; color: var(--rose); letter-spacing: 0.05em; }
+  .crisis-item-number { font-size: 15px; font-weight: 700; color: var(--text-heading); font-family: var(--font-display); }
+  .crisis-item-sub { font-size: 11px; color: var(--text-dim); }
+
+  /* ── HALT CHECK ────────────────────────────────────── */
+  .halt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+  .halt-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 16px 10px;
+    background: var(--bg-card2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: var(--font-body);
+    text-align: center;
+  }
+  .halt-btn:hover { border-color: var(--border-accent); }
+  .halt-btn.active { border-color: var(--blue); background: var(--blue-dim); }
+  html.light .halt-btn.active { border-color: var(--blue); }
+  .halt-letter {
+    font-family: var(--font-display); font-size: 28px; font-weight: 700;
+    color: var(--blue); letter-spacing: -0.02em; line-height: 1;
+  }
+  .halt-word { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .halt-results { display: grid; gap: 10px; }
+  .halt-result-card {
+    background: var(--bg-card2);
+    border: 1px solid var(--blue-dim);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 14px;
+    display: none;
+  }
+  .halt-result-card.visible { display: block; }
+  .halt-result-label { font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  html.light .halt-result-label { color: var(--blue); }
+  .halt-result-card p { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; }
+  .halt-empty { font-size: 13.5px; color: var(--text-dim); font-style: italic; padding: 10px 0; }
+
+  /* ── INTERACTIVE URGE LOG ──────────────────────────── */
+  .urge-interactive { margin-top: 22px; }
+  .urge-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .urge-form-grid .span2 { grid-column: 1 / -1; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--text-dim);
+    font-family: var(--font-body);
+  }
+  .form-input, .form-select, .form-textarea {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 13.5px;
+    color: var(--text);
+    font-family: var(--font-body);
+    transition: border-color 0.2s;
+    outline: none;
+    width: 100%;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--blue); }
+  .form-select option { background: var(--bg-card); }
+  .intensity-row { display: flex; align-items: center; gap: 12px; }
+  .intensity-row input[type=range] { flex: 1; accent-color: var(--rose); }
+  .intensity-val {
+    font-size: 18px; font-weight: 700; color: var(--rose);
+    font-family: var(--font-display); min-width: 24px; text-align: center;
+  }
+  html.light .intensity-val { color: var(--rose); }
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 10px 20px;
+    background: var(--blue);
+    color: #fff;
+    border: none; border-radius: 6px;
+    font-size: 13px; font-weight: 700;
+    font-family: var(--font-body);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; transition: opacity 0.2s;
+    width: 100%;
+  }
+  html.light .btn-primary { color: #fff; }
+  .btn-primary:hover { opacity: 0.88; }
+  .urge-chart-wrap {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    min-height: 120px;
+    position: relative;
+  }
+  .urge-chart-empty { font-size: 13px; color: var(--text-dim); text-align: center; padding: 30px 0; font-style: italic; }
+  .urge-chart-svg { width: 100%; overflow: visible; }
+  .urge-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+  .urge-summary-stat {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .stat-val { font-size: 22px; font-weight: 700; font-family: var(--font-display); color: var(--text-heading); letter-spacing: -0.02em; }
+  .stat-label { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+  .urge-entries-list { display: grid; gap: 6px; margin-top: 12px; }
+  .urge-entry {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: start;
+    font-size: 13px;
+  }
+  .urge-entry-meta { color: var(--text-dim); font-size: 11px; margin-bottom: 3px; }
+  .urge-entry-trigger { color: var(--text-muted); }
+  .urge-entry-intensity {
+    font-size: 20px; font-weight: 700;
+    font-family: var(--font-display);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: -0.02em;
+    min-width: 36px; text-align: center;
+  }
+  .urge-entry-intensity.low  { color: var(--sage); background: var(--sage-dim); }
+  .urge-entry-intensity.mid  { color: var(--amber); background: var(--amber-dim); }
+  .urge-entry-intensity.high { color: var(--rose); background: var(--rose-dim); }
+  .urge-entry-outcome { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+  .outcome-resisted { color: var(--sage); }
+  .outcome-gave-in  { color: var(--rose); }
+  .outcome-partial  { color: var(--amber); }
+  .btn-delete {
+    background: none; border: none; color: var(--text-dim);
+    cursor: pointer; font-size: 14px; padding: 2px 4px;
+    border-radius: 3px; transition: color 0.2s;
+    font-family: var(--font-body);
+  }
+  .btn-delete:hover { color: var(--rose); }
+  .chart-legend {
+    display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap;
+    font-size: 11px; color: var(--text-dim); font-weight: 500;
+  }
+  .legend-dot {
+    width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px;
+  }
+
+  /* ── BALANCE WHEEL INTERACTIVE ─────────────────────── */
+  .wheel-interactive { margin-top: 22px; }
+  .wheel-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 600px) { .wheel-layout { grid-template-columns: 1fr; } }
+  .wheel-svg-wrap {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wheel-sliders { display: grid; gap: 10px; }
+  .wheel-slider-row { display: grid; grid-template-columns: 90px 1fr 28px; gap: 8px; align-items: center; }
+  .wheel-domain-label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+  .wheel-slider-row input[type=range] { accent-color: var(--blue); width: 100%; }
+  .wheel-slider-val { font-size: 14px; font-weight: 700; color: var(--blue); text-align: right; font-family: var(--font-display); }
+  html.light .wheel-slider-val { color: var(--blue); }
+  .wheel-score-block {
+    margin-top: 14px; padding: 12px 16px;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .wheel-score-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim); }
+  .wheel-score-val { font-size: 26px; font-weight: 700; font-family: var(--font-display); color: var(--text-heading); letter-spacing: -0.02em; }
+  .wheel-score-sub { font-size: 11px; color: var(--text-dim); }
+  .btn-reset-wheel {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--text-dim); background: none; border: 1px solid var(--border);
+    border-radius: 4px; padding: 5px 10px; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s; font-family: var(--font-body);
+    margin-top: 10px;
+  }
+  .btn-reset-wheel:hover { border-color: var(--border-accent); color: var(--text-muted); }
+
+  /* ── THINKING STYLES REFERENCE ─────────────────────── */
+  .distortion-grid { display: grid; gap: 8px; margin-bottom: 20px; }
+  .distortion-card {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  @media (max-width: 500px) { .distortion-card { grid-template-columns: 1fr; } }
+  .distortion-name { font-size: 13px; font-weight: 700; color: var(--blue); }
+  .distortion-signal { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-top: 2px; }
+  html.light .distortion-name { color: var(--blue); }
+  .distortion-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+  .distortion-ex { font-size: 12px; color: var(--text-dim); margin-top: 4px; font-style: italic; }
+
+  /* ── LAPSE / WHEN THINGS GET HARD ─────────────────── */
+  .lapse-section { padding: 56px 0 20px; border-top: 2px solid var(--amber); }
+  .lapse-header { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 32px; }
+  .lapse-icon {
+    font-size: 40px; line-height: 1; flex-shrink: 0;
+    width: 56px; text-align: center; padding-top: 4px;
+  }
+  .lapse-title-group { padding-top: 4px; }
+  .lapse-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; font-family: var(--font-body); }
+  .lapse-title { font-family: var(--font-display); font-size: clamp(20px,3vw,28px); font-weight: 700; color: var(--text-heading); line-height: 1.2; letter-spacing: -0.02em; }
+  .lapse-desc { color: var(--text-muted); font-size: 14.5px; margin-top: 8px; line-height: 1.6; }
+
+  .lapse-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .lapse-card-header {
+    padding: 18px 22px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lapse-card-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--text-heading); letter-spacing: -0.01em; }
+  .lapse-card-body { padding: 20px 22px; }
+
+  .versus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .versus-card { background: var(--bg-card2); border: 1px solid var(--border); border-radius: 6px; padding: 14px; }
+  .versus-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; }
+  .versus-lapse .versus-label { color: var(--amber); }
+  .versus-relapse .versus-label { color: var(--rose); }
+  .versus-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; }
+
+  .spiral-chain { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
+  .spiral-step {
+    display: grid; grid-template-columns: 28px 1fr;
+    gap: 12px; align-items: start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .spiral-step:last-child { border-bottom: none; }
+  .spiral-arrow { color: var(--rose); font-size: 16px; text-align: center; padding-top: 2px; }
+  .spiral-text { font-size: 13.5px; color: var(--text-muted); }
+  .spiral-text strong { color: var(--text-strong); font-weight: 600; display: block; margin-bottom: 2px; }
+  .spiral-interrupt { color: var(--sage); font-size: 12px; font-weight: 600; margin-top: 4px; }
+
+  .stop-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+  @media (max-width: 500px) { .stop-grid { grid-template-columns: 1fr 1fr; } }
+  .stop-card { background: var(--bg-card2); border: 1px solid var(--border); border-radius: 6px; padding: 14px 12px; text-align: center; }
+  .stop-letter { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--amber); line-height: 1; margin-bottom: 4px; letter-spacing: -0.03em; }
+  .stop-word { font-size: 12px; font-weight: 700; color: var(--text-strong); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .stop-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+  .tool-sequence { display: grid; gap: 8px; margin-bottom: 20px; }
+  .tool-seq-item {
+    display: grid; grid-template-columns: 28px 1fr;
+    gap: 12px; padding: 10px 14px;
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 6px; align-items: start;
+  }
+  .seq-num { font-size: 12px; font-weight: 700; color: var(--amber); font-family: var(--font-display); padding-top: 2px; }
+  .seq-content strong { display: block; font-size: 14px; font-weight: 600; color: var(--text-strong); margin-bottom: 2px; }
+  .seq-content p { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+
+  .affirmation-box {
+    background: var(--amber-dim);
+    border: 1px solid rgba(254,228,73,0.25);
+    border-radius: 8px;
+    padding: 18px 22px;
+    text-align: center;
+  }
+  html.light .affirmation-box { border-color: rgba(41,47,124,0.2); }
+  .affirmation-box p { font-size: 15px; font-weight: 600; color: var(--text-heading); font-family: var(--font-display); line-height: 1.5; letter-spacing: -0.01em; }
+  .affirmation-box small { font-size: 12.5px; color: var(--text-muted); display: block; margin-top: 8px; }
+
+  /* nav lapse link */
+  nav a.plapse:hover { color: var(--amber); border-color: var(--amber); }
+
+  /* ── FORM PLACEHOLDER COLORS ──────────────────────── */
+  .form-input::placeholder,
+  .form-textarea::placeholder {
+    color: var(--text-dim);
+    opacity: 1; /* Firefox reduces opacity by default */
+  }
+  html.light .form-input::placeholder,
+  html.light .form-textarea::placeholder {
+    color: #A0A0A0; /* neutral, 3.6:1 on white — acceptable for placeholder */
+    opacity: 1;
+  }
+
+  /* ── SOBRIETY TRACKER ─────────────────────────────── */
+  .tracker-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+  @media (max-width: 600px) { .tracker-wrap { grid-template-columns: 1fr; } }
+  .tracker-left {}
+  .tracker-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; font-family: var(--font-body); }
+  .tracker-count { display: flex; align-items: baseline; gap: 8px; }
+  .tracker-num { font-family: var(--font-display); font-size: 64px; font-weight: 700; color: var(--text-heading); line-height: 1; letter-spacing: -0.04em; }
+  .tracker-unit { font-size: 16px; font-weight: 600; color: var(--text-muted); padding-bottom: 6px; }
+  .tracker-since { font-size: 12.5px; color: var(--text-dim); margin-top: 6px; }
+  .tracker-milestones { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .milestone {
+    font-size: 11px; font-weight: 700; padding: 3px 9px;
+    border-radius: 20px; border: 1px solid var(--border);
+    color: var(--text-dim); background: var(--bg-card2);
+    font-family: var(--font-body); letter-spacing: 0.06em;
+    transition: all 0.3s;
+  }
+  .milestone.achieved { color: var(--sage); border-color: var(--sage); background: var(--sage-dim); }
+  .milestone.next { color: var(--amber); border-color: var(--amber); background: var(--amber-dim); }
+  .tracker-right { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .tracker-date-group { display: flex; flex-direction: column; gap: 5px; }
+  .tracker-date-label { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); font-family: var(--font-body); }
+  .tracker-date-input {
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 7px 10px; font-size: 13px;
+    color: var(--text); font-family: var(--font-body);
+    outline: none; transition: border-color 0.2s;
+    color-scheme: dark;
+  }
+  html.light .tracker-date-input { color-scheme: light; }
+  .tracker-date-input:focus { border-color: var(--blue); }
+  .btn-tracker-reset {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim); background: none; border: 1px solid var(--border);
+    border-radius: 4px; padding: 5px 10px; cursor: pointer;
+    transition: all 0.2s; font-family: var(--font-body);
+  }
+  .btn-tracker-reset:hover { color: var(--rose); border-color: var(--rose); }
+  .tracker-empty { font-size: 13.5px; color: var(--text-dim); font-style: italic; padding: 4px 0; }
+
+  /* ── EXTERNAL RESOURCES ───────────────────────────── */
+  .resources-section { padding: 28px 0 44px; }
+  .resources-section h2 { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--text-strong); margin-bottom: 14px; letter-spacing: -0.01em; }
+  .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .resource-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px;
+    text-decoration: none; display: flex; flex-direction: column; gap: 5px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .resource-card:hover { border-color: var(--border-accent); box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+  .resource-tag { font-size: 9.5px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim); font-family: var(--font-body); }
+  .resource-name { font-size: 14px; font-weight: 700; color: var(--text-heading); font-family: var(--font-display); letter-spacing: -0.01em; }
+  .resource-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+  .resource-url { font-size: 11px; color: var(--blue); margin-top: 4px; font-weight: 500; }
+  html.light .resource-url { color: var(--blue); }
+
+  /* ── URGE SURFING ─────────────────────────────────── */
+  .surf-wrap { margin-top: 0; }
+  .surf-intro { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.65; }
+  .surf-steps { display: grid; gap: 6px; margin-bottom: 20px; }
+  .surf-step {
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px 18px;
+    display: none; cursor: default;
+    border-left: 3px solid var(--blue);
+    animation: fadeSlideIn 0.35s ease;
+  }
+  .surf-step.active { display: block; }
+  .surf-step.done { display: block; opacity: 0.45; border-left-color: var(--border); }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .surf-step-num { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; font-family: var(--font-body); }
+  html.light .surf-step-num { color: var(--blue); }
+  .surf-step-text { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+  .surf-step-text strong { color: var(--text-strong); display: block; margin-bottom: 4px; font-size: 14px; }
+  .surf-timer { font-size: 28px; font-weight: 700; font-family: var(--font-display); color: var(--blue); letter-spacing: -0.03em; margin-top: 10px; }
+  html.light .surf-timer { color: var(--blue); }
+  .surf-wave-bar {
+    height: 4px; background: var(--border); border-radius: 2px;
+    margin-top: 12px; overflow: hidden;
+  }
+  .surf-wave-fill {
+    height: 100%; background: var(--blue); border-radius: 2px;
+    width: 0%; transition: width 1s linear;
+  }
+  html.light .surf-wave-fill { background: var(--blue); }
+  .surf-controls { display: flex; gap: 10px; align-items: center; margin-top: 16px; flex-wrap: wrap; }
+  .btn-surf {
+    padding: 10px 20px; border-radius: 6px; border: none;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; font-family: var(--font-body); transition: opacity 0.2s;
+  }
+  .btn-surf-start { background: var(--blue); color: #fff; }
+  html.light .btn-surf-start { color: #fff; }
+  .btn-surf-start:hover { opacity: 0.88; }
+  .btn-surf-reset { background: var(--bg-card2); color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-surf-reset:hover { border-color: var(--border-accent); }
+  .surf-status { font-size: 12px; color: var(--text-dim); font-style: italic; }
+  .surf-complete {
+    background: var(--sage-dim); border: 1px solid rgba(62,221,110,0.25);
+    border-radius: 8px; padding: 16px 20px; text-align: center;
+    display: none; margin-top: 12px;
+  }
+  html.light .surf-complete { border-color: rgba(19,106,45,0.2); }
+  .surf-complete p { font-size: 14px; font-weight: 600; color: var(--sage); }
+  html.light .surf-complete p { color: var(--sage); }
+  .surf-complete small { font-size: 12.5px; color: var(--text-muted); display: block; margin-top: 4px; }
+
+  /* ── BREATHING / GROUNDING ────────────────────────── */
+  .breath-tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+  .breath-tab {
+    padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--bg-card2); color: var(--text-dim);
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; font-family: var(--font-body); transition: all 0.2s;
+  }
+  .breath-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  html.light .breath-tab.active { color: #fff; }
+  .breath-panel { display: none; }
+  .breath-panel.active { display: block; }
+
+  /* Box breathing */
+  .box-breath-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 10px 0; }
+  .box-svg-wrap { position: relative; width: 200px; height: 200px; }
+  .box-instruction {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; pointer-events: none;
+  }
+  .box-phase { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-dim); font-family: var(--font-body); }
+  .box-count { font-family: var(--font-display); font-size: 48px; font-weight: 700; color: var(--text-heading); line-height: 1; letter-spacing: -0.04em; }
+  .box-cue { font-size: 11px; color: var(--text-dim); margin-top: 4px; font-style: italic; }
+  .box-btn-row { display: flex; gap: 10px; }
+  .btn-box { padding: 10px 22px; border-radius: 6px; border: none; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; font-family: var(--font-body); transition: opacity 0.2s; }
+  .btn-box-start { background: var(--blue); color: #fff; }
+  html.light .btn-box-start { color: #fff; }
+  .btn-box-start:hover { opacity: 0.88; }
+  .btn-box-stop { background: var(--bg-card2); color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-box-stop:hover { border-color: var(--border-accent); }
+  .box-rounds { font-size: 12px; color: var(--text-dim); font-family: var(--font-body); }
+
+  /* 5-4-3-2-1 grounding */
+  .ground-steps { display: grid; gap: 8px; }
+  .ground-step {
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px 18px;
+    display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start;
+  }
+  .ground-count { font-family: var(--font-display); font-size: 32px; font-weight: 700; line-height: 1; letter-spacing: -0.04em; }
+  .ground-sense-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px; font-family: var(--font-body); }
+  .ground-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; }
+  .g-see   .ground-count { color: var(--blue); }
+  .g-hear  .ground-count { color: var(--sage); }
+  .g-touch .ground-count { color: var(--amber); }
+  .g-smell .ground-count { color: var(--rose); }
+  .g-taste .ground-count { color: var(--text-muted); }
+  .g-see   .ground-sense-label { color: var(--blue); }
+  .g-hear  .ground-sense-label { color: var(--sage); }
+  .g-touch .ground-sense-label { color: var(--amber); }
+  .g-smell .ground-sense-label { color: var(--rose); }
+  .g-taste .ground-sense-label { color: var(--text-muted); }
+
+  /* ── BACKUP BAR ─────────────────────────────────────── */
+  .backup-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  .backup-bar-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-family: var(--font-body);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-backup {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    font-family: var(--font-body);
+    white-space: nowrap;
+  }
+  .btn-backup:hover { border-color: var(--border-accent); color: var(--text); }
+  .backup-status {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-left: 2px;
+  }
+
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-label">Self-Management and Recovery Training</div>
+    <h1>SMART Recovery<br>Complete Toolbox</h1>
+    <p>All 14 participant tools and worksheets — consolidated from smartrecovery.org/toolbox into a single reference document. Organized by the 4-Point Program.</p>
+    <div class="program-badges">
+      <span class="badge badge-amber">Point 1 — Build &amp; Maintain Motivation</span>
+      <span class="badge badge-rose">Point 2 — Cope with Urges</span>
+      <span class="badge badge-blue">Point 3 — Manage Thoughts &amp; Feelings</span>
+      <span class="badge badge-sage">Point 4 — Live a Balanced Life</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="container">
+    <ul>
+      <li><a href="#overview" class="p1">Overview</a></li>
+      <li><a href="#point1" class="p1">Motivation</a></li>
+      <li><a href="#point2" class="p2">Urges</a></li>
+      <li><a href="#point3" class="p3">Thinking</a></li>
+      <li><a href="#point4" class="p4">Balance</a></li>
+      <li><a href="#lapse" class="plapse">If You Slip</a></li>
+      <li><a href="#resources" class="p4">Resources</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ OVERVIEW ═══ -->
+<div class="overview-section" id="overview">
+  <div class="container">
+
+    <div class="crisis-banner" id="crisis">
+      <div class="crisis-banner-title">If you are in crisis right now</div>
+      <div class="crisis-items">
+        <a href="tel:18006624357" class="crisis-item">
+          <span class="crisis-item-label">SAMHSA Helpline</span>
+          <span class="crisis-item-number">1-800-662-4357</span>
+          <span class="crisis-item-sub">Free · Confidential · 24/7 · English &amp; Spanish</span>
+        </a>
+        <a href="tel:988" class="crisis-item">
+          <span class="crisis-item-label">Suicide &amp; Crisis Lifeline</span>
+          <span class="crisis-item-number">Call or Text 988</span>
+          <span class="crisis-item-sub">Mental health &amp; crisis support · 24/7</span>
+        </a>
+        <a href="sms:741741?body=HOME" class="crisis-item">
+          <span class="crisis-item-label">Crisis Text Line</span>
+          <span class="crisis-item-number">Text HOME to 741741</span>
+          <span class="crisis-item-sub">Text-based support · Free · 24/7</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="backup-bar">
+      <span class="backup-bar-label">Backup / Restore</span>
+      <button class="btn-backup" onclick="exportData()">Export JSON</button>
+      <label class="btn-backup" for="backupFileInput">Restore JSON</label>
+      <input type="file" accept=".json" id="backupFileInput" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);border:0" onchange="importData(event)" aria-label="Restore from JSON backup">
+      <span class="backup-status" id="backupStatus"></span>
+    </div>
+
+    <div class="tracker-wrap" id="tracker">
+      <div class="tracker-left">
+        <div class="tracker-eyebrow">Sobriety Tracker</div>
+        <div id="trackerDisplay">
+          <div class="tracker-empty">Set your start date to begin tracking.</div>
+        </div>
+        <div class="tracker-milestones" id="trackerMilestones" style="display:none"></div>
+      </div>
+      <div class="tracker-right">
+        <div class="tracker-date-group">
+          <div class="tracker-date-label">Sobriety Start Date</div>
+          <input type="date" class="tracker-date-input" id="trackerDate" onchange="setTrackerDate()">
+        </div>
+        <button class="btn-tracker-reset" onclick="resetTracker()">Reset</button>
+      </div>
+    </div>
+    <div class="overview-grid">
+      <div class="overview-card ov-c1">
+        <div class="ov-num">1</div>
+        <div class="ov-title">Build &amp; Maintain Motivation</div>
+        <div class="ov-desc">Clarify what you want, examine why the behavior persists, and build genuine reasons to change.</div>
+      </div>
+      <div class="overview-card ov-c2">
+        <div class="ov-num">2</div>
+        <div class="ov-title">Cope with Urges</div>
+        <div class="ov-desc">Understand what triggers urges, track them, and deploy concrete strategies when they hit.</div>
+      </div>
+      <div class="overview-card ov-c3">
+        <div class="ov-num">3</div>
+        <div class="ov-title">Manage Thoughts, Feelings &amp; Behaviors</div>
+        <div class="ov-desc">Identify unhelpful beliefs, dispute them, and replace reactions with intentional responses.</div>
+      </div>
+      <div class="overview-card ov-c4">
+        <div class="ov-num">4</div>
+        <div class="ov-title">Live a Balanced Life</div>
+        <div class="ov-desc">Build a life that makes sobriety worth keeping — goals, passions, satisfaction across all domains.</div>
+      </div>
+    </div>
+
+    <div class="tool-index">
+      <h2>All 14 Tools — Quick Index</h2>
+      <div class="index-grid">
+        <a href="#cba" class="index-item"><span class="index-dot d-amber"></span>Cost-Benefit Analysis</a>
+        <a href="#change-plan" class="index-item"><span class="index-dot d-amber"></span>Create a Change Plan</a>
+        <a href="#values" class="index-item"><span class="index-dot d-amber"></span>Define Your Values</a>
+        <a href="#self-compassion" class="index-item"><span class="index-dot d-amber"></span>Practice Self-Compassion</a>
+        <a href="#urge-log" class="index-item"><span class="index-dot d-rose"></span>Urge Log</a>
+        <a href="#dents" class="index-item"><span class="index-dot d-rose"></span>DENTS</a>
+        <a href="#personify" class="index-item"><span class="index-dot d-rose"></span>Personify &amp; Disarm</a>
+        <a href="#boundaries" class="index-item"><span class="index-dot d-rose"></span>Setting Healthy Boundaries</a>
+        <a href="#abc" class="index-item"><span class="index-dot d-blue"></span>The ABCs</a>
+        <a href="#dispute" class="index-item"><span class="index-dot d-blue"></span>Dispute Unhelpful Beliefs</a>
+        <a href="#five-q" class="index-item"><span class="index-dot d-blue"></span>Five Questions</a>
+        <a href="#wheel" class="index-item"><span class="index-dot d-sage"></span>Lifestyle Balance Wheel</a>
+        <a href="#goals" class="index-item"><span class="index-dot d-sage"></span>Goal Setting (SMART)</a>
+        <a href="#pursuits" class="index-item"><span class="index-dot d-sage"></span>Explore New Pursuits</a>
+        <a href="#halt" class="index-item"><span class="index-dot d-rose"></span>HALT Triage</a>
+        <a href="#thinking-styles" class="index-item"><span class="index-dot d-blue"></span>Thinking Styles Reference</a>
+        <a href="#lapse" class="index-item"><span class="index-dot d-amber"></span>If You Slip</a>
+        <a href="#breathing" class="index-item"><span class="index-dot d-rose"></span>Breathing &amp; Grounding</a>
+        <a href="#urge-surfing" class="index-item"><span class="index-dot d-rose"></span>Urge Surfing</a>
+      </div>
+    </div>
+
+    <div class="resources-section" id="resources">
+      <h2>Recommended External Resources</h2>
+      <div class="resource-grid">
+        <a href="https://smartrecovery.org/smart-recovery-toolbox/" target="_blank" rel="noopener" class="resource-card">
+          <span class="resource-tag">Primary · Official</span>
+          <span class="resource-name">SMART Recovery Handbook</span>
+          <span class="resource-desc">The official companion workbook to the 4-Point Program. The primary deep-dive resource for everything covered in this document.</span>
+          <span class="resource-url">smartrecovery.org</span>
+        </a>
+        <a href="https://www.self-compassion.org/category/exercises/" target="_blank" rel="noopener" class="resource-card">
+          <span class="resource-tag">Free · Exercises</span>
+          <span class="resource-name">Self-Compassion.org</span>
+          <span class="resource-desc">Kristin Neff's free guided exercises — meditations, worksheets, and audio practices that directly extend the Self-Compassion tool in Point 1.</span>
+          <span class="resource-url">self-compassion.org/category/exercises</span>
+        </a>
+        <a href="https://store.samhsa.gov" target="_blank" rel="noopener" class="resource-card">
+          <span class="resource-tag">Free · Government</span>
+          <span class="resource-name">SAMHSA Publication Library</span>
+          <span class="resource-desc">Free treatment guides, recovery support workbooks, and clinical resources. Most people in early recovery don't know this library exists.</span>
+          <span class="resource-url">store.samhsa.gov</span>
+        </a>
+        <a href="https://www.rethinkingdrinking.niaaa.nih.gov" target="_blank" rel="noopener" class="resource-card">
+          <span class="resource-tag">Free · Evidence-Based</span>
+          <span class="resource-name">Rethinking Drinking (NIAAA)</span>
+          <span class="resource-desc">National Institute on Alcohol Abuse — interactive tools, self-assessments, and information on medication-assisted options. Compatible with the SMART philosophy.</span>
+          <span class="resource-url">rethinkingdrinking.niaaa.nih.gov</span>
+        </a>
+        <a href="https://meetings.smartrecovery.org/meetings/" target="_blank" rel="noopener" class="resource-card">
+          <span class="resource-tag">Free · Community</span>
+          <span class="resource-name">SMART Meeting Finder</span>
+          <span class="resource-desc">Online and in-person SMART Recovery meetings. Online meetings run around the clock — particularly useful when loneliness or a late-night urge hits.</span>
+          <span class="resource-url">meetings.smartrecovery.org</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- POINT 1 — MOTIVATION                          -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="point-section p1-section" id="point1">
+  <div class="point-header">
+    <div class="point-number">1</div>
+    <div class="point-title-group">
+      <div class="point-label">Point One</div>
+      <div class="point-title">Build and Maintain Motivation</div>
+      <div class="point-desc">Examine the real costs and benefits of your behavior, connect change to your actual values, and construct a concrete plan forward.</div>
+    </div>
+  </div>
+
+  <!-- CBA -->
+  <div class="tool-card" id="cba">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Worksheet</span>
+      <div class="tool-name">Cost-Benefit Analysis (CBA)</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">You get something from every behavior you engage in — that's why you did it. The CBA makes you examine both sides honestly: what you gain from the behavior and what you lose, both by continuing and by stopping.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Why It Works</div>
+        <div class="key-points">
+          <ul>
+            <li>Compares short-term and long-term effects of behavior without pressure or shame</li>
+            <li>Surfaces the pattern that rewards tend to be short-lived while costs accumulate</li>
+            <li>Makes motivation visible — you can see what actually matters to you</li>
+            <li>Revisit it any time your resolve wobbles</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">4-Quadrant Framework</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>When I DO the behavior — Benefits</strong>
+              <ul><li>It can be fun</li><li>I connect with people</li><li>I avoid uncomfortable emotions</li></ul>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>When I DO the behavior — Costs</strong>
+              <ul><li>I lose money</li><li>I break trust with others</li><li>I feel worse afterward</li></ul>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>When I DON'T do the behavior — Benefits</strong>
+              <ul><li>I sleep better</li><li>I feel proud of myself</li><li>I move toward my goals</li></ul>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <strong>When I DON'T do the behavior — Costs</strong>
+              <ul><li>I might miss the social aspect</li><li>I'll have to deal with hard emotions</li></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Label Each Item: Short-Term (ST) or Long-Term (LT)</div>
+        <p style="font-size:14px;color:var(--text-muted);">Go back through all four quadrants. Mark each item ST or LT. Key insight: the benefits of using tend to be ST; the costs tend to be LT. The benefits of stopping tend to be LT — which is why they're easy to discount in the moment.</p>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What surprised you about your answers?</li>
+          <li>Which long-term benefits of stopping feel most important to you?</li>
+          <li>Are you trading long-term values for short-term comfort?</li>
+          <li>What's one small action this reflection points to?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEFINE YOUR VALUES -->
+  <div class="tool-card" id="values">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Worksheet</span>
+      <div class="tool-name">Define Your Values (Hierarchy of Values)</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Values underpin every feeling and decision you make — but most people never write them down. This tool surfaces what you actually care about, then confronts you with what you've been putting ahead of those things.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">3-Step Process</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Brainstorm — What Matters to You?</strong>
+              <p>Write everything that feels important: people, ideas, goals, ways of living. No wrong answers. Examples: family, health, freedom, kindness, honesty, stability, spirituality, creativity, learning, helping others.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Narrow to Your Top 5</strong>
+              <p>Group similar ideas. Circle what stands out. Identify the five that feel most essential to who you are or want to be.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Connect Values to the Behavior</strong>
+              <p>Write the behavior of concern at the top of your list. Does it belong there? Notice what it's displacing. This is not about shame — it's about awareness.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-block">
+        <div class="ex-label">Example Hierarchy</div>
+        <div class="ex-item"><strong>1. Alcohol</strong> ← (what's been getting priority)</div>
+        <div class="ex-item"><strong>2.</strong> My children</div>
+        <div class="ex-item"><strong>3.</strong> Health</div>
+        <div class="ex-item"><strong>4.</strong> Honesty</div>
+        <div class="ex-item"><strong>5.</strong> Stability</div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What surprised you about the values you listed?</li>
+          <li>Which values feel most in conflict with your current behavior?</li>
+          <li>What would change if you put recovery first?</li>
+          <li>How can your values help you stay grounded during a setback or urge?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE A CHANGE PLAN -->
+  <div class="tool-card" id="change-plan">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Tool</span>
+      <div class="tool-name">Create a Change Plan</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Intention without structure is just hope. The Change Plan converts what you want into specific steps, support systems, and checkpoints. Your plan doesn't have to be perfect — if it doesn't work, revise it.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Worksheet Sections</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Changes I Want to Make</strong>
+              <p>Name one or two specific, concrete changes. Examples: avoid bars, reduce cannabis use, improve sleep, limit screens after 9 PM.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Importance &amp; Confidence (1–10)</strong>
+              <p>Rate how much this change matters to you and how confident you feel right now. Low confidence is expected — it grows with support and small wins.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>My Most Important Reasons</strong>
+              <p>Why does this matter personally? Examples: keep my job, rebuild trust, feel more in control, reconnect with my kids.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <strong>Steps I Plan to Take</strong>
+              <p>Small, actionable steps for the next days or weeks. Examples: attend a SMART meeting, talk to a doctor, build a sleep routine, ask for help.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <strong>Who Can Help Me and How</strong>
+              <p>List specific people and the specific kind of help each can provide (weekly check-in, healthy recipes, accountability, etc.).</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-content">
+              <strong>Signs of Progress / Potential Obstacles</strong>
+              <p>What will tell you the plan is working? What could derail it? Think: bored weekends, social pressure, overwhelm.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">7</div>
+            <div class="step-content">
+              <strong>Review Date</strong>
+              <p>Choose a specific date to check in with yourself. Set a calendar reminder. If the plan isn't working, change it — that's part of the process.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What's one change that feels most urgent or meaningful right now?</li>
+          <li>What strengths or support systems can help you get started?</li>
+          <li>What might get in your way, and how could you handle it?</li>
+          <li>How will you know it's time to revise or restart your plan?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELF-COMPASSION -->
+  <div class="tool-card" id="self-compassion">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Worksheet</span>
+      <div class="tool-name">Practice Self-Compassion</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Shame and self-judgment don't drive lasting change — they drive relapse. This tool, based on Dr. Kristin Neff's research, gives you a concrete practice for meeting hard moments with care instead of attack.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">3 Pillars (Neff Model)</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Self-Kindness vs. Self-Judgment</strong>
+              <p>Talk to yourself the way you'd talk to a friend. Reduce name-calling and blame. Try: "I'm doing the best I can" or "This is hard, and I still deserve support." Ask: would I say this to someone I care about?</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Common Humanity vs. Isolation</strong>
+              <p>You are not uniquely broken. Struggle is universal. Attend a mutual support meeting, talk with someone who understands, reflect on how others have faced setbacks and kept going.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Mindfulness vs. Over-Identification</strong>
+              <p>Notice emotions without being consumed by them. Take a few deep breaths and name what you're feeling. Go for a walk and listen to what's around you. Practice brief grounding or meditation moments.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>How do you usually talk to yourself when things go wrong? Would you speak that way to someone you care about?</li>
+          <li>Which pillar feels most natural? Which feels most difficult?</li>
+          <li>Can you name a recent moment where you could have given yourself more compassion?</li>
+          <li>What might change if you offered encouragement instead of criticism after setbacks?</li>
+          <li>What's one small self-compassion practice you can try this week?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- POINT 2 — URGES                               -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="point-section p2-section" id="point2">
+  <div class="point-header">
+    <div class="point-number">2</div>
+    <div class="point-title-group">
+      <div class="point-label">Point Two</div>
+      <div class="point-title">Cope with Urges</div>
+      <div class="point-desc">Urges are normal and temporary — they come in waves that last minutes, not forever. These tools help you recognize patterns, buy time, and build a response repertoire.</div>
+    </div>
+  </div>
+
+  <!-- URGE LOG -->
+  <div class="tool-card" id="halt">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Tool</span>
+      <div class="tool-name">HALT — Quick Urge Triage</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Before reaching for DENTS or the Urge Log, run this 10-second check. Four states — Hungry, Angry/Anxious, Lonely, Tired — are responsible for the majority of unplanned urges. Identifying the state doesn't eliminate the urge, but it points you at the right intervention.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Check what's true right now</div>
+        <div class="halt-grid">
+          <button class="halt-btn" data-halt="H" onclick="toggleHalt(this)">
+            <span class="halt-letter">H</span>
+            <span class="halt-word">Hungry</span>
+          </button>
+          <button class="halt-btn" data-halt="A" onclick="toggleHalt(this)">
+            <span class="halt-letter">A</span>
+            <span class="halt-word">Angry / Anxious</span>
+          </button>
+          <button class="halt-btn" data-halt="L" onclick="toggleHalt(this)">
+            <span class="halt-letter">L</span>
+            <span class="halt-word">Lonely</span>
+          </button>
+          <button class="halt-btn" data-halt="T" onclick="toggleHalt(this)">
+            <span class="halt-letter">T</span>
+            <span class="halt-word">Tired</span>
+          </button>
+        </div>
+        <div class="halt-results" id="haltResults">
+          <div class="halt-empty" id="haltEmpty">Select any states that apply to see tailored suggestions.</div>
+          <div class="halt-result-card" id="halt-H">
+            <div class="halt-result-label">Hungry</div>
+            <p>Physical hunger depletes the prefrontal cortex's capacity for self-regulation — the same system you need to resist an urge. Before anything else, eat something. Even a small snack shifts your neurological baseline. The urge may soften significantly once blood sugar stabilizes. If you can't eat immediately, drink water and note whether the urge intensity drops in 10 minutes.</p>
+          </div>
+          <div class="halt-result-card" id="halt-A">
+            <div class="halt-result-label">Angry or Anxious</div>
+            <p>Anger and anxiety both activate threat-response systems that crave immediate relief — which is exactly what substances or addictive behaviors have historically provided. Use the ABC tool to map what activated the anger or anxiety, and the Dispute Unhelpful Beliefs tool to challenge any thoughts fueling it. Physical discharge helps: a fast walk, cold water on your face, or five slow exhales. Don't make decisions while flooded.</p>
+          </div>
+          <div class="halt-result-card" id="halt-L">
+            <div class="halt-result-label">Lonely</div>
+            <p>Loneliness is one of the strongest relapse predictors, and it's often the hardest to address in the moment. Contact one person — a text is enough. Attend a SMART meeting (online meetings run around the clock). The Explore New Pursuits tool exists precisely for this: building activities and communities that don't leave you isolated. If contact isn't immediately possible, the self-compassion tool is your bridge.</p>
+          </div>
+          <div class="halt-result-card" id="halt-T">
+            <div class="halt-result-label">Tired</div>
+            <p>Sleep deprivation directly impairs impulse control. If exhaustion is the driver, the most effective intervention is rest — not willpower. If you can sleep, do. If you can't, don't try to fight an urge with a depleted system: use DENTS (Tasks or Swap) to occupy your mind until you can rest. Postpone difficult decisions or high-risk situations until after you've slept.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-card" id="urge-log">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Tool</span>
+      <div class="tool-name">Urge Log</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Urges are the social, mental, and emotional experience of wanting something — distinct from physical withdrawal. Logging them systematically reveals patterns you'd otherwise miss and builds your capacity to respond intentionally.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">What to Track Each Time</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Field</th><th>What to Record</th></tr></thead>
+            <tbody>
+              <tr><td>Date &amp; Time</td><td>When did the urge occur?</td></tr>
+              <tr><td>Strength (1–10)</td><td>1 = very mild, 10 = overwhelming</td></tr>
+              <tr><td>Duration</td><td>How long did it last? (e.g., 2 min, 15 min)</td></tr>
+              <tr><td>Trigger</td><td>What happened just before? Feeling, thought, situation, interaction?</td></tr>
+              <tr><td>Who / Where</td><td>Anyone else around? What location?</td></tr>
+              <tr><td>How You Coped</td><td>What did you do? Did anything help? If you gave in, how did that feel?</td></tr>
+              <tr><td>Ideas for Next Time</td><td>What might you try differently? What could you plan for or avoid?</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="example-block">
+        <div class="ex-label">Example Entry</div>
+        <div class="ex-item"><strong>Date/Time:</strong> 8/29 at 1:15 PM</div>
+        <div class="ex-item"><strong>Strength:</strong> 8 / 10 — lasted about 1 minute</div>
+        <div class="ex-item"><strong>Trigger:</strong> Lunch in a wine bar with Lisa and Stephanie</div>
+        <div class="ex-item"><strong>How I coped:</strong> Told them I wasn't drinking. Forgot about it quickly.</div>
+        <div class="ex-item"><strong>Next time:</strong> Find a new lunch spot that doesn't trigger this.</div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Tips</div>
+        <div class="key-points">
+          <ul>
+            <li>One or two entries per week reveals useful patterns; a full week shows more</li>
+            <li>Even logging an urge you gave in to reduces the chance of repeating the cycle</li>
+            <li>Carry the worksheet or track on your phone — consistency matters more than perfection</li>
+            <li>Urges are temporary. They always pass, whether you act on them or not.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What patterns appear after reviewing a few entries?</li>
+          <li>Are there specific times of day or recurring triggers?</li>
+          <li>Which coping strategies have worked best?</li>
+          <li>What can you plan for or avoid next time?</li>
+        </ul>
+      </div>
+
+      <div class="urge-interactive">
+        <div class="section-label">Your Personal Urge Log</div>
+        <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:16px;">Log urges as they happen. Entries are saved locally in your browser. The chart shows intensity over time — seeing the trend is itself motivating.</p>
+        <div class="urge-form-grid">
+          <div class="form-field">
+            <label class="form-label" for="ul_intensity">Intensity (1–10)</label>
+            <div class="intensity-row">
+              <input type="range" min="1" max="10" value="5" id="ul_intensity"
+                oninput="document.getElementById('ul_ival').textContent=this.value">
+              <span class="intensity-val" id="ul_ival">5</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="ul_outcome">Outcome</label>
+            <select class="form-select" id="ul_outcome">
+              <option value="resisted">Resisted</option>
+              <option value="partial">Partially resisted</option>
+              <option value="gave-in">Gave in</option>
+            </select>
+          </div>
+          <div class="form-field span2">
+            <label class="form-label" for="ul_trigger">Trigger / situation</label>
+            <input type="text" class="form-input" id="ul_trigger" placeholder="What happened just before?">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="ul_coping">How you coped</label>
+            <input type="text" class="form-input" id="ul_coping" placeholder="What did you do?">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="ul_notes">Notes for next time</label>
+            <input type="text" class="form-input" id="ul_notes" placeholder="What might help next time?">
+          </div>
+        </div>
+        <button class="btn-primary" onclick="addUrgeEntry()">Log This Urge</button>
+
+        <div class="urge-chart-wrap" id="urgeChartWrap">
+          <div class="urge-chart-empty" id="urgeChartEmpty">Your urge history will appear here after your first entry.</div>
+          <svg id="urgeChartSvg" class="urge-chart-svg" style="display:none"></svg>
+        </div>
+        <div class="chart-legend" id="urgeLegend" style="display:none">
+          <span><span class="legend-dot" style="background:var(--sage)"></span>Resisted</span>
+          <span><span class="legend-dot" style="background:var(--amber)"></span>Partial</span>
+          <span><span class="legend-dot" style="background:var(--rose)"></span>Gave in</span>
+        </div>
+        <div class="urge-summary-grid" id="urgeSummary" style="display:none">
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_total">0</div><div class="stat-label">Total Logged</div></div>
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_resist">0%</div><div class="stat-label">Resistance Rate</div></div>
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_avg">—</div><div class="stat-label">Avg Intensity</div></div>
+        </div>
+        <div class="urge-entries-list" id="urgeEntriesList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DENTS -->
+  <div class="tool-card" id="dents">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Worksheet</span>
+      <div class="tool-name">Put DENTS in Your Urges</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">A structured acronym for in-the-moment urge management. Use it when an urge is active and you need an immediate intervention framework.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">The DENTS Framework</div>
+        <div class="acronym-grid">
+          <div class="acronym-row">
+            <div class="acronym-letter">D</div>
+            <div class="acronym-def">
+              <strong>Deny or Delay</strong>
+              <p>Refuse to give in, no matter what. If full refusal feels impossible, delay by just one moment at a time. Remind yourself as many times as needed that the urge will pass.</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">E</div>
+            <div class="acronym-def">
+              <strong>Escape</strong>
+              <p>If you know what's triggering the urge, leave immediately or end the trigger. Leave the place, conversation, or social setting that's intensifying it.</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">N</div>
+            <div class="acronym-def">
+              <strong>Neutralize</strong>
+              <p>Attack it and prove it wrong, or acknowledge it and let it pass. Create emotional distance: watch the urge build, crest, and fade. It doesn't define you — it's separate from you.</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">T</div>
+            <div class="acronym-def">
+              <strong>Tasks</strong>
+              <p>Give yourself something to do. Urges need oxygen — deprive them by engaging your mind. Call a friend, count, recite something, start a task. Urges can't easily compete with active attention.</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">S</div>
+            <div class="acronym-def">
+              <strong>Swap</strong>
+              <p>Change your internal monologue. Replace "This urge will kill me" with "This urge will pass." If you feel sad or lonely, deliberately change it: go to a coffee shop, take a walk, attend a SMART meeting.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Core Principle</div>
+        <p style="font-size:14px;color:var(--text-muted);">DENTS isn't about eliminating urges — it's about developing a structured, sustainable way to manage them. The goal is not to get rid of urges completely but to stop being automatically controlled by them.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERSONIFY AND DISARM -->
+  <div class="tool-card" id="breathing">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Tool</span>
+      <div class="tool-name">Breathing &amp; Grounding</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">These two techniques work in under two minutes and operate physiologically rather than cognitively — they reduce the nervous system activation that makes urges feel unsurvivable before you attempt to reason with them.</div>
+
+      <div class="breath-tabs">
+        <button class="breath-tab active" onclick="switchTab('box')">Box Breathing</button>
+        <button class="breath-tab" onclick="switchTab('ground')">5-4-3-2-1 Grounding</button>
+      </div>
+
+      <!-- BOX BREATHING -->
+      <div class="breath-panel active" id="panel-box">
+        <div class="tool-content-section">
+          <div class="section-label">How it works</div>
+          <p style="font-size:14px;color:var(--text-muted);margin-bottom:18px;">Four seconds in, four hold, four out, four hold. Used by the US Navy SEALs for acute stress regulation. Directly counters the hyperventilation pattern that amplifies craving and anxiety. Three rounds is enough to shift your physiological baseline.</p>
+        </div>
+        <div class="box-breath-wrap">
+          <div class="box-svg-wrap">
+            <svg id="boxSvg" viewBox="0 0 200 200" width="200" height="200">
+              <rect x="20" y="20" width="160" height="160" rx="12"
+                fill="none" stroke="var(--border)" stroke-width="2"/>
+              <rect id="boxProgress" x="20" y="20" width="0" height="0" rx="12"
+                fill="none" stroke="var(--blue)" stroke-width="4"
+                stroke-dasharray="640" stroke-dashoffset="640"
+                style="transition: stroke-dashoffset 1s linear; transform-origin: center;"/>
+            </svg>
+            <div class="box-instruction">
+              <div class="box-phase" id="boxPhase">Ready</div>
+              <div class="box-count" id="boxCount">4</div>
+              <div class="box-cue" id="boxCue">Press Start</div>
+            </div>
+          </div>
+          <div class="box-btn-row">
+            <button class="btn-box btn-box-start" id="btnBoxStart" onclick="startBox()">Start</button>
+            <button class="btn-box btn-box-stop" onclick="stopBox()">Stop</button>
+          </div>
+          <div class="box-rounds" id="boxRounds"></div>
+        </div>
+      </div>
+
+      <!-- 5-4-3-2-1 GROUNDING -->
+      <div class="breath-panel" id="panel-ground">
+        <div class="tool-content-section">
+          <div class="section-label">How it works</div>
+          <p style="font-size:14px;color:var(--text-muted);margin-bottom:18px;">Grounds you in the present moment by engaging all five senses in sequence. Interrupts the ruminative or anxious thinking that precedes and sustains urges by redirecting attention to immediate sensory reality. Take your time with each step — there's no rush.</p>
+        </div>
+        <div class="ground-steps">
+          <div class="ground-step g-see">
+            <div class="ground-count">5</div>
+            <div>
+              <div class="ground-sense-label">See</div>
+              <div class="ground-desc">Name 5 things you can see right now. Look carefully — not just the obvious. A shadow, a texture, a color you hadn't noticed. Say each one aloud or write it down.</div>
+            </div>
+          </div>
+          <div class="ground-step g-hear">
+            <div class="ground-count">4</div>
+            <div>
+              <div class="ground-sense-label">Hear</div>
+              <div class="ground-desc">Close your eyes and name 4 things you can hear. Traffic, your own breath, a distant voice, the hum of a machine. Listen for sounds in the background, not just the foreground.</div>
+            </div>
+          </div>
+          <div class="ground-step g-touch">
+            <div class="ground-count">3</div>
+            <div>
+              <div class="ground-sense-label">Touch</div>
+              <div class="ground-desc">Name 3 things you can physically feel right now. The chair under you, the texture of your clothing, the temperature of the air on your skin. Notice the specifics.</div>
+            </div>
+          </div>
+          <div class="ground-step g-smell">
+            <div class="ground-count">2</div>
+            <div>
+              <div class="ground-sense-label">Smell</div>
+              <div class="ground-desc">Name 2 things you can smell. If nothing is immediately obvious, move to somewhere with a distinct scent — outside, near food, near something familiar.</div>
+            </div>
+          </div>
+          <div class="ground-step g-taste">
+            <div class="ground-count">1</div>
+            <div>
+              <div class="ground-sense-label">Taste</div>
+              <div class="ground-desc">Name 1 thing you can taste. Drink water, chew gum, eat something small. The act of tasting grounds the final sense and often provides a clear break from the urge state.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-card" id="personify">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Worksheet</span>
+      <div class="tool-name">Personify and Disarm</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">The urge is not you. It's a temporary impulse shaped by past habits and stress. Giving it a name and treating it as an external manipulator creates enough mental distance to pause and choose differently.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">3-Step Process</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Name the Urge</strong>
+              <p>If this urge had a personality, what would it be? Give it a name without judgment. Examples: The Smooth Talker, The Whiner, The Hurt Child, The Negotiator, The Saboteur.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Identify Its Scripts</strong>
+              <p>What does this urge try to convince you of? Write down its lines. Examples: "You've earned this." / "This is too hard — you can't do it." / "Everyone else does it." / "You're already messed up, so why stop now?"</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Talk Back</strong>
+              <p>Write what you want to say back to reclaim control. Say it aloud, write it, or repeat it internally when the urge arrives. Examples: "You're lying to me again — I'm not listening." / "You're not in charge — I am." / "You're not worth trading my goals for."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">When External Pressure Is Involved</div>
+        <div class="key-points">
+          <ul>
+            <li>Make eye contact — show you're serious</li>
+            <li>Speak in a firm, calm, confident voice</li>
+            <li>Don't feel guilty — you have the right to choose</li>
+            <li>After saying no, change the subject. Don't keep defending your choice.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What name fits your most common urge?</li>
+          <li>What does that urge try to convince you of — and how can you respond?</li>
+          <li>How does it feel to treat the urge as something separate from yourself?</li>
+          <li>When might this strategy help you stay on track this week?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTING HEALTHY BOUNDARIES -->
+  <div class="tool-card" id="urge-surfing">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Guided Practice</span>
+      <div class="tool-name">Urge Surfing</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Where DENTS is active resistance, urge surfing is observational. You don't fight the urge — you watch it. Urges follow a wave pattern: they build, crest, and recede. The goal is to observe that cycle without acting on it. This practice, drawn from mindfulness-based relapse prevention, reduces the urge's power by removing the struggle against it.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Core Principle</div>
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:18px;">You are not your urge. The urge is a temporary sensation passing through you — not a command you must obey. The average urge peaks within 3–5 minutes and dissipates within 20–30 minutes if not acted on. This guided walkthrough takes you through one full cycle.</p>
+      </div>
+
+      <div class="surf-steps" id="surfSteps">
+        <div class="surf-step active" id="surf-0">
+          <div class="surf-step-num">Step 1 of 6 — Notice</div>
+          <div class="surf-step-text">
+            <strong>Acknowledge the urge without judgment.</strong>
+            Say to yourself: "I notice I'm having an urge." Don't fight it, don't catastrophize it. Just name it. You don't have to like it — you just have to see it clearly. Take a slow breath before pressing Next.
+          </div>
+        </div>
+        <div class="surf-step" id="surf-1">
+          <div class="surf-step-num">Step 2 of 6 — Locate</div>
+          <div class="surf-step-text">
+            <strong>Find where you feel it in your body.</strong>
+            Scan from head to toe. Where is the physical sensation? Chest tightness? Stomach tension? Restlessness in your legs? Warmth or pressure somewhere? Locate it precisely — don't evaluate it, just find it.
+          </div>
+        </div>
+        <div class="surf-step" id="surf-2">
+          <div class="surf-step-num">Step 3 of 6 — Describe</div>
+          <div class="surf-step-text">
+            <strong>Describe the sensation as if to a scientist.</strong>
+            What is its size, shape, temperature, texture, weight? Is it moving or still? Is it constant or pulsing? Use neutral language. You're reporting data, not experiencing a crisis. Notice whether describing it changes it at all.
+          </div>
+        </div>
+        <div class="surf-step" id="surf-3">
+          <div class="surf-step-num">Step 4 of 6 — Watch the Wave</div>
+          <div class="surf-step-text">
+            <strong>Observe the urge intensify — and then recede.</strong>
+            Every urge follows a wave pattern. You're now at or near the peak. Keep breathing. Watch the sensation without adding narrative to it. It will crest. It will fall. You don't need to do anything — just watch.
+          </div>
+          <div class="surf-wave-bar"><div class="surf-wave-fill" id="surfWaveFill"></div></div>
+          <div class="surf-timer" id="surfTimer">0:00</div>
+        </div>
+        <div class="surf-step" id="surf-4">
+          <div class="surf-step-num">Step 5 of 6 — Breathe Through</div>
+          <div class="surf-step-text">
+            <strong>Slow your exhale to lengthen the return.</strong>
+            Breathe in for 4 counts. Hold for 2. Out for 6. The extended exhale activates the parasympathetic nervous system — the physiological opposite of the stress response. Do this three times before moving on.
+          </div>
+        </div>
+        <div class="surf-step" id="surf-5">
+          <div class="surf-step-num">Step 6 of 6 — Reorient</div>
+          <div class="surf-step-text">
+            <strong>Return to the present moment deliberately.</strong>
+            Name three things you can see right now. Take one more slow breath. Notice whether the urge has changed in intensity since you started. Most people find it has. You surfed it — you didn't have to act on it.
+          </div>
+        </div>
+      </div>
+
+      <div class="surf-complete" id="surfComplete">
+        <p>You surfed the urge.</p>
+        <small>You observed it, stayed with it, and let it pass without acting on it. That is the practice — and it gets easier every time you do it.</small>
+      </div>
+
+      <div class="surf-controls">
+        <button class="btn-surf btn-surf-start" id="btnSurfNext" onclick="surfNext()">Start</button>
+        <button class="btn-surf btn-surf-reset" onclick="surfReset()">Reset</button>
+        <span class="surf-status" id="surfStatus">Ready when you are.</span>
+      </div>
+
+      <div class="reflection-block" style="margin-top:18px;">
+        <div class="r-label">After You Finish</div>
+        <ul>
+          <li>How did the urge intensity change from start to finish?</li>
+          <li>Where in your body did you feel it most strongly?</li>
+          <li>What did you notice about the wave pattern?</li>
+          <li>What made this harder or easier than you expected?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-card" id="boundaries">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Tool</span>
+      <div class="tool-name">Setting Healthy Boundaries</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Boundaries protect your time, energy, and recovery. They're not walls — they're fences that make relationships more workable and reduce the stress and resentment that fuel urges.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Key Concepts</div>
+        <div class="key-points">
+          <ul>
+            <li>Boundaries are about your needs, not controlling others</li>
+            <li>They can be physical, emotional, or behavioral</li>
+            <li>You have the right to protect your peace and stay connected on your terms</li>
+            <li>If someone pushes back, it doesn't mean your boundary is wrong — it means it's working</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Common Challenges (Identify Yours)</div>
+        <div class="key-points">
+          <ul>
+            <li>Fear of conflict or rejection</li>
+            <li>Feeling selfish for saying no</li>
+            <li>Not knowing how to phrase it clearly</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">The Boundary Formula</div>
+        <div class="formula-block">
+          <div class="formula-line"><strong>"I feel"</strong> (name the emotion)</div>
+          <div class="formula-line"><strong>"When"</strong> (describe the specific behavior)</div>
+          <div class="formula-line"><strong>"Can I ask you to"</strong> (make the reasonable request)?</div>
+        </div>
+        <div class="example-block">
+          <div class="ex-label">Example</div>
+          <div class="ex-item">"I feel frustrated when plans change last minute. Can I ask you to let me know earlier next time?"</div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Practice Step</div>
+        <p style="font-size:14px;color:var(--text-muted);">Think of a real situation where you need a boundary. Fill in: What's happening that doesn't feel okay? How are you feeling? What would make you feel more respected or supported? Then use the formula above.</p>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>How did it feel to write or say your boundary out loud?</li>
+          <li>What do you think might happen if you try this in real life?</li>
+          <li>What's one small boundary you can practice setting this week?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- POINT 3 — THOUGHTS & FEELINGS                 -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="point-section p3-section" id="point3">
+  <div class="point-header">
+    <div class="point-number">3</div>
+    <div class="point-title-group">
+      <div class="point-label">Point Three</div>
+      <div class="point-title">Manage Thoughts, Feelings &amp; Behaviors</div>
+      <div class="point-desc">Beliefs drive emotions, emotions drive behavior. These tools help you identify unhelpful thought patterns, challenge them, and replace them with beliefs that support your goals.</div>
+    </div>
+  </div>
+
+  <!-- ABC EXERCISE -->
+  <div class="tool-card" id="thinking-styles">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Reference</span>
+      <div class="tool-name">Unhelpful Thinking Styles — Quick Reference</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">The ABC and Dispute Unhelpful Beliefs tools both require you to identify the type of unhelpful thought you're having. This reference card maps the most common patterns, their signal words, and what they look like in practice — use it alongside those tools.</div>
+
+      <div class="distortion-grid">
+        <div class="distortion-card">
+          <div><div class="distortion-name">All-or-Nothing Thinking</div><div class="distortion-signal">always · never · completely · total failure</div></div>
+          <div><div class="distortion-desc">Seeing things in black and white with no middle ground. One mistake means total failure; one slip means recovery is over.</div><div class="distortion-ex">"I missed one meeting — I've completely fallen off the wagon."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Catastrophizing</div><div class="distortion-signal">terrible · worst · can't handle · disaster</div></div>
+          <div><div class="distortion-desc">Assuming the worst possible outcome is certain. Magnifies difficulties until they feel unsurvivable.</div><div class="distortion-ex">"If I feel this urge, I'm definitely going to give in and ruin everything."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Overgeneralization</div><div class="distortion-signal">always · everyone · nothing ever · every time</div></div>
+          <div><div class="distortion-desc">Drawing sweeping conclusions from a single event. One negative experience becomes an endless pattern.</div><div class="distortion-ex">"This always happens to me. I never get a break."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Mind Reading</div><div class="distortion-signal">they think · I know she · he must · they probably</div></div>
+          <div><div class="distortion-desc">Assuming you know what others are thinking — usually something negative — without actual evidence.</div><div class="distortion-ex">"Everyone at the meeting could tell I was struggling. They're judging me."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Emotional Reasoning</div><div class="distortion-signal">I feel it · it must be true · I feel like · therefore it is</div></div>
+          <div><div class="distortion-desc">Treating feelings as facts. Because you feel hopeless, you conclude the situation is hopeless.</div><div class="distortion-ex">"I feel like a failure, so I must be one."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Should Statements</div><div class="distortion-signal">I should · I must · I ought to · I have to</div></div>
+          <div><div class="distortion-desc">Rigid rules about how you or others must behave. Violations generate guilt, shame, or anger rather than motivation.</div><div class="distortion-ex">"I should be stronger than this. I shouldn't even be having urges."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Labeling</div><div class="distortion-signal">I'm a · I am such a · I'm just a</div></div>
+          <div><div class="distortion-desc">Attaching a global negative label to yourself or others based on a specific behavior. More extreme than overgeneralization.</div><div class="distortion-ex">"I'm an addict. That's just who I am. I can't change it."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Frustration Intolerance</div><div class="distortion-signal">can't stand · unbearable · I can't take · too much</div></div>
+          <div><div class="distortion-desc">Believing you cannot tolerate discomfort, even temporarily. Underestimates your actual capacity to endure difficulty.</div><div class="distortion-ex">"I can't stand feeling this way. I need relief right now."</div></div>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">How to use this</div>
+        <ul>
+          <li>When an urge or difficult emotion hits, write the thought down first (the B in ABC).</li>
+          <li>Scan this list for the pattern that matches — naming it creates distance from it.</li>
+          <li>Then move to Dispute Unhelpful Beliefs: write the challenge question, then the more helpful belief.</li>
+          <li>Recurring patterns across entries point to your specific cognitive tendencies — the ones worth focusing on.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-card" id="abc">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Tool</span>
+      <div class="tool-name">The ABCs (+ D and E)</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Rooted in Rational Emotive Behavior Therapy (REBT). Urges rarely come from nowhere — they're connected to how you interpret events. The ABC tool breaks down the chain from situation to reaction so you can intervene at the belief level.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">The Full Framework</div>
+        <div class="acronym-grid">
+          <div class="acronym-row">
+            <div class="acronym-letter">A</div>
+            <div class="acronym-def">
+              <strong>Activating Event</strong>
+              <p>What happened just before the urge or reaction? What was the situation? Was anything stressful, upsetting, or triggering?</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">B</div>
+            <div class="acronym-def">
+              <strong>Beliefs</strong>
+              <p>What were you telling yourself? What thoughts came up automatically? Did you have any "musts" or "shoulds"? What did you believe about yourself, the situation, or others?</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">C</div>
+            <div class="acronym-def">
+              <strong>Consequences</strong>
+              <p>What happened emotionally and physically? How did you feel? What was the urge? Did you act on it or resist it?</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">D</div>
+            <div class="acronym-def">
+              <strong>Dispute the Belief</strong>
+              <p>Was that belief helpful or even true? Is this thought always accurate? What's another way to see the situation? What might a friend say to you?</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">E</div>
+            <div class="acronym-def">
+              <strong>Effective New Belief</strong>
+              <p>Write a new belief that's more balanced and useful — honest, not toxic positivity. How do you feel thinking this new thought? What would you do differently with it?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-block">
+        <div class="ex-label">Full Worked Example</div>
+        <div class="ex-item"><strong>A:</strong> My boss yelled at me in front of coworkers.</div>
+        <div class="ex-item"><strong>B:</strong> He has no right to embarrass me. It's not fair. I can't stand this.</div>
+        <div class="ex-item"><strong>C:</strong> I'm furious and want a drink.</div>
+        <div class="ex-item"><strong>D:</strong> Does my boss only yell at me? Is life always fair? Can I actually stand this without drinking?</div>
+        <div class="ex-item"><strong>E:</strong> My boss yells at everyone eventually. That felt bad, but it's over. He's not worth giving up my goals for.</div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What part of this process felt most helpful?</li>
+          <li>How do urges feel when you stop to examine the underlying belief?</li>
+          <li>What's one situation this week where you could try the ABC tool?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISPUTE UNHELPFUL BELIEFS -->
+  <div class="tool-card" id="dispute">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Worksheet</span>
+      <div class="tool-name">Dispute Unhelpful Beliefs</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Beliefs can be changed. You don't have to believe everything you think. This tool identifies the specific patterns of unhelpful thinking that fuel addictive behavior, then gives you a systematic practice for replacing them.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Common Unhelpful Belief Patterns</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Type</th><th>Signal Words</th><th>The Problem</th></tr></thead>
+            <tbody>
+              <tr><td>Demands</td><td>"I must," "I have to"</td><td>Creates pressure and emotional distress</td></tr>
+              <tr><td>Overgeneralizations</td><td>"Always," "never," "only"</td><td>Misses the nuance of real life</td></tr>
+              <tr><td>Frustration intolerance</td><td>"I can't handle this"</td><td>Underestimates your resilience</td></tr>
+              <tr><td>Awfulizations</td><td>"Worst," "most unfair," "stupidest"</td><td>Exaggerates pain and difficulty</td></tr>
+              <tr><td>Self-attacks</td><td>"I always fail," "I'm worthless"</td><td>Blocks self-compassion and progress</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">3-Step Disputing Process (Use the Worksheet)</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Write the Unhelpful Belief</strong>
+              <p>What thought is getting in your way right now?</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Ask a Challenge Question</strong>
+              <p>Is this always true? Would I say this to a friend? What's another way of seeing this?</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Write a More Helpful Belief</strong>
+              <p>Replace with something honest, balanced, and supportive of your long-term goals — not toxic positivity, not denial, just a more accurate view.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-block">
+        <div class="ex-label">Worked Examples</div>
+        <div class="ex-item"><strong>Unhelpful:</strong> "I can't deal with this without using." → <strong>Challenge:</strong> Can I? → <strong>Helpful:</strong> "It might be hard, but I can. It gets easier."</div>
+        <div class="ex-item"><strong>Unhelpful:</strong> "I always mess things up." → <strong>Challenge:</strong> Is that really true? → <strong>Helpful:</strong> "I've made mistakes, but I've also made progress. I'm still learning."</div>
+        <div class="ex-item"><strong>Unhelpful:</strong> "I'm worthless." → <strong>Challenge:</strong> Have I never done anything worthwhile? → <strong>Helpful:</strong> "I have made meaningful contributions. I have value."</div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What unhelpful beliefs do you tend to fall back on?</li>
+          <li>How do these thoughts affect your behavior and emotions?</li>
+          <li>What changes when you respond to a thought rather than just accepting it?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIVE QUESTIONS -->
+  <div class="tool-card" id="five-q">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Worksheet</span>
+      <div class="tool-name">Five Questions</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">A structured check-in for when you're stuck, just had a setback, or need to realign. Five direct questions surface the gap between what you're doing and what you want — and what you can do about it.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">The Five Questions</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>What do I want for my future?</strong>
+              <p>What kind of life do you want? What goals or values matter most right now? Examples: be a present parent, feel healthy, live with more freedom, finish school.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>What am I doing to get what I want?</strong>
+              <p>List current actions. Are they helping or hurting? Examples: attending meetings, avoiding triggers — vs. skipping sleep, isolating, using when stressed.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>How do I feel about what I'm doing now?</strong>
+              <p>Be honest. Do your current actions feel aligned with what you want? Examples: frustrated, hopeful, discouraged, guilty, neutral, proud.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <strong>What could I do differently?</strong>
+              <p>One or two small things to try. Examples: reach out to someone, ask for help, go for a walk instead of using, write out a plan.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+              <strong>How would changing what I do make me feel?</strong>
+              <p>Imagine taking even a small step forward. Examples: lighter, more in control, relieved, motivated, proud.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">The Key Comparison</div>
+        <p style="font-size:14px;color:var(--text-muted);">Compare Q3 (how you feel now) with Q5 (how you'd feel with a change). The gap between those two answers is your motivation. Can that difference move you to act? Can the ideas from Q4 replace what you're trying to change?</p>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>Which of the five questions stood out the most?</li>
+          <li>Did anything surprise you about your answers?</li>
+          <li>What's one small change you're willing to try this week?</li>
+          <li>How might you use these questions in future moments of stress or uncertainty?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- POINT 4 — LIFESTYLE BALANCE                   -->
+<!-- ══════════════════════════════════════════════ -->
+<section class="point-section p4-section" id="point4">
+  <div class="point-header">
+    <div class="point-number">4</div>
+    <div class="point-title-group">
+      <div class="point-label">Point Four</div>
+      <div class="point-title">Live a Balanced Life</div>
+      <div class="point-desc">Recovery isn't only about stopping — it's about building a life that's genuinely worth living. These tools help you assess satisfaction across all domains, set meaningful goals, and discover what makes life feel worth showing up for.</div>
+    </div>
+  </div>
+
+  <!-- LIFESTYLE BALANCE WHEEL -->
+  <div class="tool-card" id="wheel">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Worksheet</span>
+      <div class="tool-name">Lifestyle Balance Wheel</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">A visual snapshot of how satisfied you currently feel across the key domains of your life. When one area is neglected, it throws off the rest. This tool shows you where you are and where to focus.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Life Domain Spokes (Customize as Needed)</div>
+        <div class="key-points">
+          <ul>
+            <li>Family</li>
+            <li>Friends</li>
+            <li>Spirituality</li>
+            <li>Romance / Intimacy</li>
+            <li>Health (physical)</li>
+            <li>Career / Work</li>
+            <li>Finances</li>
+            <li>Fun / Leisure</li>
+            <li>Creativity, Learning, Community (optional additions)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">How to Use the Wheel</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Rate Your Satisfaction (Not Time Spent)</strong>
+              <p>For each spoke, mark a dot. Center = totally unsatisfied. Outer edge = completely satisfied. This is about how you <em>feel</em> about each area, not how much time you dedicate to it.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Connect the Dots</strong>
+              <p>Draw a line connecting your marks. Is the shape round and even, or bumpy and lopsided? Would this wheel roll?</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Interpret the Shape</strong>
+              <p>Which areas are neglected? Which are overdeveloped? Are the highest-scoring areas aligned with your values, or just where you spend the most time?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Tips for Change</div>
+        <div class="key-points">
+          <ul>
+            <li>Balance doesn't mean perfection — it means a life that works for you</li>
+            <li>If one area is clearly calling for attention, start there</li>
+            <li>Small adjustments in one area can shift the whole wheel</li>
+            <li>Ask for help in areas like finances, relationships, or health</li>
+            <li>Revisit the wheel monthly — balance shifts over time</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>How do you feel about the shape of your wheel?</li>
+          <li>Which area would you most like to improve?</li>
+          <li>What's one small action this week to feel more balanced?</li>
+          <li>Are your values reflected in how you spend your time?</li>
+        </ul>
+      </div>
+
+      <div class="wheel-interactive">
+        <div class="section-label">Interactive Balance Wheel</div>
+        <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:16px;">Adjust each slider to reflect your current satisfaction. The wheel redraws live. A lumpy or lopsided shape shows where to focus. Your settings are saved automatically.</p>
+        <div class="wheel-layout">
+          <div class="wheel-svg-wrap">
+            <svg id="wheelSvg" viewBox="0 0 260 260" width="100%" style="max-width:260px"></svg>
+          </div>
+          <div>
+            <div class="wheel-sliders" id="wheelSliders"></div>
+            <div class="wheel-score-block">
+              <div><div class="wheel-score-label">Avg Satisfaction</div><div class="wheel-score-sub">across all areas</div></div>
+              <div class="wheel-score-val" id="wheelScore">5.0</div>
+            </div>
+            <button class="btn-reset-wheel" onclick="resetWheel()">Reset to 5</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOAL SETTING -->
+  <div class="tool-card" id="goals">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Tool</span>
+      <div class="tool-name">Set an Effective Goal (SMART Goals)</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Goals give recovery structure, direction, and purpose. The most meaningful ones are connected to your values. This tool walks you through building goals that are actually achievable, then breaking them into steps.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">What Makes a Goal Effective — SMART Criteria</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Letter</th><th>Criterion</th><th>What It Means</th></tr></thead>
+            <tbody>
+              <tr><td>S</td><td>Specific</td><td>Clear and well-defined — not vague</td></tr>
+              <tr><td>M</td><td>Measurable</td><td>You can track your progress</td></tr>
+              <tr><td>A</td><td>Agreeable</td><td>You're genuinely willing to commit (not forced)</td></tr>
+              <tr><td>R</td><td>Realistic</td><td>Doable given your current resources and energy</td></tr>
+              <tr><td>T</td><td>Time-bound</td><td>Has a deadline or timeframe</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="example-block">
+        <div class="ex-label">Before &amp; After: Making Goals SMART</div>
+        <div class="ex-item"><strong>Vague:</strong> "Eat better." — Too vague. How will you know if you've done it?</div>
+        <div class="ex-item"><strong>SMART:</strong> "Eat heart-healthy foods to lower my cholesterol below 200 mg/dL within 6 months."</div>
+        <div class="ex-item" style="margin-top:10px;"><strong>Vague:</strong> "Spend more time with my kids."</div>
+        <div class="ex-item"><strong>SMART:</strong> "Show up on time for all visitation sessions with my kids for the next 3 months."</div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">The Worksheet Process</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Write Your Goal</strong>
+              <p>Check it against the SMART criteria. Is it specific? Measurable? Agreeable? Realistic? Time-bound?</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Break It Into Steps</strong>
+              <p>Write 3–5 small, concrete tasks that move toward your goal. These should be individually checkable.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Where to Start</div>
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:10px;">If unsure where to focus, check your Lifestyle Balance Wheel. Which areas scored lowest? Choose one and start there. Common goal areas:</p>
+        <div class="key-points">
+          <ul>
+            <li><strong class="cat-label">Finances:</strong> Save money, pay off a bill, set up a budget</li>
+            <li><strong class="cat-label">Relationships:</strong> Make time for someone, resolve a conflict, set a boundary</li>
+            <li><strong class="cat-label">Career:</strong> Explore options, build a skill, update a resume</li>
+            <li><strong class="cat-label">Physical health:</strong> Sleep more, walk regularly, prep meals</li>
+            <li><strong class="cat-label">Passions:</strong> Try a hobby, return to something you used to love</li>
+            <li><strong class="cat-label">Connection:</strong> Join a group, volunteer, contribute to community</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What area of life do I most want to grow in right now?</li>
+          <li>Does my goal feel meaningful and connected to my values?</li>
+          <li>What might get in the way — and how could I handle it?</li>
+          <li>Who could support me or help me stay accountable?</li>
+          <li>What will success look or feel like?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPLORE NEW PURSUITS -->
+  <div class="tool-card" id="pursuits">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Tool</span>
+      <div class="tool-name">Explore New Pursuits and Passions</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Recovery isn't only about what you're stopping — it's about what you're creating. Addictive behavior took up time and served functions (excitement, escape, connection, calm). This tool helps you find what can genuinely replace those functions.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Getting Started</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Think Back</strong>
+              <p>Before the addictive behavior took over: What did you love to do? What goals did you get distracted from? What did you always want to try?</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Use Your CBA as a Clue</strong>
+              <p>Look at the short-term benefits you were getting from the behavior. Was it excitement? Escape? Social connection? Calm? Each is a pointer toward a pursuit that can serve that function without the cost.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Brainstorm Without Judgment</strong>
+              <p>Creative: painting, cooking, music, photography, crafts. Physical: walking, dancing, swimming, yoga, biking. Social: volunteering, book clubs, taking a class. Mental: puzzles, journaling, meditation, nature walks. Just for fun: karaoke, road trips, thrift shopping.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">The Expectation vs. Reality Worksheet</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Pursuit</th><th>Expected Enjoyment (1–10)</th><th>Actual Enjoyment (1–10)</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Example: local art class</td><td>7</td><td>9</td><td>Felt more confident than I expected</td></tr>
+              <tr><td> </td><td> </td><td> </td><td> </td></tr>
+              <tr><td> </td><td> </td><td> </td><td> </td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:13.5px;color:var(--text-muted);">Track expectation vs. reality because surprises matter. Something you expected to love might fall flat. Something unexpected might light you up. The gap is useful data.</p>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Key Principle</div>
+        <p style="font-size:14px;color:var(--text-muted);">You don't have to find one perfect thing. Keep exploring. These are pursuits and passions — they engage you, ground you, and make life feel worth living. Rebuilding this takes time. Stay curious and keep adding.</p>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What's something from your past you'd like to revisit?</li>
+          <li>Is there something you've always wanted to try but never got around to?</li>
+          <li>What small step could you take this week to explore one interest?</li>
+          <li>How do your interests connect to your values or long-term goals?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section class="lapse-section" id="lapse">
+  <div class="lapse-header">
+    <div class="lapse-icon">⚠</div>
+    <div class="lapse-title-group">
+      <div class="lapse-eyebrow">Emergency Reference</div>
+      <div class="lapse-title">When Things Get Hard — Lapse, Relapse, and Starting Again</div>
+      <div class="lapse-desc">This section is for when you've slipped, or feel like you're about to. It does not replace the other tools — it uses them. Read this before concluding anything about what the slip means.</div>
+    </div>
+  </div>
+
+  <div class="lapse-card">
+    <div class="lapse-card-header">
+      <div class="lapse-card-title">The Difference Between a Lapse and a Relapse</div>
+    </div>
+    <div class="lapse-card-body">
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">These are not the same thing. The distinction matters because treating a lapse as a relapse is itself a mechanism that turns it into one.</p>
+      <div class="versus-grid">
+        <div class="versus-card versus-lapse">
+          <div class="versus-label">Lapse</div>
+          <div class="versus-desc">A single episode or brief return to a behavior. It has a beginning and an end. It is an event — not a verdict. Most people in recovery experience at least one. It is information about what needs more work, not evidence that recovery is impossible.</div>
+        </div>
+        <div class="versus-card versus-relapse">
+          <div class="versus-label">Relapse</div>
+          <div class="versus-desc">A return to the prior pattern over time — a sustained reversion rather than an isolated incident. Relapses typically develop from lapses that were responded to with shame, secrecy, and abandonment of recovery practices — not from the lapse itself.</div>
+        </div>
+      </div>
+      <div class="affirmation-box">
+        <p>"A lapse is a detour, not a destination. You don't have to go back to the beginning. You pick up exactly where you left off."</p>
+        <small>The slip does not erase the work. The tools, the insights, the days of practice — all of that is still yours.</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="lapse-card">
+    <div class="lapse-card-header">
+      <div class="lapse-card-title">The Shame Spiral — How a Lapse Becomes a Relapse</div>
+    </div>
+    <div class="lapse-card-body">
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">Understanding this mechanism is one of the most protective things you can do. The slip itself is rarely the problem. What happens next is.</p>
+      <div class="spiral-chain">
+        <div class="spiral-step">
+          <span class="spiral-arrow">1</span>
+          <div class="spiral-text"><strong>The lapse occurs</strong>A single use, a single episode. In isolation, recoverable.</div>
+        </div>
+        <div class="spiral-step">
+          <span class="spiral-arrow">↓</span>
+          <div class="spiral-text"><strong>Shame activates</strong>"I'm weak. I've failed. All that work was pointless. I'm hopeless."
+            <div class="spiral-interrupt">← Interrupt here: this is emotional reasoning. The thought is not a fact. Use Dispute Unhelpful Beliefs.</div>
+          </div>
+        </div>
+        <div class="spiral-step">
+          <span class="spiral-arrow">↓</span>
+          <div class="spiral-text"><strong>Withdrawal from support</strong>Too ashamed to attend meetings, call support people, or use tools. The isolation removes the only things that help.
+            <div class="spiral-interrupt">← Interrupt here: contact one person. Shame cannot survive disclosure.</div>
+          </div>
+        </div>
+        <div class="spiral-step">
+          <span class="spiral-arrow">↓</span>
+          <div class="spiral-text"><strong>The abstinence violation effect</strong>"I've already broken it — might as well continue." All-or-nothing thinking turns a small slip into full permission.
+            <div class="spiral-interrupt">← Interrupt here: this is the lapse→relapse mechanism. Recognize it by name.</div>
+          </div>
+        </div>
+        <div class="spiral-step">
+          <span class="spiral-arrow">↓</span>
+          <div class="spiral-text"><strong>Pattern re-establishes</strong>Relapse — not because the first slip was inevitable, but because no intervention interrupted the spiral.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lapse-card">
+    <div class="lapse-card-header">
+      <div class="lapse-card-title">What to Do in the Next 10 Minutes — STOP</div>
+    </div>
+    <div class="lapse-card-body">
+      <div class="stop-grid">
+        <div class="stop-card">
+          <div class="stop-letter">S</div>
+          <div class="stop-word">Stop</div>
+          <div class="stop-desc">Don't act further. Don't make any decisions right now. Physical stillness first.</div>
+        </div>
+        <div class="stop-card">
+          <div class="stop-letter">T</div>
+          <div class="stop-word">Take a breath</div>
+          <div class="stop-desc">Five slow exhales. Physiologically shifts from threat response to thinking mode.</div>
+        </div>
+        <div class="stop-card">
+          <div class="stop-letter">O</div>
+          <div class="stop-word">Observe</div>
+          <div class="stop-desc">Name what's happening without judgment. "I just slipped. I'm feeling shame. I'm not in danger."</div>
+        </div>
+        <div class="stop-card">
+          <div class="stop-letter">P</div>
+          <div class="stop-word">Proceed</div>
+          <div class="stop-desc">Choose one action from the sequence below. One deliberate step forward.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lapse-card">
+    <div class="lapse-card-header">
+      <div class="lapse-card-title">Which Tools to Use After a Slip — In Order</div>
+    </div>
+    <div class="lapse-card-body">
+      <div class="tool-sequence">
+        <div class="tool-seq-item">
+          <span class="seq-num">1</span>
+          <div class="seq-content">
+            <strong>Self-Compassion (Point 1)</strong>
+            <p>Before analysis, before planning, before anything — meet the moment with self-kindness. The shame response impairs thinking. You cannot reason your way out of a shame spiral. Self-compassion creates the psychological safety to actually look at what happened.</p>
+          </div>
+        </div>
+        <div class="tool-seq-item">
+          <span class="seq-num">2</span>
+          <div class="seq-content">
+            <strong>ABC Exercise (Point 3)</strong>
+            <p>Map what actually happened. A = the situation that preceded the slip. B = what you were telling yourself. C = what you felt and did. This is information, not a confession. You're building a clearer picture of your triggers and beliefs so they have less power next time.</p>
+          </div>
+        </div>
+        <div class="tool-seq-item">
+          <span class="seq-num">3</span>
+          <div class="seq-content">
+            <strong>Dispute Unhelpful Beliefs (Point 3)</strong>
+            <p>Write down the shame thoughts that are arising and challenge each one. "I'm hopeless" → Is that always true? Have I made progress? What would I say to a friend? Replace each with a more accurate belief.</p>
+          </div>
+        </div>
+        <div class="tool-seq-item">
+          <span class="seq-num">4</span>
+          <div class="seq-content">
+            <strong>Cost-Benefit Analysis (Point 1)</strong>
+            <p>Return to your CBA. Remind yourself of the long-term costs of the behavior and the long-term benefits of stopping. This is not about guilt — it's about reconnecting with why you started. The reasons haven't changed.</p>
+          </div>
+        </div>
+        <div class="tool-seq-item">
+          <span class="seq-num">5</span>
+          <div class="seq-content">
+            <strong>Update Your Change Plan (Point 1)</strong>
+            <p>The slip revealed something about your plan — a gap in support, an unmanaged trigger, a high-risk situation that needs a specific strategy. Update the plan. This is what the plan is for.</p>
+          </div>
+        </div>
+        <div class="tool-seq-item">
+          <span class="seq-num">6</span>
+          <div class="seq-content">
+            <strong>Reach out — to a person, not a tool</strong>
+            <p>Tell one person what happened. A SMART meeting, a trusted friend, a counselor. Shame is dismantled by disclosure. If you find yourself resisting this step above all others, that resistance is the thing most worth examining.</p>
+          </div>
+        </div>
+      </div>
+      <div class="affirmation-box">
+        <p>Recovery is not a straight line. The people who build lasting change are not the ones who never slip — they're the ones who respond to slips without abandoning the work.</p>
+        <small>Find a SMART meeting now: <a href="https://meetings.smartrecovery.org/meetings/" target="_blank" style="color:var(--amber);">meetings.smartrecovery.org</a></small>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+</div><!-- /container -->
+
+<footer>
+  <div class="container">
+    <p>Source: <a href="https://smartrecovery.org/toolbox" target="_blank">smartrecovery.org/toolbox</a> &nbsp;|&nbsp; SMART Recovery® is a registered trademark of SMART Recovery USA, Inc. &nbsp;|&nbsp; This document consolidates freely accessible public materials for personal use in recovery.</p>
+    <p style="margin-top:8px;">Find a meeting: <a href="https://meetings.smartrecovery.org/meetings/" target="_blank">meetings.smartrecovery.org</a></p>
+  </div>
+</footer>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+  <div class="toggle-track"><div class="toggle-knob"></div></div>
+  <span class="toggle-label" id="toggleLabel">Light mode</span>
+</button>
+
+
+<script>
+// ── THEME TOGGLE ─────────────────────────────────────────
+
+// ── SAFE LOCALSTORAGE (file:// and Shields-compatible) ──────────────
+function lsGet(key) {
+  try { return localStorage.getItem(key); } catch(e) { return null; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, val); } catch(e) {}
+}
+function lsRemove(key) {
+  try { localStorage.removeItem(key); } catch(e) {}
+}
+
+const html = document.documentElement;
+const btn = document.getElementById('themeToggle');
+const label = document.getElementById('toggleLabel');
+try {
+  const saved = lsGet('smartTheme');
+  if (saved === 'light') { html.classList.add('light'); label.textContent = 'Dark mode'; }
+} catch(e) {}
+btn.addEventListener('click', () => {
+  const isLight = html.classList.toggle('light');
+  label.textContent = isLight ? 'Dark mode' : 'Light mode';
+  lsSet('smartTheme', isLight ? 'light' : 'dark');
+});
+
+// ── HALT CHECK ───────────────────────────────────────────
+function toggleHalt(el) {
+  el.classList.toggle('active');
+  const active = [...document.querySelectorAll('.halt-btn.active')].map(b => b.dataset.halt);
+  const empty = document.getElementById('haltEmpty');
+  ['H','A','L','T'].forEach(k => {
+    const card = document.getElementById('halt-' + k);
+    if (card) card.classList.toggle('visible', active.includes(k));
+  });
+  if (empty) empty.style.display = active.length ? 'none' : 'block';
+}
+
+// ── URGE LOG ─────────────────────────────────────────────
+const URGE_KEY = 'smart_urge_log_v1';
+
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = String(str || '');
+  return d.innerHTML; // browser-escaped HTML entities
+}
+
+function getUrges() {
+  try { return JSON.parse(lsGet(URGE_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function saveUrges(entries) {
+  lsSet(URGE_KEY, JSON.stringify(entries));
+}
+
+function addUrgeEntry() {
+  const intensity = parseInt(document.getElementById('ul_intensity').value);
+  const outcome   = document.getElementById('ul_outcome').value;
+  const trigger   = document.getElementById('ul_trigger').value.trim();
+  const coping    = document.getElementById('ul_coping').value.trim();
+  const notes     = document.getElementById('ul_notes').value.trim();
+
+  const entries = getUrges();
+  entries.push({
+    id: Date.now(),
+    ts: new Date().toISOString(),
+    intensity, outcome, trigger, coping, notes
+  });
+  saveUrges(entries);
+
+  // Reset form
+  document.getElementById('ul_intensity').value = 5;
+  document.getElementById('ul_ival').textContent = '5';
+  document.getElementById('ul_trigger').value = '';
+  document.getElementById('ul_coping').value = '';
+  document.getElementById('ul_notes').value = '';
+  document.getElementById('ul_outcome').value = 'resisted';
+
+  renderUrgeLog();
+}
+
+function deleteUrge(id) {
+  saveUrges(getUrges().filter(e => e.id !== parseInt(id)));
+  renderUrgeLog();
+}
+
+function renderUrgeLog() {
+  const entries = getUrges();
+  const list    = document.getElementById('urgeEntriesList');
+  const summary = document.getElementById('urgeSummary');
+  const legend  = document.getElementById('urgeLegend');
+  const chartEl = document.getElementById('urgeChartSvg');
+  const emptyEl = document.getElementById('urgeChartEmpty');
+  if (!list) return;
+
+  if (entries.length === 0) {
+    list.innerHTML = '';
+    if (summary) summary.style.display = 'none';
+    if (legend)  legend.style.display  = 'none';
+    if (chartEl) chartEl.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+
+  // Stats
+  const resisted = entries.filter(e => e.outcome === 'resisted').length;
+  const avgInt   = (entries.reduce((a,e)=>a+e.intensity,0)/entries.length).toFixed(1);
+  if (document.getElementById('stat_total'))  document.getElementById('stat_total').textContent  = entries.length;
+  if (document.getElementById('stat_resist')) document.getElementById('stat_resist').textContent = Math.round(resisted/entries.length*100)+'%';
+  if (document.getElementById('stat_avg'))    document.getElementById('stat_avg').textContent    = avgInt;
+  if (summary) summary.style.display = 'grid';
+  if (legend)  legend.style.display  = 'flex';
+
+  // Chart
+  if (chartEl && emptyEl) {
+    emptyEl.style.display = 'none';
+    chartEl.style.display = 'block';
+    renderUrgeChart(entries, chartEl);
+  }
+
+  // Entry list (most recent first, max 20)
+  const recent = [...entries].reverse().slice(0, 20);
+  const outcomeColor = { 'resisted':'sage', 'partial':'amber', 'gave-in':'rose' };
+  const outcomeLabel = { 'resisted':'Resisted', 'partial':'Partial', 'gave-in':'Gave in' };
+
+  list.innerHTML = recent.map(e => {
+    const d    = new Date(e.ts);
+    const date = d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const time = d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    const lvl  = e.intensity <= 3 ? 'low' : e.intensity <= 6 ? 'mid' : 'high';
+    const oc   = e.outcome || 'resisted';
+    return `<div class="urge-entry">
+      <div>
+        <div class="urge-entry-meta">${date} · ${time}</div>
+        <div class="urge-entry-trigger">${esc(e.trigger) || '—'}${e.coping ? ' · <em>Coped:</em> '+esc(e.coping) : ''}</div>
+        <div class="urge-entry-outcome outcome-${oc.replace(' ','-')}">${outcomeLabel[oc]||oc}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <div class="urge-entry-intensity ${lvl}">${e.intensity}</div>
+        <button class="btn-delete" onclick="deleteUrge(${e.id})" title="Delete">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderUrgeChart(entries, svg) {
+  const W = 480, H = 140, PAD = { t:10, r:12, b:28, l:30 };
+  const iW = W - PAD.l - PAD.r;
+  const iH = H - PAD.t - PAD.b;
+
+  const sorted = [...entries].sort((a,b) => new Date(a.ts)-new Date(b.ts));
+  const times  = sorted.map(e => new Date(e.ts).getTime());
+  const tMin = times[0], tMax = times[times.length-1] || tMin+1;
+  const tRange = tMax - tMin || 1;
+
+  const cx = e => PAD.l + ((new Date(e.ts).getTime()-tMin)/tRange)*iW;
+  const cy = e => PAD.t + iH - ((e.intensity-1)/9)*iH;
+
+  const colorMap = { 'resisted':'var(--sage)', 'partial':'var(--amber)', 'gave-in':'var(--rose)' };
+
+  // Grid lines at 2,4,6,8,10
+  let gridLines = '';
+  [2,4,6,8,10].forEach(v => {
+    const y = PAD.t + iH - ((v-1)/9)*iH;
+    gridLines += `<line x1="${PAD.l}" y1="${y}" x2="${W-PAD.r}" y2="${y}"
+      stroke="var(--border)" stroke-width="1" stroke-dasharray="3,4"/>`;
+    gridLines += `<text x="${PAD.l-4}" y="${y+4}" font-size="9" fill="var(--text-dim)"
+      text-anchor="end" font-family="Work Sans,sans-serif">${v}</text>`;
+  });
+
+  // Trend line (if 2+ entries)
+  let trendLine = '';
+  if (sorted.length >= 2) {
+    const pts = sorted.map(e => `${cx(e).toFixed(1)},${cy(e).toFixed(1)}`).join(' ');
+    trendLine = `<polyline points="${pts}" fill="none" stroke="var(--border-accent)" stroke-width="1.5" stroke-linejoin="round"/>`;
+  }
+
+  // Dots
+  const dots = sorted.map(e => {
+    const col = colorMap[e.outcome] || 'var(--blue)';
+    return `<circle cx="${cx(e).toFixed(1)}" cy="${cy(e).toFixed(1)}" r="5"
+      fill="${col}" opacity="0.85"/>`;
+  }).join('');
+
+  // X axis dates (first and last)
+  let xLabels = '';
+  if (sorted.length) {
+    const fmt = d => new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    xLabels = `<text x="${PAD.l}" y="${H-6}" font-size="9" fill="var(--text-dim)"
+      font-family="Work Sans,sans-serif">${fmt(sorted[0].ts)}</text>`;
+    if (sorted.length > 1)
+      xLabels += `<text x="${W-PAD.r}" y="${H-6}" font-size="9" fill="var(--text-dim)"
+        text-anchor="end" font-family="Work Sans,sans-serif">${fmt(sorted[sorted.length-1].ts)}</text>`;
+  }
+
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = gridLines + trendLine + dots + xLabels;
+}
+
+// Init urge log on load
+document.addEventListener('DOMContentLoaded', renderUrgeLog);
+
+// ── BALANCE WHEEL ─────────────────────────────────────────
+const WHEEL_DOMAINS = ['Family','Friends','Health','Career','Finances','Fun','Spirituality','Romance'];
+const WHEEL_KEY = 'smart_balance_wheel_v1';
+
+function getWheelVals() {
+  try { return JSON.parse(lsGet(WHEEL_KEY)) || WHEEL_DOMAINS.map(()=>5); }
+  catch(e) { return WHEEL_DOMAINS.map(()=>5); }
+}
+
+function initWheel() {
+  const sliders = document.getElementById('wheelSliders');
+  if (!sliders) return;
+  const vals = getWheelVals();
+  sliders.innerHTML = WHEEL_DOMAINS.map((d,i) => `
+    <div class="wheel-slider-row">
+      <label class="wheel-domain-label" for="ws_${i}">${d}</label>
+      <input type="range" min="1" max="10" value="${vals[i]}" id="ws_${i}"
+        oninput="onWheelSlide()">
+      <span class="wheel-slider-val" id="wv_${i}">${vals[i]}</span>
+    </div>
+  `).join('');
+  drawWheel(vals);
+  updateWheelScore(vals);
+}
+
+function onWheelSlide() {
+  const vals = WHEEL_DOMAINS.map((_,i) => parseInt(document.getElementById('ws_'+i).value));
+  vals.forEach((v,i) => { const el = document.getElementById('wv_'+i); if(el) el.textContent = v; });
+  lsSet(WHEEL_KEY, JSON.stringify(vals));
+  drawWheel(vals);
+  updateWheelScore(vals);
+}
+
+function resetWheel() {
+  const vals = WHEEL_DOMAINS.map(()=>5);
+  WHEEL_DOMAINS.forEach((_,i) => {
+    const s = document.getElementById('ws_'+i);
+    const v = document.getElementById('wv_'+i);
+    if(s) s.value = 5;
+    if(v) v.textContent = 5;
+  });
+  lsSet(WHEEL_KEY, JSON.stringify(vals));
+  drawWheel(vals);
+  updateWheelScore(vals);
+}
+
+function updateWheelScore(vals) {
+  const avg = (vals.reduce((a,v)=>a+v,0)/vals.length).toFixed(1);
+  const el = document.getElementById('wheelScore');
+  if (el) el.textContent = avg;
+}
+
+function drawWheel(vals) {
+  const svg = document.getElementById('wheelSvg');
+  if (!svg) return;
+  const n  = WHEEL_DOMAINS.length;
+  const cx = 130, cy = 130, R = 95, LR = 125;
+  const IS_LIGHT = document.documentElement.classList.contains('light');
+
+  // Compute CSS var colors by sampling computed style
+  const cs = getComputedStyle(document.documentElement);
+  const COL_FILL   = cs.getPropertyValue('--blue').trim() || '#2FB3FF';
+  const COL_STROKE = COL_FILL;
+  const COL_GRID   = cs.getPropertyValue('--border').trim() || 'rgba(110,116,190,0.18)';
+  const COL_SPOKE  = cs.getPropertyValue('--border-accent').trim() || 'rgba(110,116,190,0.36)';
+  const COL_TEXT   = cs.getPropertyValue('--text-muted').trim() || '#8E94C0';
+  const COL_VAL    = cs.getPropertyValue('--text-heading').trim() || '#ECEEF8';
+
+  let out = '';
+
+  // Grid rings (10%, 20%…100% → 10px steps)
+  [2,4,6,8,10].forEach(v => {
+    const r = (v/10)*R;
+    const pts = Array.from({length:n},(_,i)=>{
+      const a = (Math.PI*2*i/n) - Math.PI/2;
+      return `${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`;
+    }).join(' ');
+    out += `<polygon points="${pts}" fill="none" stroke="${COL_GRID}" stroke-width="1"/>`;
+  });
+
+  // Spokes
+  WHEEL_DOMAINS.forEach((_,i) => {
+    const a = (Math.PI*2*i/n) - Math.PI/2;
+    out += `<line x1="${cx}" y1="${cy}" x2="${(cx+R*Math.cos(a)).toFixed(2)}" y2="${(cy+R*Math.sin(a)).toFixed(2)}"
+      stroke="${COL_SPOKE}" stroke-width="1"/>`;
+  });
+
+  // Filled polygon
+  const polyPts = vals.map((v,i) => {
+    const a = (Math.PI*2*i/n) - Math.PI/2;
+    const r = (v/10)*R;
+    return `${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`;
+  }).join(' ');
+  out += `<polygon points="${polyPts}" fill="${COL_FILL}" fill-opacity="0.18" stroke="${COL_STROKE}" stroke-width="2" stroke-linejoin="round"/>`;
+
+  // Dot on each spoke tip (current value)
+  vals.forEach((v,i) => {
+    const a = (Math.PI*2*i/n) - Math.PI/2;
+    const r = (v/10)*R;
+    out += `<circle cx="${(cx+r*Math.cos(a)).toFixed(2)}" cy="${(cy+r*Math.sin(a)).toFixed(2)}" r="4"
+      fill="${COL_STROKE}" opacity="0.9"/>`;
+  });
+
+  // Labels
+  WHEEL_DOMAINS.forEach((d,i) => {
+    const a = (Math.PI*2*i/n) - Math.PI/2;
+    const lx = (cx + LR*Math.cos(a)).toFixed(2);
+    const ly = (cy + LR*Math.sin(a)).toFixed(2);
+    const anchor = Math.cos(a) > 0.1 ? 'start' : Math.cos(a) < -0.1 ? 'end' : 'middle';
+    out += `<text x="${lx}" y="${parseFloat(ly)+4}" font-size="9.5" font-weight="600"
+      fill="${COL_TEXT}" text-anchor="${anchor}" font-family="Work Sans,Helvetica,sans-serif">${d}</text>`;
+    // Value label on spoke
+    const vr = ((vals[i]/10)*R*0.55);
+    const vx = (cx + vr*Math.cos(a)).toFixed(2);
+    const vy = (cy + vr*Math.sin(a)).toFixed(2);
+    out += `<text x="${vx}" y="${parseFloat(vy)+4}" font-size="9" font-weight="700"
+      fill="${COL_VAL}" text-anchor="middle" font-family="Work Sans,Helvetica,sans-serif">${vals[i]}</text>`;
+  });
+
+  svg.innerHTML = out;
+}
+
+// Re-draw wheel on theme change (colors need to update)
+btn.addEventListener('click', () => setTimeout(() => {
+  const v = getWheelVals();
+  drawWheel(v);
+}, 50));
+
+document.addEventListener('DOMContentLoaded', initWheel);
+// ── SOBRIETY TRACKER ─────────────────────────────────────
+const TRACKER_KEY = 'smart_sobriety_start_v1';
+const MILESTONES = [7,30,60,90,180,365];
+
+function setTrackerDate() {
+  var d = document.getElementById('trackerDate').value;
+  if (d) { lsSet(TRACKER_KEY, d); renderTracker(); }
+}
+
+function resetTracker() {
+  if (!confirm('Reset your sobriety tracker? This cannot be undone.')) return;
+  lsRemove(TRACKER_KEY);
+  var el = document.getElementById('trackerDate');
+  if (el) el.value = '';
+  renderTracker();
+}
+
+function renderTracker() {
+  var stored = lsGet(TRACKER_KEY);
+  var display = document.getElementById('trackerDisplay');
+  var milDiv  = document.getElementById('trackerMilestones');
+  var dateEl  = document.getElementById('trackerDate');
+  if (!display) return;
+
+  if (!stored) {
+    display.innerHTML = '<div class="tracker-empty">Set your start date to begin tracking.</div>';
+    if (milDiv) milDiv.style.display = 'none';
+    return;
+  }
+
+  if (dateEl && !dateEl.value) dateEl.value = stored;
+
+  var start = new Date(stored + 'T00:00:00');
+  var now   = new Date();
+  var diff  = Math.floor((now - start) / 86400000);
+  if (diff < 0) diff = 0;
+
+  var opts = { year:'numeric', month:'long', day:'numeric' };
+  var since = start.toLocaleDateString('en-US', opts);
+
+  display.innerHTML = '<div class="tracker-count">'
+    + '<span class="tracker-num">' + diff + '</span>'
+    + '<span class="tracker-unit">day' + (diff === 1 ? '' : 's') + '</span>'
+    + '</div>'
+    + '<div class="tracker-since">Since ' + since + '</div>';
+
+  if (milDiv) {
+    milDiv.style.display = 'flex';
+    var nextIdx = MILESTONES.findIndex(function(m) { return m > diff; });
+    milDiv.innerHTML = MILESTONES.map(function(m, i) {
+      var cls = 'milestone';
+      if (diff >= m) cls += ' achieved';
+      else if (i === nextIdx) cls += ' next';
+      return '<span class="' + cls + '">' + (diff >= m ? '✓ ' : '') + m + ' days' + (i === nextIdx && diff < m ? ' (' + (m - diff) + ' to go)' : '') + '</span>';
+    }).join('');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderTracker);
+setInterval(renderTracker, 60000);
+
+// ── BOX BREATHING ─────────────────────────────────────────
+var boxInterval = null;
+var boxPhaseIdx = 0;
+var boxSecond   = 0;
+var boxRound    = 0;
+
+var BOX_PHASES = [
+  { name: 'Inhale',  cue: 'breathe in slowly',  dur: 4, color: 'var(--blue)' },
+  { name: 'Hold',    cue: 'hold gently',         dur: 4, color: 'var(--amber)' },
+  { name: 'Exhale',  cue: 'breathe out slowly',  dur: 4, color: 'var(--sage)' },
+  { name: 'Hold',    cue: 'rest here',            dur: 4, color: 'var(--rose)' }
+];
+
+var BOX_PERIMETER = 640;
+
+function startBox() {
+  if (boxInterval) return;
+  boxPhaseIdx = 0; boxSecond = 0; boxRound = 1;
+  updateBoxDisplay();
+  boxInterval = setInterval(boxTick, 1000);
+  var btn = document.getElementById('btnBoxStart');
+  if (btn) btn.style.opacity = '0.4';
+}
+
+function stopBox() {
+  clearInterval(boxInterval);
+  boxInterval = null;
+  boxPhaseIdx = 0; boxSecond = 0; boxRound = 0;
+  var phase = document.getElementById('boxPhase');
+  var count = document.getElementById('boxCount');
+  var cue   = document.getElementById('boxCue');
+  var prog  = document.getElementById('boxProgress');
+  var rounds = document.getElementById('boxRounds');
+  var btn   = document.getElementById('btnBoxStart');
+  if (phase)  phase.textContent  = 'Ready';
+  if (count)  count.textContent  = '4';
+  if (cue)    cue.textContent    = 'Press Start';
+  if (prog)   { prog.style.stroke = 'var(--blue)'; prog.style.strokeDashoffset = BOX_PERIMETER; }
+  if (rounds) rounds.textContent = '';
+  if (btn)    btn.style.opacity  = '1';
+}
+
+function updateBoxDisplay() {
+  var p     = BOX_PHASES[boxPhaseIdx];
+  var remaining = p.dur - boxSecond;
+  var phase  = document.getElementById('boxPhase');
+  var count  = document.getElementById('boxCount');
+  var cue    = document.getElementById('boxCue');
+  var prog   = document.getElementById('boxProgress');
+  var rounds = document.getElementById('boxRounds');
+  if (phase)  phase.textContent  = p.name;
+  if (count)  count.textContent  = remaining;
+  if (cue)    cue.textContent    = p.cue;
+  if (prog) {
+    prog.style.stroke = p.color;
+    var progress = (boxPhaseIdx * 4 + boxSecond) / 16;
+    prog.style.strokeDashoffset = BOX_PERIMETER * (1 - progress);
+  }
+  if (rounds) rounds.textContent = 'Round ' + boxRound + ' of 3';
+}
+
+function boxTick() {
+  boxSecond++;
+  var p = BOX_PHASES[boxPhaseIdx];
+  if (boxSecond >= p.dur) {
+    boxSecond = 0;
+    boxPhaseIdx = (boxPhaseIdx + 1) % 4;
+    if (boxPhaseIdx === 0) {
+      boxRound++;
+      if (boxRound > 3) { stopBox(); return; }
+    }
+  }
+  updateBoxDisplay();
+}
+
+// ── TAB SWITCH ────────────────────────────────────────────
+function switchTab(name) {
+  ['box','ground'].forEach(function(t) {
+    var btn   = document.querySelector('[onclick="switchTab('' + t + '')"]');
+    var panel = document.getElementById('panel-' + t);
+    var active = (t === name);
+    if (btn)   btn.classList.toggle('active', active);
+    if (panel) panel.classList.toggle('active', active);
+  });
+  if (name !== 'box') stopBox();
+}
+
+// ── URGE SURFING ──────────────────────────────────────────
+var surfStep      = -1;
+var surfTimer     = null;
+var surfSeconds   = 0;
+var SURF_TOTAL    = 6;
+var waveInterval  = null;
+
+function surfNext() {
+  surfStep++;
+  if (surfStep >= SURF_TOTAL) {
+    surfFinish();
+    return;
+  }
+
+  for (var i = 0; i < SURF_TOTAL; i++) {
+    var el = document.getElementById('surf-' + i);
+    if (!el) continue;
+    el.classList.remove('active', 'done');
+    if (i < surfStep)  el.classList.add('done');
+    if (i === surfStep) el.classList.add('active');
+  }
+
+  var btn    = document.getElementById('btnSurfNext');
+  var status = document.getElementById('surfStatus');
+  if (btn) btn.textContent = surfStep < SURF_TOTAL - 1 ? 'Next' : 'Complete';
+
+  var labels = ['Noticed. Ready to locate it?', 'Located. Ready to describe it?',
+    'Described. Ready to watch the wave?', 'Breathing through. Nearly there.',
+    'Almost done — final step.', ''];
+  if (status && labels[surfStep] !== undefined) status.textContent = labels[surfStep];
+
+  // Step 3 = wave animation
+  if (surfStep === 3) {
+    surfSeconds = 0;
+    var fill = document.getElementById('surfWaveFill');
+    var timerEl = document.getElementById('surfTimer');
+    clearInterval(waveInterval);
+    waveInterval = setInterval(function() {
+      surfSeconds++;
+      var mins = Math.floor(surfSeconds / 60);
+      var secs = surfSeconds % 60;
+      if (timerEl) timerEl.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+      // Wave: rises to ~60% over 3 min then recedes
+      var pct;
+      if (surfSeconds <= 90)       pct = (surfSeconds / 90) * 100;
+      else if (surfSeconds <= 150) pct = 100 - ((surfSeconds - 90) / 60) * 40;
+      else                          pct = Math.max(0, 60 - ((surfSeconds - 150) / 60) * 60);
+      if (fill) fill.style.width = Math.min(100, pct) + '%';
+    }, 1000);
+  } else {
+    clearInterval(waveInterval);
+  }
+}
+
+function surfFinish() {
+  clearInterval(waveInterval);
+  var complete = document.getElementById('surfComplete');
+  var btn      = document.getElementById('btnSurfNext');
+  var status   = document.getElementById('surfStatus');
+  for (var i = 0; i < SURF_TOTAL; i++) {
+    var el = document.getElementById('surf-' + i);
+    if (el) { el.classList.remove('active'); el.classList.add('done'); }
+  }
+  if (complete) complete.style.display = 'block';
+  if (btn)      btn.style.display = 'none';
+  if (status)   status.textContent = 'Practice complete.';
+}
+
+function surfReset() {
+  clearInterval(waveInterval);
+  surfStep = -1;
+  for (var i = 0; i < SURF_TOTAL; i++) {
+    var el = document.getElementById('surf-' + i);
+    if (el) {
+      el.classList.remove('active', 'done');
+      if (i === 0) el.classList.add('active');
+    }
+  }
+  var fill     = document.getElementById('surfWaveFill');
+  var timerEl  = document.getElementById('surfTimer');
+  var complete = document.getElementById('surfComplete');
+  var btn      = document.getElementById('btnSurfNext');
+  var status   = document.getElementById('surfStatus');
+  if (fill)     { fill.style.width = '0%'; fill.style.transition = 'none'; }
+  if (timerEl)  timerEl.textContent = '0:00';
+  if (complete) complete.style.display = 'none';
+  if (btn)      { btn.style.display = 'inline-flex'; btn.textContent = 'Start'; }
+  if (status)   status.textContent = 'Ready when you are.';
+}
+
+// ── EXPORT / IMPORT ──────────────────────────────────────
+const BACKUP_KEYS = [
+  'smartTheme',
+  'smart_urge_log_v1',
+  'smart_balance_wheel_v1',
+  'smart_sobriety_start_v1'
+];
+
+function exportData() {
+  const payload = {
+    version: '1.0',
+    exported: new Date().toISOString(),
+    data: {}
+  };
+  BACKUP_KEYS.forEach(k => {
+    const raw = lsGet(k);
+    if (raw !== null) {
+      try { payload.data[k] = JSON.parse(raw); }
+      catch(e) { payload.data[k] = raw; }
+    }
+  });
+  const json = JSON.stringify(payload, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `smart-recovery-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  setBackupStatus('Exported.');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const obj = JSON.parse(e.target.result);
+      if (!obj.version || !obj.data || typeof obj.data !== 'object') {
+        setBackupStatus('Invalid backup file.');
+        return;
+      }
+      BACKUP_KEYS.forEach(k => {
+        const val = obj.data[k];
+        if (val !== undefined) {
+          lsSet(k, typeof val === 'string' ? val : JSON.stringify(val));
+        }
+      });
+      // Sync theme UI to restored value
+      const restoredTheme = lsGet('smartTheme');
+      if (restoredTheme === 'light') {
+        html.classList.add('light');
+        label.textContent = 'Dark mode';
+      } else {
+        html.classList.remove('light');
+        label.textContent = 'Light mode';
+      }
+      renderTracker();
+      renderUrgeLog();
+      initWheel();
+      setBackupStatus('Restored successfully.');
+    } catch(err) {
+      setBackupStatus('Failed — file may be corrupt.');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function setBackupStatus(msg) {
+  const el = document.getElementById('backupStatus');
+  if (!el) return;
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ''; }, 4000);
+}
+
+</script>
+
+
+</body>
+</html>
