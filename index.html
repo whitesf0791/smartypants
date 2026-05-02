@@ -1091,6 +1091,64 @@
   .g-smell .ground-sense-label { color: var(--rose); }
   .g-taste .ground-sense-label { color: var(--text-muted); }
 
+  /* ── WORKSHEET SHARED ──────────────────────────────── */
+  .ws-interactive { margin-top: 22px; }
+  .ws-entry {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .ws-entry-meta { color: var(--text-dim); font-size: 11px; }
+  .ws-entry-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-dim);
+    margin-top: 8px; margin-bottom: 3px;
+    font-family: var(--font-body);
+  }
+  .ws-entry-body {
+    color: var(--text-muted);
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .ws-save-note {
+    font-size: 12px; color: var(--text-dim);
+    margin-top: 8px; line-height: 1.5;
+  }
+
+  /* CBA */
+  .cba-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 600px) { .cba-grid { grid-template-columns: 1fr; } }
+  .label-rose { color: var(--rose); }
+  .label-sage { color: var(--sage); }
+
+  /* Change Plan */
+  .cp-scale-row { display: flex; align-items: center; gap: 12px; }
+  .cp-scale-row input[type=range] { flex: 1; accent-color: var(--amber); }
+  .cp-scale-val {
+    font-size: 18px; font-weight: 700; color: var(--amber);
+    font-family: var(--font-display); min-width: 24px; text-align: center;
+  }
+  .review-notice {
+    background: var(--amber-dim);
+    border: 1px solid rgba(254,228,73,0.25);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 13px; font-weight: 600;
+    color: var(--amber);
+    margin-bottom: 14px;
+    display: none;
+  }
+  html.light .review-notice { border-color: rgba(41,47,124,0.2); }
+
   /* ── BACKUP BAR ─────────────────────────────────────── */
   .backup-bar {
     display: flex;
@@ -1388,6 +1446,34 @@
           <li>What's one small action this reflection points to?</li>
         </ul>
       </div>
+
+      <div class="ws-interactive" id="cbaInteractive">
+        <div class="section-label">Your CBA</div>
+        <div class="form-field" style="margin-bottom:14px;">
+          <label class="form-label" for="cba_behavior">Behavior Being Analyzed</label>
+          <input type="text" class="form-input" id="cba_behavior" placeholder="e.g. drinking alcohol">
+        </div>
+        <div class="cba-grid">
+          <div class="form-field">
+            <label class="form-label label-rose" for="cba_b_do">Benefits of Doing It</label>
+            <textarea class="form-textarea" id="cba_b_do" rows="4" placeholder="One per line. Note ST or LT after each."></textarea>
+          </div>
+          <div class="form-field">
+            <label class="form-label label-rose" for="cba_c_do">Costs of Doing It</label>
+            <textarea class="form-textarea" id="cba_c_do" rows="4" placeholder="One per line. Note ST or LT after each."></textarea>
+          </div>
+          <div class="form-field">
+            <label class="form-label label-sage" for="cba_b_stop">Benefits of Stopping</label>
+            <textarea class="form-textarea" id="cba_b_stop" rows="4" placeholder="One per line. Note ST or LT after each."></textarea>
+          </div>
+          <div class="form-field">
+            <label class="form-label label-sage" for="cba_c_stop">Costs of Stopping</label>
+            <textarea class="form-textarea" id="cba_c_stop" rows="4" placeholder="One per line. Note ST or LT after each."></textarea>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveCbaEntry()">Save CBA</button>
+        <div class="urge-entries-list" id="cbaEntriesList" style="margin-top:16px;"></div>
+      </div>
     </div>
   </div>
 
@@ -1444,6 +1530,38 @@
           <li>What would change if you put recovery first?</li>
           <li>How can your values help you stay grounded during a setback or urge?</li>
         </ul>
+      </div>
+
+      <div class="ws-interactive" id="valuesInteractive">
+        <div class="section-label">Your Values</div>
+        <div class="form-field" style="margin-bottom:14px;">
+          <label class="form-label" for="val_behavior">Behavior Currently Getting Top Priority</label>
+          <input type="text" class="form-input" id="val_behavior" placeholder="e.g. alcohol">
+        </div>
+        <div style="display:grid;gap:8px;margin-bottom:14px;">
+          <div class="form-field">
+            <label class="form-label" for="val_1">Value 1 — Most Important</label>
+            <input type="text" class="form-input" id="val_1" placeholder="">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="val_2">Value 2</label>
+            <input type="text" class="form-input" id="val_2" placeholder="">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="val_3">Value 3</label>
+            <input type="text" class="form-input" id="val_3" placeholder="">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="val_4">Value 4</label>
+            <input type="text" class="form-input" id="val_4" placeholder="">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="val_5">Value 5</label>
+            <input type="text" class="form-input" id="val_5" placeholder="">
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveValues()">Save Values</button>
+        <p class="ws-save-note">Saves over the previous version. Export JSON before major revisions to keep a history.</p>
       </div>
     </div>
   </div>
@@ -1520,6 +1638,53 @@
           <li>What might get in your way, and how could you handle it?</li>
           <li>How will you know it's time to revise or restart your plan?</li>
         </ul>
+      </div>
+
+      <div class="ws-interactive" id="cpInteractive">
+        <div class="section-label">Your Change Plan</div>
+        <div id="cpReviewNotice" class="review-notice"></div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="cp_changes">Changes I Want to Make</label>
+          <textarea class="form-textarea" id="cp_changes" rows="3" placeholder="Specific, concrete changes..."></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px;">
+          <div class="form-field">
+            <label class="form-label" for="cp_importance">Importance (1–10)</label>
+            <div class="cp-scale-row">
+              <input type="range" min="1" max="10" value="5" id="cp_importance" oninput="document.getElementById('cp_importance_val').textContent=this.value">
+              <span class="cp-scale-val" id="cp_importance_val">5</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="cp_confidence">Confidence (1–10)</label>
+            <div class="cp-scale-row">
+              <input type="range" min="1" max="10" value="5" id="cp_confidence" oninput="document.getElementById('cp_confidence_val').textContent=this.value">
+              <span class="cp-scale-val" id="cp_confidence_val">5</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="cp_reasons">My Most Important Reasons</label>
+          <textarea class="form-textarea" id="cp_reasons" rows="3" placeholder="Why does this change matter to you personally?"></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="cp_steps">Steps I Plan to Take</label>
+          <textarea class="form-textarea" id="cp_steps" rows="3" placeholder="Small, actionable steps for the next days or weeks..."></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="cp_support">Who Can Help Me and How</label>
+          <textarea class="form-textarea" id="cp_support" rows="2" placeholder="Specific people and what kind of help each can give..."></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="cp_obstacles">Signs of Progress / Potential Obstacles</label>
+          <textarea class="form-textarea" id="cp_obstacles" rows="2" placeholder="What will tell you it's working? What could derail it?"></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:14px;">
+          <label class="form-label" for="cp_review">Review Date</label>
+          <input type="date" class="tracker-date-input" id="cp_review">
+        </div>
+        <button class="btn-primary" onclick="saveCp()">Save Plan</button>
+        <p class="ws-save-note">Saves over the previous version. Export JSON before major revisions to keep a history.</p>
       </div>
     </div>
   </div>
@@ -2239,6 +2404,32 @@
           <li>What's one situation this week where you could try the ABC tool?</li>
         </ul>
       </div>
+
+      <div class="ws-interactive" id="abcInteractive">
+        <div class="section-label">Your ABC Log</div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="abc_a">A — Activating Event</label>
+          <input type="text" class="form-input" id="abc_a" placeholder="What happened just before the urge or reaction?">
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="abc_b">B — Beliefs</label>
+          <textarea class="form-textarea" id="abc_b" rows="3" placeholder="What were you telling yourself?"></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="abc_c">C — Consequences</label>
+          <textarea class="form-textarea" id="abc_c" rows="2" placeholder="How did you feel? What was the urge?"></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="abc_d">D — Dispute</label>
+          <textarea class="form-textarea" id="abc_d" rows="2" placeholder="Is that belief accurate or helpful?"></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:14px;">
+          <label class="form-label" for="abc_e">E — Effective New Belief</label>
+          <textarea class="form-textarea" id="abc_e" rows="2" placeholder="A more balanced, honest thought..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="saveAbcEntry()">Save Entry</button>
+        <div class="urge-entries-list" id="abcEntriesList" style="margin-top:16px;"></div>
+      </div>
     </div>
   </div>
 
@@ -2375,6 +2566,32 @@
           <li>What's one small change you're willing to try this week?</li>
           <li>How might you use these questions in future moments of stress or uncertainty?</li>
         </ul>
+      </div>
+
+      <div class="ws-interactive" id="fiveqInteractive">
+        <div class="section-label">Your Check-In</div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="fq_1">1. What do I want for my future?</label>
+          <textarea class="form-textarea" id="fq_1" rows="2" placeholder="Goals, values, the life you want..."></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="fq_2">2. What am I doing to get what I want?</label>
+          <textarea class="form-textarea" id="fq_2" rows="2" placeholder="Current actions, helpful or not..."></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="fq_3">3. How do I feel about what I'm doing now?</label>
+          <textarea class="form-textarea" id="fq_3" rows="2" placeholder="Be honest..."></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:10px;">
+          <label class="form-label" for="fq_4">4. What could I do differently?</label>
+          <textarea class="form-textarea" id="fq_4" rows="2" placeholder="One or two small changes..."></textarea>
+        </div>
+        <div class="form-field" style="margin-bottom:14px;">
+          <label class="form-label" for="fq_5">5. How would changing what I do make me feel?</label>
+          <textarea class="form-textarea" id="fq_5" rows="2" placeholder="Imagine taking even a small step forward..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="saveFiveQEntry()">Save Check-In</button>
+        <div class="urge-entries-list" id="fiveqEntriesList" style="margin-top:16px;"></div>
       </div>
     </div>
   </div>
@@ -3385,12 +3602,274 @@ function surfReset() {
   if (status)   status.textContent = 'Ready when you are.';
 }
 
+// ── ABC LOG ──────────────────────────────────────────────
+const ABC_KEY = 'smart_abc_log_v1';
+
+function getAbcLog() {
+  try { return JSON.parse(lsGet(ABC_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function saveAbcEntry() {
+  const a = document.getElementById('abc_a').value.trim();
+  const b = document.getElementById('abc_b').value.trim();
+  const c = document.getElementById('abc_c').value.trim();
+  const d = document.getElementById('abc_d').value.trim();
+  const e = document.getElementById('abc_e').value.trim();
+  if (!a) {
+    const el = document.getElementById('abc_a');
+    if (el) { el.focus(); el.style.borderColor = 'var(--rose)'; setTimeout(() => { el.style.borderColor = ''; }, 1500); }
+    return;
+  }
+  const entries = getAbcLog();
+  entries.push({ id: Date.now(), ts: new Date().toISOString(), a, b, c, d, e });
+  lsSet(ABC_KEY, JSON.stringify(entries));
+  ['abc_a','abc_b','abc_c','abc_d','abc_e'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderAbcLog();
+}
+
+function deleteAbcEntry(id) {
+  lsSet(ABC_KEY, JSON.stringify(getAbcLog().filter(e => e.id !== parseInt(id))));
+  renderAbcLog();
+}
+
+function renderAbcLog() {
+  const list = document.getElementById('abcEntriesList');
+  if (!list) return;
+  const entries = getAbcLog();
+  if (!entries.length) { list.innerHTML = ''; return; }
+  const LABELS = { a:'A — Event', b:'B — Beliefs', c:'C — Consequences', d:'D — Dispute', e:'E — New Belief' };
+  list.innerHTML = [...entries].reverse().slice(0, 20).map(entry => {
+    const dt = new Date(entry.ts);
+    const date = dt.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    const time = dt.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+    const rows = ['a','b','c','d','e'].filter(k => entry[k])
+      .map(k => `<div class="ws-entry-label">${LABELS[k]}</div><div class="ws-entry-body">${esc(entry[k])}</div>`)
+      .join('');
+    return `<div class="ws-entry">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+        <div class="ws-entry-meta">${date} · ${time}</div>
+        <button class="btn-delete" onclick="deleteAbcEntry(${entry.id})" title="Delete">✕</button>
+      </div>${rows}</div>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', renderAbcLog);
+
+// ── CBA LOG ──────────────────────────────────────────────
+const CBA_KEY = 'smart_cba_v1';
+
+function getCbaLog() {
+  try { return JSON.parse(lsGet(CBA_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function saveCbaEntry() {
+  const behavior = document.getElementById('cba_behavior').value.trim();
+  if (!behavior) {
+    const el = document.getElementById('cba_behavior');
+    if (el) { el.focus(); el.style.borderColor = 'var(--rose)'; setTimeout(() => { el.style.borderColor = ''; }, 1500); }
+    return;
+  }
+  const bDo   = document.getElementById('cba_b_do').value.trim();
+  const cDo   = document.getElementById('cba_c_do').value.trim();
+  const bStop = document.getElementById('cba_b_stop').value.trim();
+  const cStop = document.getElementById('cba_c_stop').value.trim();
+  const entries = getCbaLog();
+  entries.push({ id: Date.now(), ts: new Date().toISOString(), behavior, bDo, cDo, bStop, cStop });
+  lsSet(CBA_KEY, JSON.stringify(entries));
+  ['cba_behavior','cba_b_do','cba_c_do','cba_b_stop','cba_c_stop'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderCbaLog();
+}
+
+function deleteCbaEntry(id) {
+  lsSet(CBA_KEY, JSON.stringify(getCbaLog().filter(e => e.id !== parseInt(id))));
+  renderCbaLog();
+}
+
+function renderCbaLog() {
+  const list = document.getElementById('cbaEntriesList');
+  if (!list) return;
+  const entries = getCbaLog();
+  if (!entries.length) { list.innerHTML = ''; return; }
+  list.innerHTML = [...entries].reverse().slice(0, 10).map(entry => {
+    const dt = new Date(entry.ts);
+    const date = dt.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    const time = dt.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+    const quad = [
+      ['Benefits of Doing It',   entry.bDo],
+      ['Costs of Doing It',      entry.cDo],
+      ['Benefits of Stopping',   entry.bStop],
+      ['Costs of Stopping',      entry.cStop]
+    ].filter(([, v]) => v)
+     .map(([l, v]) => `<div class="ws-entry-label">${l}</div><div class="ws-entry-body">${esc(v)}</div>`)
+     .join('');
+    return `<div class="ws-entry">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+        <div>
+          <div class="ws-entry-meta">${date} · ${time}</div>
+          <div style="font-weight:700;font-size:14px;color:var(--text-strong);margin-top:2px;">${esc(entry.behavior)}</div>
+        </div>
+        <button class="btn-delete" onclick="deleteCbaEntry(${entry.id})" title="Delete">✕</button>
+      </div>${quad}</div>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', renderCbaLog);
+
+// ── CHANGE PLAN ───────────────────────────────────────────
+const CP_KEY = 'smart_change_plan_v1';
+
+function getCp() {
+  try { return JSON.parse(lsGet(CP_KEY) || 'null'); } catch(e) { return null; }
+}
+
+function loadCp() {
+  const cp = getCp();
+  if (!cp) return;
+  ['cp_changes','cp_reasons','cp_steps','cp_support','cp_obstacles','cp_review'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && cp[id] !== undefined) el.value = cp[id];
+  });
+  ['cp_importance','cp_confidence'].forEach(id => {
+    const slider = document.getElementById(id);
+    const valEl  = document.getElementById(id + '_val');
+    if (slider && cp[id] !== undefined) { slider.value = cp[id]; if (valEl) valEl.textContent = cp[id]; }
+  });
+  checkCpReview(cp);
+}
+
+function saveCp() {
+  const cp = {
+    cp_changes:    document.getElementById('cp_changes').value.trim(),
+    cp_importance: document.getElementById('cp_importance').value,
+    cp_confidence: document.getElementById('cp_confidence').value,
+    cp_reasons:    document.getElementById('cp_reasons').value.trim(),
+    cp_steps:      document.getElementById('cp_steps').value.trim(),
+    cp_support:    document.getElementById('cp_support').value.trim(),
+    cp_obstacles:  document.getElementById('cp_obstacles').value.trim(),
+    cp_review:     document.getElementById('cp_review').value,
+    saved:         new Date().toISOString()
+  };
+  lsSet(CP_KEY, JSON.stringify(cp));
+  checkCpReview(cp);
+  const saveBtn = document.querySelector('#cpInteractive .btn-primary');
+  if (saveBtn) { saveBtn.textContent = 'Saved!'; setTimeout(() => { saveBtn.textContent = 'Save Plan'; }, 2000); }
+}
+
+function checkCpReview(cp) {
+  const notice = document.getElementById('cpReviewNotice');
+  if (!notice) return;
+  if (!cp || !cp.cp_review) { notice.style.display = 'none'; return; }
+  const reviewDate = new Date(cp.cp_review + 'T00:00:00');
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  if (today >= reviewDate) {
+    const fmt = reviewDate.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+    notice.textContent = today > reviewDate
+      ? `Your Change Plan review date was ${fmt}. Time to revisit it.`
+      : `Your Change Plan review date is today (${fmt}).`;
+    notice.style.display = 'block';
+  } else {
+    notice.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadCp);
+
+// ── VALUES ────────────────────────────────────────────────
+const VAL_KEY = 'smart_values_v1';
+
+function getValues() {
+  try { return JSON.parse(lsGet(VAL_KEY) || 'null'); } catch(e) { return null; }
+}
+
+function loadValues() {
+  const vals = getValues();
+  if (!vals) return;
+  const bEl = document.getElementById('val_behavior');
+  if (bEl && vals.behavior !== undefined) bEl.value = vals.behavior;
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('val_' + i);
+    if (el && vals['v' + i] !== undefined) el.value = vals['v' + i];
+  }
+}
+
+function saveValues() {
+  const data = {
+    behavior: (document.getElementById('val_behavior').value || '').trim(),
+    saved: new Date().toISOString()
+  };
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('val_' + i);
+    data['v' + i] = el ? el.value.trim() : '';
+  }
+  lsSet(VAL_KEY, JSON.stringify(data));
+  const saveBtn = document.querySelector('#valuesInteractive .btn-primary');
+  if (saveBtn) { saveBtn.textContent = 'Saved!'; setTimeout(() => { saveBtn.textContent = 'Save Values'; }, 2000); }
+}
+
+document.addEventListener('DOMContentLoaded', loadValues);
+
+// ── FIVE QUESTIONS ────────────────────────────────────────
+const FQ_KEY = 'smart_five_q_log_v1';
+
+function getFiveQLog() {
+  try { return JSON.parse(lsGet(FQ_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function saveFiveQEntry() {
+  const answers = [1,2,3,4,5].map(i => {
+    const el = document.getElementById('fq_' + i); return el ? el.value.trim() : '';
+  });
+  if (answers.every(a => !a)) return;
+  const entries = getFiveQLog();
+  entries.push({ id: Date.now(), ts: new Date().toISOString(), answers });
+  lsSet(FQ_KEY, JSON.stringify(entries));
+  [1,2,3,4,5].forEach(i => { const el = document.getElementById('fq_' + i); if (el) el.value = ''; });
+  renderFiveQLog();
+}
+
+function deleteFiveQEntry(id) {
+  lsSet(FQ_KEY, JSON.stringify(getFiveQLog().filter(e => e.id !== parseInt(id))));
+  renderFiveQLog();
+}
+
+function renderFiveQLog() {
+  const list = document.getElementById('fiveqEntriesList');
+  if (!list) return;
+  const entries = getFiveQLog();
+  if (!entries.length) { list.innerHTML = ''; return; }
+  const LABELS = ['Future','Doing','Feeling','Different','Result'];
+  list.innerHTML = [...entries].reverse().slice(0, 5).map(entry => {
+    const dt = new Date(entry.ts);
+    const date = dt.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+    const time = dt.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+    const rows = entry.answers.map((ans, i) =>
+      ans ? `<div class="ws-entry-label">Q${i+1} — ${LABELS[i]}</div><div class="ws-entry-body">${esc(ans)}</div>` : ''
+    ).filter(Boolean).join('');
+    return `<div class="ws-entry">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+        <div class="ws-entry-meta">${date} · ${time}</div>
+        <button class="btn-delete" onclick="deleteFiveQEntry(${entry.id})" title="Delete">✕</button>
+      </div>${rows}</div>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', renderFiveQLog);
+
 // ── EXPORT / IMPORT ──────────────────────────────────────
 const BACKUP_KEYS = [
   'smartTheme',
   'smart_urge_log_v1',
   'smart_balance_wheel_v1',
-  'smart_sobriety_start_v1'
+  'smart_sobriety_start_v1',
+  'smart_abc_log_v1',
+  'smart_cba_v1',
+  'smart_change_plan_v1',
+  'smart_values_v1',
+  'smart_five_q_log_v1'
 ];
 
 function exportData() {
@@ -3446,6 +3925,11 @@ function importData(event) {
       renderTracker();
       renderUrgeLog();
       initWheel();
+      renderAbcLog();
+      renderCbaLog();
+      renderFiveQLog();
+      loadCp();
+      loadValues();
       setBackupStatus('Restored successfully.');
     } catch(err) {
       setBackupStatus('Failed — file may be corrupt.');
