@@ -123,54 +123,49 @@
     line-height: 1.65;
     min-height: 100vh;
     font-weight: 400;
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0));
   }
 
   /* ── HEADER ── */
   header {
     background: var(--bg-card);
     border-bottom: 1px solid var(--border);
-    padding: 40px 48px 36px;
+    padding: 10px 20px;
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
   header::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 4px;
+    height: 3px;
     background: linear-gradient(90deg, #1A1E51, #3942B0 45%, #FEE449);
   }
+  .header-left { display: flex; flex-direction: column; }
   .header-label {
-    font-size: 11px;
-    letter-spacing: 0.18em;
+    font-size: 9px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--amber);
     font-family: var(--font-body);
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 1px;
   }
   header h1 {
     font-family: var(--font-display);
-    font-size: clamp(26px, 4vw, 44px);
+    font-size: 17px;
     font-weight: 700;
     color: var(--text-heading);
-    line-height: 1.15;
-    margin-bottom: 14px;
-    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0;
+    letter-spacing: -0.01em;
   }
-  header p {
-    color: var(--text-muted);
-    font-size: 15px;
-    max-width: 680px;
-    font-weight: 400;
-    line-height: 1.6;
-  }
-  .program-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 22px;
-  }
+  header p { display: none; }
+  .program-badges { display: none; }
   .badge {
     font-size: 11px;
     font-family: var(--font-body);
@@ -186,34 +181,44 @@
   .badge-blue  { color: var(--blue);  border-color: var(--blue);  background: var(--blue-dim); }
   .badge-sage  { color: var(--sage);  border-color: var(--sage);  background: var(--sage-dim); }
 
-  /* ── NAV ── */
+  /* ── NAV — bottom tab bar ── */
   nav {
     background: var(--bg-card);
-    border-bottom: 1px solid var(--border);
-    padding: 0 48px;
-    position: sticky;
-    top: 0;
+    border-top: 1px solid var(--border);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
-  nav ul { list-style: none; display: flex; flex-wrap: wrap; }
+  html.light nav { box-shadow: 0 -1px 4px rgba(0,0,0,0.08); }
+  nav ul { list-style: none; display: flex; max-width: 640px; margin: 0 auto; }
+  nav li { flex: 1; }
   nav a {
-    display: block;
-    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 9px 4px 7px;
+    width: 100%;
     color: var(--text-dim);
     text-decoration: none;
-    font-size: 12px;
+    font-size: 9px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    border-bottom: 3px solid transparent;
-    transition: color 0.2s, border-color 0.2s;
+    border-top: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
     white-space: nowrap;
   }
-  nav a:hover { color: var(--text); border-color: var(--border-accent); }
-  nav a.p1:hover { color: var(--amber); border-color: var(--amber); }
-  nav a.p2:hover { color: var(--rose);  border-color: var(--rose); }
-  nav a.p3:hover { color: var(--blue);  border-color: var(--blue); }
-  nav a.p4:hover { color: var(--sage);  border-color: var(--sage); }
+  nav a svg { width: 20px; height: 20px; flex-shrink: 0; }
+  nav a:hover                    { color: var(--text); }
+  nav a.p1:hover                 { color: var(--amber); border-color: var(--amber); }
+  nav a.p2:hover                 { color: var(--rose);  border-color: var(--rose); }
+  nav a.p3:hover                 { color: var(--blue);  border-color: var(--blue); }
+  nav a.p4:hover                 { color: var(--sage);  border-color: var(--sage); }
   nav a.nav-active               { color: var(--text-heading); border-color: var(--border-accent); }
   nav a.nav-active.p1            { color: var(--amber); border-color: var(--amber); }
   nav a.nav-active.p2            { color: var(--rose);  border-color: var(--rose); }
@@ -601,16 +606,15 @@
 
   /* ── THEME TOGGLE ── */
   .theme-toggle {
-    position: fixed; bottom: 24px; right: 24px; z-index: 200;
-    display: flex; align-items: center; gap: 10px;
-    background: var(--bg-card);
+    display: flex; align-items: center; gap: 8px;
+    background: transparent;
     border: 1px solid var(--border);
     border-radius: 40px;
-    padding: 8px 14px 8px 10px;
+    padding: 6px 10px 6px 8px;
     cursor: pointer;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s;
     user-select: none;
+    flex-shrink: 0;
   }
   .theme-toggle:hover { border-color: var(--border-accent); }
 
@@ -647,10 +651,9 @@
   footer a:hover { text-decoration: underline; }
 
   @media (max-width: 700px) {
-    header, nav, footer { padding-left: 20px; padding-right: 20px; }
-    .container { padding: 0 20px; }
-    nav a { padding: 12px 10px; font-size: 11px; }
-    .tool-card-header, .tool-body { padding: 16px 16px; }
+    footer { padding-left: 20px; padding-right: 20px; }
+    .container { padding: 0 16px; }
+    .tool-card-header, .tool-body { padding: 14px 16px; }
     .point-number { font-size: 52px; }
   }
 
@@ -1266,8 +1269,9 @@
   @media print {
     nav, .backup-bar, .btn-delete, .btn-primary, .btn-backup,
     .btn-box, .btn-surf, .theme-toggle, .breath-tabs,
-    .surf-controls, .box-btn-row, .program-badges { display: none !important; }
+    .surf-controls, .box-btn-row { display: none !important; }
     header::before { display: none; }
+    body { padding-bottom: 0 !important; }
     body { background: #fff !important; color: #000 !important; font-size: 12pt; }
     .bg-card, .bg-card2, .tool-card, .overview-card,
     .ws-entry, .urge-entry, .example-block { background: #fff !important; border-color: #ccc !important; box-shadow: none !important; }
@@ -1284,29 +1288,39 @@
 <body>
 
 <header>
-  <div class="container">
-    <div class="header-label">Self-Management and Recovery Training</div>
-    <h1>SMART Recovery<br>Complete Toolbox</h1>
-    <p>All 14 participant tools and worksheets — consolidated from smartrecovery.org/toolbox into a single reference document. Organized by the 4-Point Program.</p>
-    <div class="program-badges">
-      <span class="badge badge-amber">Point 1 — Build &amp; Maintain Motivation</span>
-      <span class="badge badge-rose">Point 2 — Cope with Urges</span>
-      <span class="badge badge-blue">Point 3 — Manage Thoughts &amp; Feelings</span>
-      <span class="badge badge-sage">Point 4 — Live a Balanced Life</span>
-    </div>
+  <div class="header-left">
+    <div class="header-label">SMART Recovery</div>
+    <h1>Recovery Toolbox</h1>
   </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+    <div class="toggle-track"><div class="toggle-knob"></div></div>
+    <span class="toggle-label" id="toggleLabel">Light</span>
+  </button>
 </header>
 
-<nav>
-  <div class="container">
-    <ul>
-      <li><a href="javascript:void(0)" class="p2 nav-active" onclick="showPage('page-rightnow')" data-page="page-rightnow">Right Now</a></li>
-      <li><a href="javascript:void(0)" class="p1" onclick="showPage('page-worksheets')" data-page="page-worksheets">Worksheets</a></li>
-      <li><a href="javascript:void(0)" class="p4" onclick="showPage('page-progress')" data-page="page-progress">Progress</a></li>
-      <li><a href="javascript:void(0)" class="p3" onclick="showPage('page-learn')" data-page="page-learn">Learn</a></li>
-      <li><a href="javascript:void(0)" class="plapse" onclick="showPage('page-slip')" data-page="page-slip">If You Slip</a></li>
-    </ul>
-  </div>
+<nav aria-label="App navigation">
+  <ul role="tablist">
+    <li role="presentation"><a href="javascript:void(0)" class="p2 nav-active" onclick="showPage('page-rightnow')" data-page="page-rightnow" role="tab" aria-selected="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Right Now
+    </a></li>
+    <li role="presentation"><a href="javascript:void(0)" class="p1" onclick="showPage('page-worksheets')" data-page="page-worksheets" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+      Worksheets
+    </a></li>
+    <li role="presentation"><a href="javascript:void(0)" class="p4" onclick="showPage('page-progress')" data-page="page-progress" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+      Progress
+    </a></li>
+    <li role="presentation"><a href="javascript:void(0)" class="p3" onclick="showPage('page-learn')" data-page="page-learn" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Learn
+    </a></li>
+    <li role="presentation"><a href="javascript:void(0)" class="plapse" onclick="showPage('page-slip')" data-page="page-slip" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      If You Slip
+    </a></li>
+  </ul>
 </nav>
 
 <!-- ═══ PAGE: RIGHT NOW ═══ -->
@@ -3101,12 +3115,6 @@
   </div>
 </footer>
 
-<button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
-  <div class="toggle-track"><div class="toggle-knob"></div></div>
-  <span class="toggle-label" id="toggleLabel">Light mode</span>
-</button>
-
-
 <script>
 // ── THEME TOGGLE ─────────────────────────────────────────
 
@@ -3126,7 +3134,7 @@ const btn = document.getElementById('themeToggle');
 const label = document.getElementById('toggleLabel');
 try {
   const saved = lsGet('smartTheme');
-  if (saved === 'light') { html.classList.add('light'); label.textContent = 'Dark mode'; }
+  if (saved === 'light') { html.classList.add('light'); label.textContent = 'Dark'; }
 } catch(e) {}
 btn.addEventListener('click', () => {
   const isLight = html.classList.toggle('light');
@@ -4009,10 +4017,10 @@ function importData(event) {
       const restoredTheme = lsGet('smartTheme');
       if (restoredTheme === 'light') {
         html.classList.add('light');
-        label.textContent = 'Dark mode';
+        label.textContent = 'Dark';
       } else {
         html.classList.remove('light');
-        label.textContent = 'Light mode';
+        label.textContent = 'Light';
       }
       renderTracker();
       renderUrgeLog();
@@ -4164,7 +4172,9 @@ function showPage(id) {
     if (el) el.classList.toggle('page-active', pid === id);
   });
   document.querySelectorAll('nav a[data-page]').forEach(function(a) {
-    a.classList.toggle('nav-active', a.dataset.page === id);
+    var active = a.dataset.page === id;
+    a.classList.toggle('nav-active', active);
+    a.setAttribute('aria-selected', active ? 'true' : 'false');
   });
   window.scrollTo(0, 0);
 }
