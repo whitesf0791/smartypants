@@ -508,6 +508,8 @@
   .ov-c4 .ov-num { color: var(--sage); }
   .ov-title { font-size: 13px; font-weight: 700; color: var(--text-strong); margin-bottom: 6px; }
   .ov-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+  .ov-num-empty { opacity: 0.25; }
+  .dash-alert { color: var(--amber); font-weight: 600; }
 
   .tool-index { padding: 28px 0 44px; }
   .tool-index h2 {
@@ -1282,28 +1284,7 @@
         <button class="btn-tracker-reset" onclick="resetTracker()">Reset</button>
       </div>
     </div>
-    <div class="overview-grid">
-      <div class="overview-card ov-c1">
-        <div class="ov-num">1</div>
-        <div class="ov-title">Build &amp; Maintain Motivation</div>
-        <div class="ov-desc">Clarify what you want, examine why the behavior persists, and build genuine reasons to change.</div>
-      </div>
-      <div class="overview-card ov-c2">
-        <div class="ov-num">2</div>
-        <div class="ov-title">Cope with Urges</div>
-        <div class="ov-desc">Understand what triggers urges, track them, and deploy concrete strategies when they hit.</div>
-      </div>
-      <div class="overview-card ov-c3">
-        <div class="ov-num">3</div>
-        <div class="ov-title">Manage Thoughts, Feelings &amp; Behaviors</div>
-        <div class="ov-desc">Identify unhelpful beliefs, dispute them, and replace reactions with intentional responses.</div>
-      </div>
-      <div class="overview-card ov-c4">
-        <div class="ov-num">4</div>
-        <div class="ov-title">Live a Balanced Life</div>
-        <div class="ov-desc">Build a life that makes sobriety worth keeping — goals, passions, satisfaction across all domains.</div>
-      </div>
-    </div>
+    <div class="overview-grid" id="dashboardGrid"></div>
 
     <div class="tool-index">
       <h2>All 14 Tools — Quick Index</h2>
@@ -3108,6 +3089,7 @@ function addUrgeEntry() {
     intensity, outcome, trigger, coping, notes
   });
   saveUrges(entries);
+  renderDashboard();
 
   // Reset form
   document.getElementById('ul_intensity').value = 5;
@@ -3123,6 +3105,7 @@ function addUrgeEntry() {
 function deleteUrge(id) {
   saveUrges(getUrges().filter(e => e.id !== parseInt(id)));
   renderUrgeLog();
+  renderDashboard();
 }
 
 function renderUrgeLog() {
@@ -3272,6 +3255,7 @@ function onWheelSlide() {
   lsSet(WHEEL_KEY, JSON.stringify(vals));
   drawWheel(vals);
   updateWheelScore(vals);
+  renderDashboard();
 }
 
 function resetWheel() {
@@ -3285,6 +3269,7 @@ function resetWheel() {
   lsSet(WHEEL_KEY, JSON.stringify(vals));
   drawWheel(vals);
   updateWheelScore(vals);
+  renderDashboard();
 }
 
 function updateWheelScore(vals) {
@@ -3376,7 +3361,7 @@ const MILESTONES = [7,30,60,90,180,365];
 
 function setTrackerDate() {
   var d = document.getElementById('trackerDate').value;
-  if (d) { lsSet(TRACKER_KEY, d); renderTracker(); }
+  if (d) { lsSet(TRACKER_KEY, d); renderTracker(); renderDashboard(); }
 }
 
 function resetTracker() {
@@ -3385,6 +3370,7 @@ function resetTracker() {
   var el = document.getElementById('trackerDate');
   if (el) el.value = '';
   renderTracker();
+  renderDashboard();
 }
 
 function renderTracker() {
@@ -3633,11 +3619,13 @@ function saveAbcEntry() {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   renderAbcLog();
+  renderDashboard();
 }
 
 function deleteAbcEntry(id) {
   lsSet(ABC_KEY, JSON.stringify(getAbcLog().filter(e => e.id !== parseInt(id))));
   renderAbcLog();
+  renderDashboard();
 }
 
 function renderAbcLog() {
@@ -3688,11 +3676,13 @@ function saveCbaEntry() {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   renderCbaLog();
+  renderDashboard();
 }
 
 function deleteCbaEntry(id) {
   lsSet(CBA_KEY, JSON.stringify(getCbaLog().filter(e => e.id !== parseInt(id))));
   renderCbaLog();
+  renderDashboard();
 }
 
 function renderCbaLog() {
@@ -3761,6 +3751,7 @@ function saveCp() {
   };
   lsSet(CP_KEY, JSON.stringify(cp));
   checkCpReview(cp);
+  renderDashboard();
   const saveBtn = document.querySelector('#cpInteractive .btn-primary');
   if (saveBtn) { saveBtn.textContent = 'Saved!'; setTimeout(() => { saveBtn.textContent = 'Save Plan'; }, 2000); }
 }
@@ -3835,11 +3826,13 @@ function saveFiveQEntry() {
   lsSet(FQ_KEY, JSON.stringify(entries));
   [1,2,3,4,5].forEach(i => { const el = document.getElementById('fq_' + i); if (el) el.value = ''; });
   renderFiveQLog();
+  renderDashboard();
 }
 
 function deleteFiveQEntry(id) {
   lsSet(FQ_KEY, JSON.stringify(getFiveQLog().filter(e => e.id !== parseInt(id))));
   renderFiveQLog();
+  renderDashboard();
 }
 
 function renderFiveQLog() {
@@ -3936,6 +3929,7 @@ function importData(event) {
       renderFiveQLog();
       loadCp();
       loadValues();
+      renderDashboard();
       setBackupStatus('Restored successfully.');
     } catch(err) {
       setBackupStatus('Failed — file may be corrupt.');
@@ -3951,6 +3945,106 @@ function setBackupStatus(msg) {
   el.textContent = msg;
   setTimeout(() => { el.textContent = ''; }, 4000);
 }
+
+// ── DASHBOARD ────────────────────────────────────────────
+function renderDashboard() {
+  const grid = document.getElementById('dashboardGrid');
+  if (!grid) return;
+
+  // Sobriety
+  const startStr = lsGet(TRACKER_KEY);
+  let daysSober = null, sinceLabel = '', nextMilLabel = '';
+  if (startStr) {
+    const start = new Date(startStr + 'T00:00:00');
+    daysSober = Math.max(0, Math.floor((new Date() - start) / 86400000));
+    sinceLabel = 'Since ' + start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+    const nextIdx = MILESTONES.findIndex(m => m > daysSober);
+    if (nextIdx !== -1) {
+      const gap = MILESTONES[nextIdx] - daysSober;
+      nextMilLabel = gap + ' day' + (gap === 1 ? '' : 's') + ' to ' + MILESTONES[nextIdx] + '-day mark';
+    } else {
+      nextMilLabel = 'All milestones reached';
+    }
+  }
+
+  // Change plan review alert
+  const cp = getCp();
+  let cpAlertHtml = '';
+  if (cp && cp.cp_review) {
+    const reviewDate = new Date(cp.cp_review + 'T00:00:00');
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    if (today >= reviewDate) {
+      const fmt = reviewDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const label = today > reviewDate ? 'Plan review overdue: ' : 'Plan review due: ';
+      cpAlertHtml = `<div class="ov-desc dash-alert" style="margin-top:6px;">${label}${fmt}</div>`;
+    }
+  }
+
+  // Urges
+  const urges = getUrges();
+  const weekAgo = Date.now() - 7 * 86400000;
+  const urgesWeek = urges.filter(e => new Date(e.ts).getTime() >= weekAgo);
+  const resistedWeek = urgesWeek.filter(e => e.outcome === 'resisted').length;
+  const resistPct = urgesWeek.length
+    ? Math.round(resistedWeek / urgesWeek.length * 100) + '% resisted'
+    : 'None logged this week';
+
+  // Wheel
+  const wheelSaved = lsGet(WHEEL_KEY) !== null;
+  const wheelVals = getWheelVals();
+  const wheelAvg = (wheelVals.reduce((a, v) => a + v, 0) / wheelVals.length).toFixed(1);
+  const minVal = Math.min(...wheelVals);
+  const lowestDomain = WHEEL_DOMAINS[wheelVals.indexOf(minVal)];
+
+  // Worksheets
+  const abcLog = getAbcLog();
+  const cbaLog = getCbaLog();
+  const fqLog  = getFiveQLog();
+  const totalWs = abcLog.length + cbaLog.length + fqLog.length;
+  const lastAbc = abcLog.length ? abcLog[abcLog.length - 1].ts : null;
+  const lastFq  = fqLog.length  ? fqLog[fqLog.length - 1].ts  : null;
+
+  const rel = iso => {
+    const d = Math.floor((Date.now() - new Date(iso)) / 86400000);
+    if (d === 0) return 'today';
+    if (d === 1) return 'yesterday';
+    if (d < 7)  return d + ' days ago';
+    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const noData = daysSober === null;
+  const noUrges = urges.length === 0;
+  const noWs = totalWs === 0;
+
+  grid.innerHTML = `
+    <div class="overview-card ov-c1">
+      <div class="ov-num${noData ? ' ov-num-empty' : ''}">${daysSober !== null ? daysSober : '—'}</div>
+      <div class="ov-title">${daysSober === 1 ? 'Day Sober' : 'Days Sober'}</div>
+      <div class="ov-desc">${startStr ? sinceLabel : 'Set your start date above'}</div>
+      ${nextMilLabel ? `<div class="ov-desc" style="margin-top:4px;">${nextMilLabel}</div>` : ''}
+      ${cpAlertHtml}
+    </div>
+    <div class="overview-card ov-c2">
+      <div class="ov-num${noUrges ? ' ov-num-empty' : ''}">${!noUrges ? urgesWeek.length : '—'}</div>
+      <div class="ov-title">${urgesWeek.length === 1 ? 'Urge This Week' : 'Urges This Week'}</div>
+      <div class="ov-desc">${!noUrges ? resistPct : 'No urges logged yet'}</div>
+      <div class="ov-desc" style="margin-top:4px;">${!noUrges ? urges.length + ' total logged' : ''}</div>
+    </div>
+    <div class="overview-card ov-c3">
+      <div class="ov-num${noWs ? ' ov-num-empty' : ''}">${!noWs ? totalWs : '—'}</div>
+      <div class="ov-title">Worksheet Entries</div>
+      <div class="ov-desc">${lastAbc ? 'Last ABC: ' + rel(lastAbc) : 'No ABC entries yet'}</div>
+      <div class="ov-desc" style="margin-top:4px;">${lastFq ? 'Last check-in: ' + rel(lastFq) : 'No check-ins yet'}</div>
+    </div>
+    <div class="overview-card ov-c4">
+      <div class="ov-num${!wheelSaved ? ' ov-num-empty' : ''}">${wheelSaved ? wheelAvg : '—'}</div>
+      <div class="ov-title">Wheel Avg Score</div>
+      <div class="ov-desc">${wheelSaved ? 'Lowest: ' + lowestDomain + ' (' + minVal + ')' : 'Not rated yet'}</div>
+      <div class="ov-desc" style="margin-top:4px;">${cbaLog.length} CBA session${cbaLog.length !== 1 ? 's' : ''} saved</div>
+    </div>`;
+}
+
+document.addEventListener('DOMContentLoaded', renderDashboard);
 
 // ── SERVICE WORKER ────────────────────────────────────────
 if ('serviceWorker' in navigator) {
