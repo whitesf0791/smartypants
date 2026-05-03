@@ -214,6 +214,20 @@
   nav a.p2:hover { color: var(--rose);  border-color: var(--rose); }
   nav a.p3:hover { color: var(--blue);  border-color: var(--blue); }
   nav a.p4:hover { color: var(--sage);  border-color: var(--sage); }
+  nav a.nav-active               { color: var(--text-heading); border-color: var(--border-accent); }
+  nav a.nav-active.p1            { color: var(--amber); border-color: var(--amber); }
+  nav a.nav-active.p2            { color: var(--rose);  border-color: var(--rose); }
+  nav a.nav-active.p3            { color: var(--blue);  border-color: var(--blue); }
+  nav a.nav-active.p4            { color: var(--sage);  border-color: var(--sage); }
+  nav a.nav-active.plapse        { color: var(--amber); border-color: var(--amber); }
+
+  /* ── PAGE VISIBILITY ── */
+  .overview-section,
+  .point-section,
+  .lapse-section { display: none; }
+  .overview-section.page-active,
+  .point-section.page-active,
+  .lapse-section.page-active { display: block; }
 
   /* ── LAYOUT ── */
   .container { max-width: 960px; margin: 0 auto; padding: 0 48px; }
@@ -1258,13 +1272,13 @@
 <nav>
   <div class="container">
     <ul>
-      <li><a href="#overview" class="p1">Overview</a></li>
-      <li><a href="#point1" class="p1">Motivation</a></li>
-      <li><a href="#point2" class="p2">Urges</a></li>
-      <li><a href="#point3" class="p3">Thinking</a></li>
-      <li><a href="#point4" class="p4">Balance</a></li>
-      <li><a href="#lapse" class="plapse">If You Slip</a></li>
-      <li><a href="#resources" class="p4">Resources</a></li>
+      <li><a href="javascript:void(0)" class="p1 nav-active" onclick="showPage('overview')" data-page="overview">Dashboard</a></li>
+      <li><a href="javascript:void(0)" class="p1" onclick="showPage('point1')" data-page="point1">Motivation</a></li>
+      <li><a href="javascript:void(0)" class="p2" onclick="showPage('point2')" data-page="point2">Urges</a></li>
+      <li><a href="javascript:void(0)" class="p3" onclick="showPage('point3')" data-page="point3">Thinking</a></li>
+      <li><a href="javascript:void(0)" class="p4" onclick="showPage('point4')" data-page="point4">Balance</a></li>
+      <li><a href="javascript:void(0)" class="plapse" onclick="showPage('lapse')" data-page="lapse">If You Slip</a></li>
+      <li><a href="javascript:void(0)" class="p4" onclick="showPage('overview');scrollToId('resources')" data-page="resources">Resources</a></li>
     </ul>
   </div>
 </nav>
@@ -4085,6 +4099,52 @@ function renderDashboard() {
 }
 
 document.addEventListener('DOMContentLoaded', renderDashboard);
+
+// ── PAGE NAVIGATION ──────────────────────────────────────
+var PAGE_IDS = ['overview', 'point1', 'point2', 'point3', 'point4', 'lapse'];
+
+var TOOL_PAGE_MAP = {
+  'cba': 'point1', 'change-plan': 'point1', 'values': 'point1', 'self-compassion': 'point1',
+  'halt': 'point2', 'urge-log': 'point2', 'dents': 'point2', 'personify': 'point2',
+  'boundaries': 'point2', 'breathing': 'point2', 'urge-surfing': 'point2',
+  'thinking-styles': 'point3', 'abc': 'point3', 'dispute': 'point3', 'five-q': 'point3',
+  'wheel': 'point4', 'goals': 'point4', 'pursuits': 'point4',
+  'lapse': 'lapse', 'resources': 'overview',
+  'overview': 'overview', 'point1': 'point1', 'point2': 'point2',
+  'point3': 'point3', 'point4': 'point4'
+};
+
+function showPage(id) {
+  PAGE_IDS.forEach(function(pid) {
+    var el = document.getElementById(pid);
+    if (el) el.classList.toggle('page-active', pid === id);
+  });
+  document.querySelectorAll('nav a[data-page]').forEach(function(a) {
+    a.classList.toggle('nav-active', a.dataset.page === id);
+  });
+  window.scrollTo(0, 0);
+}
+
+function scrollToId(id) {
+  setTimeout(function() {
+    var el = document.getElementById(id);
+    if (el) el.scrollIntoView({ block: 'start' });
+  }, 50);
+}
+
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a[href^="#"]');
+  if (!a) return;
+  var targetId = a.getAttribute('href').slice(1);
+  if (!targetId) return;
+  var pageId = TOOL_PAGE_MAP[targetId];
+  if (!pageId) return;
+  e.preventDefault();
+  showPage(pageId);
+  if (targetId !== pageId) scrollToId(targetId);
+});
+
+document.addEventListener('DOMContentLoaded', function() { showPage('overview'); });
 
 // ── SERVICE WORKER ────────────────────────────────────────
 if ('serviceWorker' in navigator) {
