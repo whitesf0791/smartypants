@@ -3495,7 +3495,7 @@ function boxTick() {
 // ── TAB SWITCH ────────────────────────────────────────────
 function switchTab(name) {
   ['box','ground'].forEach(function(t) {
-    var btn   = document.querySelector('[onclick="switchTab('' + t + '')"]');
+    var btn   = document.querySelector('[onclick="switchTab(\'' + t + '\')"]');
     var panel = document.getElementById('panel-' + t);
     var active = (t === name);
     if (btn)   btn.classList.toggle('active', active);
