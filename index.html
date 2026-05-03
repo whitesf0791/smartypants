@@ -3259,7 +3259,6 @@ function lsRemove(key) {
 }
 
 const html = document.documentElement;
-const label = document.getElementById('toggleLabel');
 
 function syncThemeUI(isLight) {
   const text = isLight ? 'Dark' : 'Light';
@@ -3585,7 +3584,7 @@ function drawWheel(vals) {
 }
 
 // Re-draw wheel on theme change (colors need to update)
-btn.addEventListener('click', () => setTimeout(() => {
+document.getElementById('themeToggle').addEventListener('click', () => setTimeout(() => {
   const v = getWheelVals();
   drawWheel(v);
 }, 50));
@@ -4156,10 +4155,10 @@ function importData(event) {
       const restoredTheme = lsGet('smartTheme');
       if (restoredTheme === 'light') {
         html.classList.add('light');
-        label.textContent = 'Dark';
+        syncThemeUI(true);
       } else {
         html.classList.remove('light');
-        label.textContent = 'Light';
+        syncThemeUI(false);
       }
       renderTracker();
       renderUrgeLog();
