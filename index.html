@@ -1265,6 +1265,59 @@
     margin-left: 2px;
   }
 
+  /* ── SETTINGS PAGE ── */
+  .settings-section { margin-bottom: 24px; }
+  .settings-section-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .settings-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 18px;
+    margin-bottom: 6px;
+  }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-row-info { flex: 1; min-width: 0; }
+  .settings-row-label { font-size: 14px; font-weight: 600; color: var(--text); }
+  .settings-row-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+  .settings-status {
+    font-size: 12px; color: var(--text-muted); font-style: italic;
+    min-height: 18px; margin-top: 4px;
+  }
+  .update-badge {
+    display: none; margin-top: 10px; padding: 12px 14px;
+    border-radius: 6px; font-size: 13px; line-height: 1.5;
+    border: 1px solid;
+  }
+  .update-badge.ok       { display: block; color: var(--sage);  border-color: var(--sage-dim);  background: var(--sage-dim); }
+  .update-badge.newer    { display: block; color: var(--amber); border-color: var(--amber-dim); background: var(--amber-dim); }
+  .update-badge.checking { display: block; color: var(--text-muted); border-color: var(--border); background: var(--bg-card); }
+  .update-badge.error    { display: block; color: var(--rose);  border-color: var(--rose-dim);  background: var(--rose-dim); }
+  .btn-update-dl {
+    display: inline-block; margin-top: 10px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #fff; background: var(--amber); border: none; border-radius: 5px;
+    padding: 8px 18px; cursor: pointer; text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .btn-update-dl:hover { opacity: 0.85; }
+  .btn-danger-sm {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--rose); background: var(--rose-dim); border: 1px solid var(--rose-dim);
+    border-radius: 4px; padding: 6px 12px; cursor: pointer;
+    transition: border-color 0.2s, background 0.2s; white-space: nowrap;
+    font-family: var(--font-body);
+  }
+  .btn-danger-sm:hover { border-color: var(--rose); background: transparent; }
+
   /* ── PRINT ── */
   @media print {
     nav, .backup-bar, .btn-delete, .btn-primary, .btn-backup,
@@ -1319,6 +1372,10 @@
     <li role="presentation"><a href="javascript:void(0)" class="plapse" onclick="showPage('page-slip')" data-page="page-slip" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
       If You Slip
+    </a></li>
+    <li role="presentation"><a href="javascript:void(0)" onclick="showPage('page-settings')" data-page="page-settings" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
     </a></li>
   </ul>
 </nav>
@@ -1779,14 +1836,6 @@
 <!-- ═══ PAGE: PROGRESS ═══ -->
 <div class="page" id="page-progress">
   <div class="container" style="padding-top:32px;">
-
-    <div class="backup-bar">
-      <span class="backup-bar-label">Backup / Restore</span>
-      <button class="btn-backup" onclick="exportData()">Export JSON</button>
-      <label class="btn-backup" for="backupFileInput">Restore JSON</label>
-      <input type="file" accept=".json" id="backupFileInput" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);border:0" onchange="importData(event)" aria-label="Restore from JSON backup">
-      <span class="backup-status" id="backupStatus" aria-live="polite"></span>
-    </div>
 
     <div class="tracker-wrap" id="tracker">
       <div class="tracker-left">
@@ -3108,6 +3157,86 @@
   </div>
 </div><!-- /page-slip -->
 
+<!-- ═══ PAGE: SETTINGS ═══ -->
+<div class="page" id="page-settings">
+  <div class="container" style="padding-top:28px;padding-bottom:28px;">
+
+    <div class="page-section-header" style="padding-top:0;">
+      <div class="page-section-title">Settings</div>
+    </div>
+
+    <!-- APPEARANCE -->
+    <div class="settings-section">
+      <div class="settings-section-title">Appearance</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Color Theme</div>
+            <div class="settings-row-sub" id="themeSettingsSub">Dark mode</div>
+          </div>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle color theme">
+            <div class="toggle-track"><div class="toggle-knob"></div></div>
+            <span class="toggle-label" id="toggleLabelSettings">Light</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA MANAGEMENT -->
+    <div class="settings-section">
+      <div class="settings-section-title">Data Management</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Export Backup</div>
+            <div class="settings-row-sub">Download all saved data as a JSON file</div>
+          </div>
+          <button class="btn-backup" onclick="exportData()">Export JSON</button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Restore from Backup</div>
+            <div class="settings-row-sub">Import a previously exported JSON file</div>
+          </div>
+          <label class="btn-backup" for="backupFileInput">Restore JSON</label>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Clear All Data</div>
+            <div class="settings-row-sub">Permanently delete all saved entries and progress</div>
+          </div>
+          <button class="btn-danger-sm" onclick="confirmClearAll()">Clear Data</button>
+        </div>
+      </div>
+      <input type="file" accept=".json" id="backupFileInput" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);border:0" onchange="importData(event)" aria-label="Restore from JSON backup">
+      <div class="settings-status" id="backupStatus" aria-live="polite"></div>
+    </div>
+
+    <!-- APP & UPDATES -->
+    <div class="settings-section">
+      <div class="settings-section-title">App</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Version</div>
+            <div class="settings-row-sub" id="versionDisplay"></div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Check for Updates</div>
+            <div class="settings-row-sub">Compare with the latest release on GitHub</div>
+          </div>
+          <button class="btn-backup" id="btnCheckUpdate" onclick="checkForUpdates()">Check Now</button>
+        </div>
+      </div>
+      <div id="updateBadge" class="update-badge"></div>
+      <a id="updateDownloadLink" class="btn-update-dl" style="display:none;" download="index.html">Download Update</a>
+    </div>
+
+  </div>
+</div><!-- /page-settings -->
+
 <footer>
   <div class="container">
     <p>Source: <a href="https://smartrecovery.org/toolbox" target="_blank">smartrecovery.org/toolbox</a> &nbsp;|&nbsp; SMART Recovery® is a registered trademark of SMART Recovery USA, Inc. &nbsp;|&nbsp; This document consolidates freely accessible public materials for personal use in recovery.</p>
@@ -3130,17 +3259,27 @@ function lsRemove(key) {
 }
 
 const html = document.documentElement;
-const btn = document.getElementById('themeToggle');
 const label = document.getElementById('toggleLabel');
+
+function syncThemeUI(isLight) {
+  const text = isLight ? 'Dark' : 'Light';
+  document.querySelectorAll('.toggle-label').forEach(function(el) { el.textContent = text; });
+  const sub = document.getElementById('themeSettingsSub');
+  if (sub) sub.textContent = (isLight ? 'Light' : 'Dark') + ' mode';
+}
+
+function toggleTheme() {
+  const isLight = html.classList.toggle('light');
+  lsSet('smartTheme', isLight ? 'light' : 'dark');
+  syncThemeUI(isLight);
+}
+
 try {
   const saved = lsGet('smartTheme');
-  if (saved === 'light') { html.classList.add('light'); label.textContent = 'Dark'; }
+  if (saved === 'light') { html.classList.add('light'); syncThemeUI(true); }
 } catch(e) {}
-btn.addEventListener('click', () => {
-  const isLight = html.classList.toggle('light');
-  label.textContent = isLight ? 'Dark mode' : 'Light mode';
-  lsSet('smartTheme', isLight ? 'light' : 'dark');
-});
+
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
 // ── HALT CHECK ───────────────────────────────────────────
 function toggleHalt(el) {
@@ -4148,7 +4287,7 @@ function renderDashboard() {
 document.addEventListener('DOMContentLoaded', renderDashboard);
 
 // ── PAGE NAVIGATION ──────────────────────────────────────
-var PAGE_IDS = ['page-rightnow', 'page-worksheets', 'page-progress', 'page-learn', 'page-slip'];
+var PAGE_IDS = ['page-rightnow', 'page-worksheets', 'page-progress', 'page-learn', 'page-slip', 'page-settings'];
 
 var TOOL_PAGE_MAP = {
   'halt': 'page-rightnow', 'urge-log': 'page-rightnow',
@@ -4163,7 +4302,8 @@ var TOOL_PAGE_MAP = {
   'tracker': 'page-progress',
   'lapse': 'page-slip',
   'page-rightnow': 'page-rightnow', 'page-worksheets': 'page-worksheets',
-  'page-progress': 'page-progress', 'page-learn': 'page-learn', 'page-slip': 'page-slip'
+  'page-progress': 'page-progress', 'page-learn': 'page-learn', 'page-slip': 'page-slip',
+  'page-settings': 'page-settings'
 };
 
 function showPage(id) {
@@ -4198,7 +4338,81 @@ document.addEventListener('click', function(e) {
   if (targetId !== pageId) scrollToId(targetId);
 });
 
-document.addEventListener('DOMContentLoaded', function() { showPage('page-rightnow'); });
+document.addEventListener('DOMContentLoaded', function() {
+  showPage('page-rightnow');
+  initSettingsPage();
+});
+
+// ── SETTINGS PAGE ─────────────────────────────────────────
+var APP_VERSION = '2.0.0';
+var UPDATE_REPO_URL = 'https://raw.githubusercontent.com/whitesf0791/byteolife/main/index.html';
+
+function initSettingsPage() {
+  var vd = document.getElementById('versionDisplay');
+  if (vd) vd.textContent = 'v' + APP_VERSION;
+  var isLight = html.classList.contains('light');
+  syncThemeUI(isLight);
+}
+
+async function checkForUpdates() {
+  var badge = document.getElementById('updateBadge');
+  var dl = document.getElementById('updateDownloadLink');
+  var btn = document.getElementById('btnCheckUpdate');
+  if (!badge) return;
+
+  badge.className = 'update-badge checking';
+  badge.textContent = 'Checking for updates…';
+  if (dl) dl.style.display = 'none';
+  if (btn) btn.disabled = true;
+
+  try {
+    var res = await fetch(UPDATE_REPO_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Server returned ' + res.status);
+    var text = await res.text();
+
+    var m = text.match(/APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
+    if (!m) throw new Error('Could not read version from downloaded file');
+    var remote = m[1];
+
+    if (remote === APP_VERSION) {
+      badge.className = 'update-badge ok';
+      badge.textContent = '✓ You\'re up to date — v' + APP_VERSION;
+    } else {
+      badge.className = 'update-badge newer';
+      badge.textContent = 'Update available: v' + remote + '  (installed: v' + APP_VERSION + '). Download below and replace your current index.html file.';
+      if (dl) {
+        var blob = new Blob([text], { type: 'text/html' });
+        dl.href = URL.createObjectURL(blob);
+        dl.style.display = 'inline-block';
+      }
+    }
+  } catch(e) {
+    badge.className = 'update-badge error';
+    var msg = (e.message || '').toLowerCase();
+    if (msg.includes('failed to fetch') || msg.includes('networkerror') || msg.includes('load')) {
+      badge.textContent = 'Could not reach GitHub. Check your connection, or visit the live app URL to get the latest version automatically.';
+    } else {
+      badge.textContent = 'Update check failed: ' + e.message;
+    }
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function confirmClearAll() {
+  if (!confirm('This will permanently delete all your saved data — urge logs, worksheets, tracker, and progress.\n\nThis cannot be undone. Are you sure?')) return;
+  BACKUP_KEYS.forEach(function(k) { lsRemove(k); });
+  renderTracker();
+  renderUrgeLog();
+  initWheel();
+  renderAbcLog();
+  renderCbaLog();
+  renderFiveQLog();
+  loadCp();
+  loadValues();
+  renderDashboard();
+  setBackupStatus('All data cleared.');
+}
 
 // ── SERVICE WORKER ────────────────────────────────────────
 if ('serviceWorker' in navigator) {
