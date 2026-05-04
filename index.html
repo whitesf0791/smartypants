@@ -1895,47 +1895,47 @@
       </div>
     </div>
 
-  </div>
-</div>
-
-<!-- ═══ PAGE: GOALS (inside Worksheets) ═══ -->
-<div class="page-section-header">
-  <div class="page-section-title">Point 4 · Goal Tracker</div>
-</div>
-<div class="tool-card" id="goals-worksheet">
-  <div class="tool-card-header">
-    <span class="tool-type type-worksheet">Worksheet</span>
-    <div class="tool-name">SMART Goal Tracker</div>
-  </div>
-  <div class="tool-body">
-    <!-- Create goal form -->
-    <details class="tool-details" id="goalFormDetails">
-      <summary class="tool-details-toggle">+ Add a New Goal</summary>
-      <div style="padding-top:10px;">
-        <input type="text" id="goalTitle" placeholder="Goal title *"
-          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);margin-bottom:8px;">
-        <textarea id="goalSpecific" rows="2" placeholder="Specific — exactly what will you do?"
-          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
-        <textarea id="goalMeasurable" rows="2" placeholder="Measurable — how will you know you've succeeded?"
-          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
-        <textarea id="goalAchievable" rows="2" placeholder="Achievable — what steps will you take?"
-          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
-        <textarea id="goalRelevant" rows="2" placeholder="Relevant — why does this matter to your recovery?"
-          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <label style="font-size:13px;color:var(--text-muted);white-space:nowrap;">Target date</label>
-          <input type="date" id="goalDeadline"
-            style="padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);">
-        </div>
-        <button class="btn-primary" onclick="saveGoal()">Save Goal</button>
-      </div>
-    </details>
-    <!-- Goal list -->
-    <div class="goal-filter-row" style="margin-top:16px;">
-      <button class="goal-filter-btn active" id="goalTabActive" onclick="setGoalFilter(true)">Active</button>
-      <button class="goal-filter-btn" id="goalTabDone" onclick="setGoalFilter(false)">Completed</button>
+    <!-- Goal Tracker (Point 4) -->
+    <div class="page-section-header">
+      <div class="page-section-title">Point 4 · Goal Tracker</div>
     </div>
-    <div id="goalList"></div>
+    <div class="tool-card" id="goals-worksheet">
+      <div class="tool-card-header">
+        <span class="tool-type type-worksheet">Worksheet</span>
+        <div class="tool-name">SMART Goal Tracker</div>
+      </div>
+      <div class="tool-body">
+        <!-- Create goal form -->
+        <details class="tool-details" id="goalFormDetails">
+          <summary class="tool-details-toggle">+ Add a New Goal</summary>
+          <div style="padding-top:10px;">
+            <input type="text" id="goalTitle" placeholder="Goal title *"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);margin-bottom:8px;">
+            <textarea id="goalSpecific" rows="2" placeholder="Specific — exactly what will you do?"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
+            <textarea id="goalMeasurable" rows="2" placeholder="Measurable — how will you know you've succeeded?"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
+            <textarea id="goalAchievable" rows="2" placeholder="Achievable — what steps will you take?"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
+            <textarea id="goalRelevant" rows="2" placeholder="Relevant — why does this matter to your recovery?"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <label style="font-size:13px;color:var(--text-muted);white-space:nowrap;">Target date</label>
+              <input type="date" id="goalDeadline"
+                style="padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);">
+            </div>
+            <button class="btn-primary" onclick="saveGoal()">Save Goal</button>
+          </div>
+        </details>
+        <!-- Goal list -->
+        <div class="goal-filter-row" style="margin-top:16px;">
+          <button class="goal-filter-btn active" id="goalTabActive" onclick="setGoalFilter(true)">Active</button>
+          <button class="goal-filter-btn" id="goalTabDone" onclick="setGoalFilter(false)">Completed</button>
+        </div>
+        <div id="goalList"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -4573,7 +4573,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.3';
+var APP_VERSION = '2.2.4';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
