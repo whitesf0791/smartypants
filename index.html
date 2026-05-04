@@ -4386,7 +4386,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
 var APP_VERSION = '2.0.0';
-var UPDATE_REPO_URL = 'https://raw.githubusercontent.com/whitesf0791/byteolife/main/index.html';
+var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/byteolife/contents/index.html?ref=main';
 
 function initSettingsPage() {
   var vd = document.getElementById('versionDisplay');
@@ -4407,20 +4407,32 @@ async function checkForUpdates() {
   if (btn) btn.disabled = true;
 
   try {
-    var res = await fetch(UPDATE_REPO_URL, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Server returned ' + res.status);
-    var text = await res.text();
+    var res = await fetch(UPDATE_API_URL, {
+      cache: 'no-store',
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
 
+    if (res.status === 404) {
+      badge.className = 'update-badge error';
+      badge.textContent = 'Repository not found or is private. To use automatic update checks the repository must be public on GitHub.';
+      return;
+    }
+    if (!res.ok) throw new Error('GitHub API returned ' + res.status);
+
+    var json = await res.json();
+    if (!json.content) throw new Error('No file content in API response');
+
+    var text = atob(json.content.replace(/\s/g, ''));
     var m = text.match(/APP_VERSION\s*=\s*['"]([^'"]+)['"]/);
-    if (!m) throw new Error('Could not read version from downloaded file');
+    if (!m) throw new Error('Could not read version from file');
     var remote = m[1];
 
     if (remote === APP_VERSION) {
       badge.className = 'update-badge ok';
-      badge.textContent = '✓ You\'re up to date — v' + APP_VERSION;
+      badge.textContent = '\u2713 You\'re up to date \u2014 v' + APP_VERSION;
     } else {
       badge.className = 'update-badge newer';
-      badge.textContent = 'Update available: v' + remote + '  (installed: v' + APP_VERSION + '). Download below and replace your current index.html file.';
+      badge.textContent = 'Update available: v' + remote + ' (installed: v' + APP_VERSION + '). Download below and replace your current index.html file.';
       if (dl) {
         var blob = new Blob([text], { type: 'text/html' });
         dl.href = URL.createObjectURL(blob);
@@ -4431,7 +4443,7 @@ async function checkForUpdates() {
     badge.className = 'update-badge error';
     var msg = (e.message || '').toLowerCase();
     if (msg.includes('failed to fetch') || msg.includes('networkerror') || msg.includes('load')) {
-      badge.textContent = 'Could not reach GitHub. Check your connection, or visit the live app URL to get the latest version automatically.';
+      badge.textContent = 'Could not reach GitHub. Check your internet connection and try again.';
     } else {
       badge.textContent = 'Update check failed: ' + e.message;
     }
