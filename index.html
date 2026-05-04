@@ -4445,7 +4445,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.0';
+var APP_VERSION = '2.2.1';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
@@ -4508,9 +4508,23 @@ async function checkForUpdates() {
           dl.href = '#';
           dl.onclick = async function(e) {
             e.preventDefault();
+            dl.textContent = 'Applying update…';
+            dl.onclick = null;
             if ('serviceWorker' in navigator) {
               var reg = await navigator.serviceWorker.getRegistration();
-              if (reg) await reg.update();
+              if (reg) {
+                // Trigger SW update check; controllerchange listener handles
+                // the reload once the new SW has installed and taken control.
+                // Fallback fires if the SW doesn't change within 6s.
+                var reloadTimer = setTimeout(function() { location.reload(); }, 6000);
+                navigator.serviceWorker.addEventListener('controllerchange', function() {
+                  clearTimeout(reloadTimer);
+                  location.reload();
+                }, { once: true });
+                await reg.update();
+                if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                return;
+              }
             }
             location.reload();
           };
