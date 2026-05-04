@@ -4331,7 +4331,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.0.0';
+var APP_VERSION = '2.1.0';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
@@ -4378,11 +4378,23 @@ async function checkForUpdates() {
       badge.textContent = '\u2713 You\'re up to date \u2014 v' + APP_VERSION;
     } else {
       badge.className = 'update-badge newer';
-      badge.textContent = 'Update available: v' + remote + ' (installed: v' + APP_VERSION + '). Download below and replace your current index.html file.';
-      if (dl) {
-        var blob = new Blob([text], { type: 'text/html' });
-        dl.href = URL.createObjectURL(blob);
-        dl.style.display = 'inline-block';
+      if (window.location.protocol === 'file:') {
+        badge.textContent = 'Update available: v' + remote + ' (installed: v' + APP_VERSION + '). Download below and replace your current index.html file.';
+        if (dl) {
+          var blob = new Blob([text], { type: 'text/html' });
+          dl.href = URL.createObjectURL(blob);
+          dl.textContent = 'Download Update';
+          dl.onclick = null;
+          dl.style.display = 'inline-block';
+        }
+      } else {
+        badge.textContent = 'Update available: v' + remote + ' (installed: v' + APP_VERSION + '). Reload the page to apply.';
+        if (dl) {
+          dl.textContent = 'Reload Now';
+          dl.href = '#';
+          dl.onclick = function(e) { e.preventDefault(); location.reload(); };
+          dl.style.display = 'inline-block';
+        }
       }
     }
   } catch(e) {
