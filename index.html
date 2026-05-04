@@ -1308,6 +1308,48 @@
     * { color: #000 !important; }
   }
 
+  /* ── CLOUD SYNC ── */
+  .sync-key-box {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    word-break: break-all;
+    text-align: center;
+    user-select: all;
+  }
+  .sync-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--sage);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .sync-dot.error { background: var(--rose); }
+  .sync-panel {
+    border-top: 1px solid var(--border);
+    padding: 14px 0 2px;
+    margin-top: 4px;
+  }
+  .sync-input {
+    width: 100%; box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--font-body);
+    margin-bottom: 10px;
+  }
+  .sync-input:focus { outline: 2px solid var(--blue); outline-offset: 2px; }
 </style>
 
 </head>
@@ -3145,6 +3187,68 @@
       </div>
     </div>
 
+    <!-- CLOUD SYNC -->
+    <div class="settings-section">
+      <div class="settings-section-title">Cloud Sync</div>
+
+      <!-- Setup state (not yet connected) -->
+      <div id="syncUiSetup" class="settings-card">
+        <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
+          <div class="settings-row-label">Sync Across Devices</div>
+          <div class="settings-row-sub">Your data stays on your device. A recovery key lets you access it on another device. No email or account required.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+            <button class="btn-backup" onclick="syncGenerateKey()">Generate Recovery Key</button>
+            <button class="btn-backup" onclick="syncShowRestore()">I Have a Key</button>
+          </div>
+        </div>
+        <!-- Key generation panel -->
+        <div id="syncGenPanel" class="sync-panel" style="display:none;">
+          <div class="settings-row-sub" style="margin-bottom:8px;">Write this key down or save it somewhere safe. It cannot be recovered if lost.</div>
+          <div class="sync-key-box" id="syncNewKeyDisplay" aria-label="Generated recovery key"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn-backup" onclick="syncCopyKey()">Copy Key</button>
+            <button class="btn-backup" onclick="syncActivate()">I've Saved It — Activate Sync</button>
+          </div>
+        </div>
+        <!-- Restore / connect panel -->
+        <div id="syncRestorePanel" class="sync-panel" style="display:none;">
+          <div class="settings-row-sub" style="margin-bottom:8px;">Enter your recovery key to restore and sync data on this device.</div>
+          <input type="text" id="syncKeyInput" class="sync-input"
+            placeholder="word-word-word-word-word"
+            autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+            aria-label="Recovery key">
+          <button class="btn-backup" onclick="syncConnect()">Connect</button>
+        </div>
+      </div>
+
+      <!-- Active / connected state -->
+      <div id="syncUiActive" class="settings-card" style="display:none;">
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label"><span class="sync-dot" id="syncDot"></span>Cloud Sync Active</div>
+            <div class="settings-row-sub" id="syncLastSynced">Syncing…</div>
+          </div>
+          <button class="btn-backup" onclick="syncNow()">Sync Now</button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Recovery Key</div>
+            <div class="settings-row-sub" id="syncActiveKeyDisplay" style="font-family:monospace;word-break:break-all;"></div>
+          </div>
+          <button class="btn-backup" onclick="syncCopyActiveKey()">Copy</button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-label">Disconnect This Device</div>
+            <div class="settings-row-sub">Your local data will not be affected.</div>
+          </div>
+          <button class="btn-danger-sm" onclick="syncDisconnect()">Disconnect</button>
+        </div>
+      </div>
+
+      <div class="settings-status" id="syncStatus" aria-live="polite"></div>
+    </div>
+
     <!-- DATA MANAGEMENT -->
     <div class="settings-section">
       <div class="settings-section-title">Data Management</div>
@@ -3216,10 +3320,20 @@ function lsGet(key) {
 }
 function lsSet(key, val) {
   try { localStorage.setItem(key, val); } catch(e) {}
+  try {
+    if (sbState.session && !sbState.pulling &&
+        typeof BACKUP_KEYS !== 'undefined' &&
+        BACKUP_KEYS.indexOf(key) !== -1 && key !== 'smartTheme') {
+      sbPushKey(key, val).catch(function() {});
+    }
+  } catch(e) {}
 }
 function lsRemove(key) {
   try { localStorage.removeItem(key); } catch(e) {}
 }
+
+// sbState declared early so lsSet guard works before sync code loads
+var sbState = { session: null, recoveryKey: null, pulling: false };
 
 const html = document.documentElement;
 
@@ -4331,7 +4445,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.1.0';
+var APP_VERSION = '2.2.0';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
@@ -4430,7 +4544,289 @@ function confirmClearAll() {
   loadValues();
   renderDashboard();
   setBackupStatus('All data cleared.');
+  if (sbState.session) sbPushAll().catch(function() {});
 }
+
+// ── CLOUD SYNC ───────────────────────────────────────────
+var SB_URL  = 'https://wpebickfhoqdsxpnqdft.supabase.co';
+var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwZWJpY2tmaG9xZHN4cG5xZGZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MDAxNTQsImV4cCI6MjA5MzQ3NjE1NH0.jdMY9YrJ7BshyQmvXbpv3KrB-noLOWtSP9JksiQ3Be8';
+var SB_SESSION_KEY  = 'sb_session';
+var SB_RKEY_KEY     = 'sb_recovery_key';
+
+// 256-word list for 5-word passphrases (~40 bits entropy)
+var SB_WORDS = [
+  'able','acid','aged','also','arch','army','atom','aunt',
+  'back','ball','band','bark','barn','base','bath','bear',
+  'beat','bell','best','bird','bite','blue','boat','body',
+  'bold','bone','book','born','bowl','bulk','burn','buzz',
+  'calm','card','care','cart','cave','cell','coal','coat',
+  'code','coil','cold','cool','copy','cord','corn','crop',
+  'cure','dame','dark','data','date','dawn','dead','deal',
+  'deck','deep','deer','dial','diet','disk','dive','dock',
+  'dome','done','door','dose','dove','down','draw','drop',
+  'drum','duck','dusk','dust','earn','east','edge','epic',
+  'face','fact','fair','fall','farm','fast','fate','feel',
+  'file','fill','film','find','fire','fish','flag','flat',
+  'flew','flip','flow','foam','fold','font','food','ford',
+  'fork','form','four','free','fuel','full','fund','fuse',
+  'gain','game','gate','gear','give','glad','glow','glue',
+  'goal','goat','gold','golf','gone','good','gown','grab',
+  'gray','grid','grip','grow','gulf','gust','hair','half',
+  'hall','halt','hand','hang','hard','hare','harm','hawk',
+  'haze','head','heap','heat','heel','helm','herd','hide',
+  'high','hill','hint','hire','hold','hole','home','hook',
+  'hope','horn','host','hour','hull','hunt','husk','idle',
+  'iron','isle','jack','jade','jail','join','joke','jump',
+  'keen','keep','kind','king','kite','knew','lace','lake',
+  'lamb','lamp','land','lane','lark','lash','last','late',
+  'lawn','lead','leaf','lean','leap','left','lens','life',
+  'lift','lime','line','link','lion','list','live','load',
+  'lock','loft','lone','long','look','loop','lord','lose',
+  'lost','loud','love','luck','lung','lure','made','mail',
+  'main','make','malt','mane','mark','mask','mast','maze',
+  'meal','meet','melt','mesh','mild','mile','milk','mill',
+  'mine','mint','mist','moat','mold','moon','moss','moth',
+  'move','mule','muse','myth','nail','name','need','nest'
+];
+
+function sbGenKey() {
+  var arr = new Uint8Array(5);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(function(b) { return SB_WORDS[b]; }).join('-');
+}
+
+function sbHeaders(extra) {
+  var h = { 'apikey': SB_ANON, 'Content-Type': 'application/json' };
+  if (sbState.session) h['Authorization'] = 'Bearer ' + sbState.session.access_token;
+  return Object.assign(h, extra || {});
+}
+
+async function sbSignUp(key) {
+  var res = await fetch(SB_URL + '/auth/v1/signup', {
+    method: 'POST', headers: sbHeaders(),
+    body: JSON.stringify({ email: key + '@sp.smartypants', password: key })
+  });
+  var data = await res.json();
+  if (!res.ok) throw new Error(data.msg || data.error_description || 'Sign-up failed');
+  sbState.session = data;
+  sbState.recoveryKey = key;
+  lsSet(SB_SESSION_KEY, JSON.stringify({ access_token: data.access_token, refresh_token: data.refresh_token, user_id: data.user && data.user.id }));
+  lsSet(SB_RKEY_KEY, key);
+}
+
+async function sbSignIn(key) {
+  var res = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+    method: 'POST', headers: sbHeaders(),
+    body: JSON.stringify({ email: key + '@sp.smartypants', password: key })
+  });
+  var data = await res.json();
+  if (!res.ok) throw new Error(data.msg || data.error_description || 'Invalid recovery key');
+  sbState.session = data;
+  sbState.recoveryKey = key;
+  lsSet(SB_SESSION_KEY, JSON.stringify({ access_token: data.access_token, refresh_token: data.refresh_token, user_id: data.user && data.user.id }));
+  lsSet(SB_RKEY_KEY, key);
+}
+
+async function sbRefresh() {
+  var raw = lsGet(SB_SESSION_KEY);
+  if (!raw) return false;
+  var saved; try { saved = JSON.parse(raw); } catch(e) { return false; }
+  if (!saved || !saved.refresh_token) return false;
+  var res = await fetch(SB_URL + '/auth/v1/token?grant_type=refresh_token', {
+    method: 'POST', headers: sbHeaders(),
+    body: JSON.stringify({ refresh_token: saved.refresh_token })
+  });
+  if (!res.ok) return false;
+  var data = await res.json();
+  sbState.session = data;
+  lsSet(SB_SESSION_KEY, JSON.stringify({ access_token: data.access_token, refresh_token: data.refresh_token, user_id: data.user && data.user.id }));
+  return true;
+}
+
+async function sbPushKey(key, rawVal) {
+  if (!sbState.session) return;
+  var val; try { val = JSON.parse(rawVal); } catch(e) { val = rawVal; }
+  await fetch(SB_URL + '/rest/v1/user_data', {
+    method: 'POST',
+    headers: sbHeaders({ 'Prefer': 'resolution=merge-duplicates' }),
+    body: JSON.stringify({ user_id: sbState.session.user.id, key: key, value: val, updated_at: new Date().toISOString() })
+  });
+}
+
+async function sbPushAll() {
+  if (!sbState.session) return;
+  var keys = BACKUP_KEYS.filter(function(k) { return k !== 'smartTheme'; });
+  for (var i = 0; i < keys.length; i++) {
+    var raw = lsGet(keys[i]);
+    await sbPushKey(keys[i], raw !== null ? raw : 'null').catch(function() {});
+  }
+}
+
+async function sbPull() {
+  if (!sbState.session) return;
+  sbState.pulling = true;
+  try {
+    var uid = sbState.session.user.id;
+    var res = await fetch(SB_URL + '/rest/v1/user_data?select=key,value&user_id=eq.' + uid, {
+      headers: sbHeaders()
+    });
+    if (!res.ok) return;
+    var rows = await res.json();
+    rows.forEach(function(row) {
+      if (row.key !== 'smartTheme') {
+        lsSet(row.key, typeof row.value === 'string' ? row.value : JSON.stringify(row.value));
+      }
+    });
+    renderTracker(); renderUrgeLog(); initWheel();
+    renderAbcLog(); renderCbaLog(); renderFiveQLog();
+    loadCp(); loadValues(); renderDashboard();
+    var el = document.getElementById('syncLastSynced');
+    if (el) el.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+  } finally {
+    sbState.pulling = false;
+  }
+}
+
+async function sbRestoreSession() {
+  var savedKey = lsGet(SB_RKEY_KEY);
+  if (savedKey) sbState.recoveryKey = savedKey;
+  var ok = false;
+  try { ok = await sbRefresh(); } catch(e) {}
+  if (ok) {
+    sbRenderActive();
+    try { await sbPull(); } catch(e) {}
+  } else {
+    try { lsRemove(SB_SESSION_KEY); } catch(e) {}
+    sbState.session = null;
+    sbRenderSetup();
+  }
+}
+
+// ── SYNC UI ──
+function sbRenderSetup() {
+  var s = document.getElementById('syncUiSetup');
+  var a = document.getElementById('syncUiActive');
+  if (s) s.style.display = '';
+  if (a) a.style.display = 'none';
+}
+
+function sbRenderActive() {
+  var s = document.getElementById('syncUiSetup');
+  var a = document.getElementById('syncUiActive');
+  if (s) s.style.display = 'none';
+  if (a) a.style.display = '';
+  var kd = document.getElementById('syncActiveKeyDisplay');
+  if (kd && sbState.recoveryKey) kd.textContent = sbState.recoveryKey;
+}
+
+function setSyncStatus(msg, isError) {
+  var el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--rose)' : '';
+  if (msg) setTimeout(function() { if (el.textContent === msg) el.textContent = ''; }, 5000);
+}
+
+var _pendingKey = null;
+
+function syncGenerateKey() {
+  _pendingKey = sbGenKey();
+  var gp = document.getElementById('syncGenPanel');
+  var rp = document.getElementById('syncRestorePanel');
+  var kd = document.getElementById('syncNewKeyDisplay');
+  if (gp) gp.style.display = '';
+  if (rp) rp.style.display = 'none';
+  if (kd) kd.textContent = _pendingKey;
+}
+
+function syncShowRestore() {
+  var gp = document.getElementById('syncGenPanel');
+  var rp = document.getElementById('syncRestorePanel');
+  if (gp) gp.style.display = 'none';
+  if (rp) rp.style.display = '';
+}
+
+function syncCopyKey() {
+  if (!_pendingKey) return;
+  navigator.clipboard.writeText(_pendingKey)
+    .then(function() { setSyncStatus('Key copied to clipboard.'); })
+    .catch(function() { setSyncStatus('Copy failed — select and copy the key manually.', true); });
+}
+
+function syncCopyActiveKey() {
+  if (!sbState.recoveryKey) return;
+  navigator.clipboard.writeText(sbState.recoveryKey)
+    .then(function() { setSyncStatus('Key copied.'); })
+    .catch(function() { setSyncStatus('Copy failed.', true); });
+}
+
+async function syncActivate() {
+  if (!_pendingKey) return;
+  setSyncStatus('Setting up sync…');
+  try {
+    await sbSignUp(_pendingKey);
+    await sbPushAll();
+    sbRenderActive();
+    setSyncStatus('Sync active. Your data has been uploaded.');
+  } catch(e) {
+    // Key collision (extremely unlikely) — try sign-in
+    try {
+      await sbSignIn(_pendingKey);
+      await sbPull();
+      sbRenderActive();
+      setSyncStatus('Sync active.');
+    } catch(e2) {
+      setSyncStatus('Could not activate: ' + (e2.message || 'unknown error'), true);
+    }
+  }
+}
+
+async function syncConnect() {
+  var inp = document.getElementById('syncKeyInput');
+  var key = inp ? inp.value.trim().toLowerCase() : '';
+  if (!key) { setSyncStatus('Enter your recovery key first.', true); return; }
+  setSyncStatus('Connecting…');
+  try {
+    await sbSignIn(key);
+    await sbPull();
+    sbRenderActive();
+    setSyncStatus('Connected and synced.');
+  } catch(e) {
+    setSyncStatus('Key not found or incorrect — check spelling and try again.', true);
+  }
+}
+
+async function syncNow() {
+  if (!sbState.session) return;
+  setSyncStatus('Syncing…');
+  try {
+    await sbPushAll();
+    await sbPull();
+    setSyncStatus('Synced successfully.');
+  } catch(e) {
+    setSyncStatus('Sync failed — check your connection.', true);
+  }
+}
+
+function syncDisconnect() {
+  if (!confirm('Remove sync from this device? Your local data will not be affected.')) return;
+  sbState.session = null;
+  sbState.recoveryKey = null;
+  lsRemove(SB_SESSION_KEY);
+  lsRemove(SB_RKEY_KEY);
+  _pendingKey = null;
+  sbRenderSetup();
+  var gp = document.getElementById('syncGenPanel');
+  var rp = document.getElementById('syncRestorePanel');
+  if (gp) gp.style.display = 'none';
+  if (rp) rp.style.display = 'none';
+  setSyncStatus('Sync disconnected from this device.');
+}
+
+// Kick off session restore once DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  sbRestoreSession().catch(function() { sbRenderSetup(); });
+});
 
 // ── SERVICE WORKER ────────────────────────────────────────
 if ('serviceWorker' in navigator) {
