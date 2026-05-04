@@ -126,45 +126,6 @@
     padding-bottom: calc(68px + env(safe-area-inset-bottom, 0));
   }
 
-  /* ── HEADER ── */
-  header {
-    background: var(--bg-card);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 20px;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  header::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #1A1E51, #3942B0 45%, #FEE449);
-  }
-  .header-left { display: flex; flex-direction: column; }
-  .header-label {
-    font-size: 9px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--amber);
-    font-family: var(--font-body);
-    font-weight: 600;
-    margin-bottom: 1px;
-  }
-  header h1 {
-    font-family: var(--font-display);
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--text-heading);
-    line-height: 1.2;
-    margin: 0;
-    letter-spacing: -0.01em;
-  }
-  header p { display: none; }
   .program-badges { display: none; }
   .badge {
     font-size: 11px;
@@ -1333,7 +1294,7 @@
   /* ── PRINT ── */
   @media print {
     nav, .backup-bar, .btn-delete, .btn-primary, .btn-backup,
-    .btn-box, .btn-surf, .theme-toggle, .breath-tabs,
+    .btn-box, .btn-surf, .breath-tabs,
     .surf-controls, .box-btn-row { display: none !important; }
     header::before { display: none; }
     body { padding-bottom: 0 !important; }
@@ -1352,16 +1313,6 @@
 </head>
 <body>
 
-<header>
-  <div class="header-left">
-    <div class="header-label">SMART Recovery</div>
-    <h1>Recovery Toolbox</h1>
-  </div>
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
-    <div class="toggle-track"><div class="toggle-knob"></div></div>
-    <span class="toggle-label" id="toggleLabel">Light</span>
-  </button>
-</header>
 
 <nav aria-label="App navigation">
   <ul role="tablist">
@@ -3283,6 +3234,7 @@ function toggleTheme() {
   const isLight = html.classList.toggle('light');
   lsSet('smartTheme', isLight ? 'light' : 'dark');
   syncThemeUI(isLight);
+  setTimeout(() => { const v = getWheelVals(); drawWheel(v); }, 50);
 }
 
 try {
@@ -3298,7 +3250,6 @@ try {
   }
 } catch(e) {}
 
-document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
 // ── HALT CHECK ───────────────────────────────────────────
 function toggleHalt(el) {
@@ -3603,11 +3554,6 @@ function drawWheel(vals) {
   svg.innerHTML = out;
 }
 
-// Re-draw wheel on theme change (colors need to update)
-document.getElementById('themeToggle').addEventListener('click', () => setTimeout(() => {
-  const v = getWheelVals();
-  drawWheel(v);
-}, 50));
 
 document.addEventListener('DOMContentLoaded', initWheel);
 // ── SOBRIETY TRACKER ─────────────────────────────────────
