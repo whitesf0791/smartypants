@@ -1308,7 +1308,37 @@
     * { color: #000 !important; }
   }
 
-  /* ── CLOUD SYNC ── */
+  /* ── DAILY CHECK-IN ── */
+  .checkin-today { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 13.5px; line-height: 1.5; }
+  .checkin-streak { font-size: 12px; font-weight: 700; color: var(--amber); letter-spacing: 0.02em; }
+  .checkin-mood-row { display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
+  .mood-num { font-size: 13px; font-weight: 700; color: var(--text); min-width: 16px; text-align: center; }
+
+  /* ── SUPPORT NETWORK ── */
+  .support-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .support-item:last-child { border-bottom: none; }
+  .support-info { flex: 1; min-width: 0; }
+  .support-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .support-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .btn-call { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; transition: border-color 0.15s; flex-shrink: 0; }
+  .btn-call:hover { border-color: var(--sage); color: var(--sage); }
+  .support-empty { font-size: 13.5px; color: var(--text-muted); padding: 8px 0; }
+
+  /* ── GOAL TRACKER ── */
+  .goal-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .goal-card.done { opacity: 0.6; }
+  .goal-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .goal-meta { font-size: 11.5px; color: var(--text-muted); margin-bottom: 10px; }
+  .goal-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+  .goal-bar-fill { height: 100%; background: var(--sage); border-radius: 3px; transition: width 0.25s; }
+  .goal-progress-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .goal-pct { font-size: 12px; color: var(--text-muted); min-width: 36px; text-align: right; }
+  .goal-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .goal-filter-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .goal-filter-btn { padding: 5px 16px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 13px; cursor: pointer; transition: all 0.15s; }
+  .goal-filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+</style>
   .sync-key-box {
     font-family: var(--font-body);
     font-size: 15px;
@@ -1409,6 +1439,37 @@
         </a>
       </div>
     </details>
+
+    <!-- DAILY CHECK-IN -->
+    <div class="tool-card" id="daily-checkin" style="margin-top:20px;">
+      <div class="tool-card-header">
+        <span class="tool-type type-tool">Daily</span>
+        <div class="tool-name">Daily Check-in</div>
+      </div>
+      <div class="tool-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span style="font-size:13.5px;color:var(--text-muted);">How are you feeling today?</span>
+          <span class="checkin-streak" id="checkinStreak"></span>
+        </div>
+        <!-- Already checked in today -->
+        <div id="checkinTodayBlock" style="display:none;">
+          <div class="checkin-today" id="checkinTodayDisplay"></div>
+        </div>
+        <!-- Check-in form -->
+        <div id="checkinForm">
+          <div class="checkin-mood-row">
+            <span style="font-size:12px;color:var(--text-muted);white-space:nowrap;">Struggling</span>
+            <input type="range" min="1" max="10" value="5" id="checkinMood" style="flex:1;"
+              oninput="document.getElementById('checkinMoodVal').textContent=this.value">
+            <span class="mood-num" id="checkinMoodVal">5</span>
+            <span style="font-size:12px;color:var(--text-muted);white-space:nowrap;">Thriving</span>
+          </div>
+          <textarea id="checkinNote" rows="2" placeholder="Optional — what's on your mind?"
+            style="width:100%;box-sizing:border-box;margin:10px 0 12px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;resize:vertical;font-family:var(--font-body);"></textarea>
+          <button class="btn-primary" onclick="saveCheckin()">Save Check-in</button>
+        </div>
+      </div>
+    </div>
 
     <div class="tool-card" id="halt" style="margin-top:20px;">
       <div class="tool-card-header">
@@ -1835,6 +1896,47 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ═══ PAGE: GOALS (inside Worksheets) ═══ -->
+<div class="page-section-header">
+  <div class="page-section-title">Point 4 · Goal Tracker</div>
+</div>
+<div class="tool-card" id="goals-worksheet">
+  <div class="tool-card-header">
+    <span class="tool-type type-worksheet">Worksheet</span>
+    <div class="tool-name">SMART Goal Tracker</div>
+  </div>
+  <div class="tool-body">
+    <!-- Create goal form -->
+    <details class="tool-details" id="goalFormDetails">
+      <summary class="tool-details-toggle">+ Add a New Goal</summary>
+      <div style="padding-top:10px;">
+        <input type="text" id="goalTitle" placeholder="Goal title *"
+          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);margin-bottom:8px;">
+        <textarea id="goalSpecific" rows="2" placeholder="Specific — exactly what will you do?"
+          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
+        <textarea id="goalMeasurable" rows="2" placeholder="Measurable — how will you know you've succeeded?"
+          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
+        <textarea id="goalAchievable" rows="2" placeholder="Achievable — what steps will you take?"
+          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
+        <textarea id="goalRelevant" rows="2" placeholder="Relevant — why does this matter to your recovery?"
+          style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);resize:vertical;margin-bottom:8px;"></textarea>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <label style="font-size:13px;color:var(--text-muted);white-space:nowrap;">Target date</label>
+          <input type="date" id="goalDeadline"
+            style="padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-family:var(--font-body);">
+        </div>
+        <button class="btn-primary" onclick="saveGoal()">Save Goal</button>
+      </div>
+    </details>
+    <!-- Goal list -->
+    <div class="goal-filter-row" style="margin-top:16px;">
+      <button class="goal-filter-btn active" id="goalTabActive" onclick="setGoalFilter(true)">Active</button>
+      <button class="goal-filter-btn" id="goalTabDone" onclick="setGoalFilter(false)">Completed</button>
+    </div>
+    <div id="goalList"></div>
   </div>
 </div>
 
@@ -2851,6 +2953,7 @@
     </div>
     <div class="tool-body">
       <div class="tool-summary">Goals give recovery structure, direction, and purpose. The most meaningful ones are connected to your values. This tool walks you through building goals that are actually achievable, then breaking them into steps.</div>
+      <p style="margin:8px 0 0;"><a href="#goals-worksheet" onclick="showPage('page-worksheets');scrollToId('goals-worksheet');return false;" style="color:var(--blue);font-size:13.5px;">→ Open Goal Tracker</a></p>
 
       <div class="tool-content-section">
         <div class="section-label">What Makes a Goal Effective — SMART Criteria</div>
@@ -3154,6 +3257,13 @@
         <p>Recovery is not a straight line. The people who build lasting change are not the ones who never slip — they're the ones who respond to slips without abandoning the work.</p>
         <small>Find a SMART meeting now: <a href="https://meetings.smartrecovery.org/meetings/" target="_blank" style="color:var(--amber);">meetings.smartrecovery.org</a></small>
       </div>
+
+      <!-- MY SUPPORT NETWORK -->
+      <div class="page-section-header" style="padding-top:28px;">
+        <div class="page-section-title">My Support Network</div>
+      </div>
+      <div id="slipSupportList"></div>
+
     </div>
   </div>
 
@@ -3247,6 +3357,22 @@
       </div>
 
       <div class="settings-status" id="syncStatus" aria-live="polite"></div>
+    </div>
+
+    <!-- SUPPORT NETWORK -->
+    <div class="settings-section">
+      <div class="settings-section-title">Support Network</div>
+      <div class="settings-card">
+        <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+          <div class="settings-row-label">Add a Contact</div>
+          <div class="settings-row-sub" style="margin-bottom:6px;">People to reach out to when things get hard. Accessible from the If You Slip tab.</div>
+          <input type="text" id="supportName" class="sync-input" placeholder="Name *" autocomplete="off">
+          <input type="tel" id="supportPhone" class="sync-input" placeholder="Phone number (optional)" autocomplete="off">
+          <input type="text" id="supportRel" class="sync-input" placeholder="Relationship — e.g. Sponsor, Therapist, Friend" autocomplete="off">
+          <button class="btn-backup" onclick="addSupport()">Add Contact</button>
+        </div>
+        <div id="supportSettingsList" style="margin-top:4px;"></div>
+      </div>
     </div>
 
     <!-- DATA MANAGEMENT -->
@@ -4209,7 +4335,10 @@ const BACKUP_KEYS = [
   'smart_cba_v1',
   'smart_change_plan_v1',
   'smart_values_log_v1',
-  'smart_five_q_log_v1'
+  'smart_five_q_log_v1',
+  'smart_checkin_v1',
+  'smart_support_v1',
+  'smart_goals_v1'
 ];
 
 function exportData() {
@@ -4445,7 +4574,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.1';
+var APP_VERSION = '2.2.2';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
@@ -4560,6 +4689,252 @@ function confirmClearAll() {
   setBackupStatus('All data cleared.');
   if (sbState.session) sbPushAll().catch(function() {});
 }
+
+// ── DAILY CHECK-IN ───────────────────────────────────────
+const CHECKIN_KEY = 'smart_checkin_v1';
+
+function getCheckins() {
+  try { return JSON.parse(lsGet(CHECKIN_KEY) || '[]'); } catch(e) { return []; }
+}
+function todayDateStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+function getTodayCheckin() {
+  var t = todayDateStr();
+  return getCheckins().find(function(c) { return c.ts.slice(0, 10) === t; }) || null;
+}
+function getCheckinStreak() {
+  var days = new Set(getCheckins().map(function(c) { return c.ts.slice(0, 10); }));
+  var streak = 0;
+  var d = new Date();
+  // Allow streak to remain active if today hasn't been logged yet
+  if (!days.has(d.toISOString().slice(0, 10))) d.setDate(d.getDate() - 1);
+  while (days.has(d.toISOString().slice(0, 10))) {
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
+  return streak;
+}
+function checkinMoodLabel(m) {
+  m = parseInt(m);
+  if (m <= 2) return 'Very difficult';
+  if (m <= 4) return 'Struggling';
+  if (m <= 6) return 'Managing';
+  if (m <= 8) return 'Doing well';
+  return 'Thriving';
+}
+function saveCheckin() {
+  var mood = parseInt(document.getElementById('checkinMood').value);
+  var note = (document.getElementById('checkinNote').value || '').trim();
+  var entries = getCheckins().filter(function(c) { return c.ts.slice(0, 10) !== todayDateStr(); });
+  entries.unshift({ id: Date.now(), ts: new Date().toISOString(), mood: mood, note: note });
+  lsSet(CHECKIN_KEY, JSON.stringify(entries));
+  renderCheckin();
+  renderDashboard();
+}
+function editTodayCheckin() {
+  var today = getTodayCheckin();
+  var tb = document.getElementById('checkinTodayBlock');
+  var f  = document.getElementById('checkinForm');
+  if (tb) tb.style.display = 'none';
+  if (f)  f.style.display  = '';
+  if (today) {
+    var mi = document.getElementById('checkinMood');
+    var mv = document.getElementById('checkinMoodVal');
+    var ni = document.getElementById('checkinNote');
+    if (mi) mi.value = today.mood;
+    if (mv) mv.textContent = today.mood;
+    if (ni) ni.value = today.note || '';
+  }
+}
+function renderCheckin() {
+  var streak    = getCheckinStreak();
+  var streakEl  = document.getElementById('checkinStreak');
+  var todayBlock = document.getElementById('checkinTodayBlock');
+  var formEl    = document.getElementById('checkinForm');
+  var todayDisp = document.getElementById('checkinTodayDisplay');
+  if (streakEl) streakEl.textContent = streak > 0 ? streak + '-day streak 🔥' : '';
+  var today = getTodayCheckin();
+  if (today) {
+    if (todayBlock) todayBlock.style.display = '';
+    if (formEl)     formEl.style.display     = 'none';
+    if (todayDisp) todayDisp.innerHTML =
+      '<strong>' + today.mood + '/10 — ' + esc(checkinMoodLabel(today.mood)) + '</strong>' +
+      (today.note ? '<br><span style="color:var(--text-muted);font-size:12.5px;">' + esc(today.note) + '</span>' : '') +
+      '<br><button onclick="editTodayCheckin()" style="margin-top:6px;font-size:12px;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;">Edit today\'s check-in</button>';
+  } else {
+    if (todayBlock) todayBlock.style.display = 'none';
+    if (formEl)     formEl.style.display     = '';
+    var mi = document.getElementById('checkinMood');
+    var mv = document.getElementById('checkinMoodVal');
+    var ni = document.getElementById('checkinNote');
+    if (mi) mi.value = 5;
+    if (mv) mv.textContent = '5';
+    if (ni) ni.value = '';
+  }
+}
+document.addEventListener('DOMContentLoaded', renderCheckin);
+
+// ── SUPPORT NETWORK ──────────────────────────────────────
+const SUPPORT_KEY = 'smart_support_v1';
+
+function getSupport() {
+  try { return JSON.parse(lsGet(SUPPORT_KEY) || '[]'); } catch(e) { return []; }
+}
+function addSupport() {
+  var nameEl = document.getElementById('supportName');
+  var name = (nameEl ? nameEl.value : '').trim();
+  if (!name) {
+    if (nameEl) { nameEl.style.borderColor = 'var(--rose)'; setTimeout(function() { nameEl.style.borderColor = ''; }, 1500); }
+    return;
+  }
+  var phone = ((document.getElementById('supportPhone') || {}).value || '').trim();
+  var rel   = ((document.getElementById('supportRel')   || {}).value || '').trim();
+  var contacts = getSupport();
+  contacts.push({ id: Date.now(), name: name, phone: phone, rel: rel });
+  lsSet(SUPPORT_KEY, JSON.stringify(contacts));
+  if (nameEl) nameEl.value = '';
+  var pe = document.getElementById('supportPhone'); if (pe) pe.value = '';
+  var re = document.getElementById('supportRel');   if (re) re.value = '';
+  renderSupportSettings();
+  renderSupportSlip();
+}
+function deleteSupport(id) {
+  lsSet(SUPPORT_KEY, JSON.stringify(getSupport().filter(function(c) { return c.id !== parseInt(id); })));
+  renderSupportSettings();
+  renderSupportSlip();
+}
+function renderSupportSettings() {
+  var el = document.getElementById('supportSettingsList');
+  if (!el) return;
+  var contacts = getSupport();
+  if (!contacts.length) { el.innerHTML = '<div class="support-empty" style="padding-top:10px;">No contacts yet.</div>'; return; }
+  el.innerHTML = contacts.map(function(c) {
+    var meta = [c.rel, c.phone].filter(Boolean).join(' · ');
+    return '<div class="support-item">' +
+      '<div class="support-info">' +
+        '<div class="support-name">' + esc(c.name) + '</div>' +
+        (meta ? '<div class="support-meta">' + esc(meta) + '</div>' : '') +
+      '</div>' +
+      '<button class="btn-delete" onclick="deleteSupport(' + c.id + ')" aria-label="Remove">✕</button>' +
+    '</div>';
+  }).join('');
+}
+function renderSupportSlip() {
+  var el = document.getElementById('slipSupportList');
+  if (!el) return;
+  var contacts = getSupport();
+  if (!contacts.length) {
+    el.innerHTML = '<div class="support-empty">No contacts saved yet. Add your support network in <strong>Settings → Support Network</strong>.</div>';
+    return;
+  }
+  el.innerHTML = contacts.map(function(c) {
+    var meta = [c.rel, c.phone].filter(Boolean).join(' · ');
+    var callBtn = c.phone ? '<a href="tel:' + esc(c.phone) + '" class="btn-call">Call</a>' : '';
+    return '<div class="support-item">' +
+      '<div class="support-info">' +
+        '<div class="support-name">' + esc(c.name) + '</div>' +
+        (meta ? '<div class="support-meta">' + esc(meta) + '</div>' : '') +
+      '</div>' +
+      callBtn +
+    '</div>';
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded', function() { renderSupportSettings(); renderSupportSlip(); });
+
+// ── GOAL TRACKER ─────────────────────────────────────────
+const GOALS_KEY = 'smart_goals_v1';
+var goalFilterActive = true;
+
+function getGoals() {
+  try { return JSON.parse(lsGet(GOALS_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveGoal() {
+  var titleEl = document.getElementById('goalTitle');
+  var title = (titleEl ? titleEl.value : '').trim();
+  if (!title) {
+    if (titleEl) { titleEl.style.borderColor = 'var(--rose)'; setTimeout(function() { titleEl.style.borderColor = ''; }, 1500); }
+    return;
+  }
+  var g = {
+    id: Date.now(), ts: new Date().toISOString(),
+    title:      title,
+    specific:   ((document.getElementById('goalSpecific')   || {}).value || '').trim(),
+    measurable: ((document.getElementById('goalMeasurable') || {}).value || '').trim(),
+    achievable: ((document.getElementById('goalAchievable') || {}).value || '').trim(),
+    relevant:   ((document.getElementById('goalRelevant')   || {}).value || '').trim(),
+    deadline:   ((document.getElementById('goalDeadline')   || {}).value || '').trim(),
+    progress: 0, completed: false
+  };
+  var goals = getGoals();
+  goals.unshift(g);
+  lsSet(GOALS_KEY, JSON.stringify(goals));
+  ['goalTitle','goalSpecific','goalMeasurable','goalAchievable','goalRelevant','goalDeadline'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  var det = document.getElementById('goalFormDetails'); if (det) det.removeAttribute('open');
+  goalFilterActive = true;
+  var ta = document.getElementById('goalTabActive'); if (ta) ta.classList.add('active');
+  var td = document.getElementById('goalTabDone');   if (td) td.classList.remove('active');
+  renderGoals();
+  renderDashboard();
+}
+function updateGoalProgress(id, val) {
+  var goals = getGoals().map(function(g) { if (g.id === parseInt(id)) g.progress = parseInt(val); return g; });
+  lsSet(GOALS_KEY, JSON.stringify(goals));
+  var pct  = document.getElementById('gpct-'  + id); if (pct)  pct.textContent  = val + '%';
+  var fill = document.getElementById('gfill-' + id); if (fill) fill.style.width = val + '%';
+}
+function toggleGoalComplete(id) {
+  var goals = getGoals().map(function(g) {
+    if (g.id === parseInt(id)) { g.completed = !g.completed; if (g.completed) g.progress = 100; }
+    return g;
+  });
+  lsSet(GOALS_KEY, JSON.stringify(goals));
+  renderGoals(); renderDashboard();
+}
+function deleteGoal(id) {
+  if (!confirm('Delete this goal?')) return;
+  lsSet(GOALS_KEY, JSON.stringify(getGoals().filter(function(g) { return g.id !== parseInt(id); })));
+  renderGoals(); renderDashboard();
+}
+function setGoalFilter(active) {
+  goalFilterActive = active;
+  var ta = document.getElementById('goalTabActive'); if (ta) ta.classList.toggle('active', active);
+  var td = document.getElementById('goalTabDone');   if (td) td.classList.toggle('active', !active);
+  renderGoals();
+}
+function renderGoals() {
+  var el = document.getElementById('goalList');
+  if (!el) return;
+  var goals = getGoals().filter(function(g) { return goalFilterActive ? !g.completed : g.completed; });
+  if (!goals.length) {
+    el.innerHTML = '<div style="font-size:13.5px;color:var(--text-muted);padding:8px 0;">' +
+      (goalFilterActive ? 'No active goals. Open "Add a New Goal" above to create one.' : 'No completed goals yet.') + '</div>';
+    return;
+  }
+  var fmtDate = function(iso) {
+    return new Date(iso + (iso.length === 10 ? 'T00:00:00' : '')).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+  el.innerHTML = goals.map(function(g) {
+    var meta = 'Created ' + fmtDate(g.ts) + (g.deadline ? ' · Due ' + fmtDate(g.deadline) : '');
+    return '<div class="goal-card' + (g.completed ? ' done' : '') + '">' +
+      '<div class="goal-title">' + esc(g.title) + '</div>' +
+      '<div class="goal-meta">' + esc(meta) + '</div>' +
+      '<div class="goal-bar-wrap"><div class="goal-bar-fill" id="gfill-' + g.id + '" style="width:' + (g.progress||0) + '%"></div></div>' +
+      '<div class="goal-progress-row">' +
+        '<input type="range" min="0" max="100" value="' + (g.progress||0) + '" style="flex:1;"' +
+          (g.completed ? ' disabled' : '') + ' oninput="updateGoalProgress(' + g.id + ',this.value)">' +
+        '<span class="goal-pct" id="gpct-' + g.id + '">' + (g.progress||0) + '%</span>' +
+      '</div>' +
+      '<div class="goal-actions">' +
+        '<button class="btn-backup" onclick="toggleGoalComplete(' + g.id + ')">' + (g.completed ? 'Reopen' : 'Mark Complete') + '</button>' +
+        '<button class="btn-delete" onclick="deleteGoal(' + g.id + ')" aria-label="Delete goal">✕</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded', renderGoals);
 
 // ── CLOUD SYNC ───────────────────────────────────────────
 var SB_URL  = 'https://wpebickfhoqdsxpnqdft.supabase.co';
