@@ -662,16 +662,28 @@
     background: rgba(224, 0, 77, 0.06);
     border: 1px solid rgba(224, 0, 77, 0.22);
     border-radius: 8px;
-    padding: 18px 22px;
     margin-bottom: 24px;
   }
   html.light .crisis-banner { background: rgba(143,0,51,0.05); border-color: rgba(143,0,51,0.2); }
+  .crisis-summary {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .crisis-summary::-webkit-details-marker { display: none; }
+  .crisis-summary::before {
+    content: '›'; font-size: 16px; color: var(--rose); line-height: 1;
+    transition: transform 0.18s; flex-shrink: 0;
+  }
+  .crisis-banner[open] .crisis-summary::before { transform: rotate(90deg); }
   .crisis-banner-title {
     font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
     text-transform: uppercase; color: var(--rose);
-    margin-bottom: 12px; font-family: var(--font-body);
+    font-family: var(--font-body);
   }
-  .crisis-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .crisis-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; padding: 0 16px 14px; }
   .crisis-item {
     display: flex; flex-direction: column; gap: 2px;
     padding: 12px 14px;
@@ -1384,8 +1396,8 @@
 <div class="page page-active" id="page-rightnow">
   <div class="container">
 
-    <div class="crisis-banner" id="crisis">
-      <div class="crisis-banner-title">If you are in crisis right now</div>
+    <details class="crisis-banner" id="crisis">
+      <summary class="crisis-summary"><span class="crisis-banner-title">If you are in crisis right now</span></summary>
       <div class="crisis-items">
         <a href="tel:18006624357" class="crisis-item">
           <span class="crisis-item-label">SAMHSA Helpline</span>
@@ -1403,7 +1415,7 @@
           <span class="crisis-item-sub">Text-based support · Free · 24/7</span>
         </a>
       </div>
-    </div>
+    </details>
 
     <div class="tool-card" id="halt" style="margin-top:20px;">
       <div class="tool-card-header">
@@ -1666,7 +1678,7 @@
         <div class="tool-body">
           <div class="ws-interactive" id="valuesInteractive">
             <div class="section-label">Your Values</div>
-            <div class="form-field" style="margin-bottom:14px;">
+            <div class="form-field" style="margin-bottom:10px;">
               <label class="form-label" for="val_behavior">Behavior Currently Getting Top Priority</label>
               <input type="text" class="form-input" id="val_behavior" placeholder="e.g. alcohol">
             </div>
@@ -1677,9 +1689,9 @@
               <div class="form-field"><label class="form-label" for="val_4">Value 4</label><input type="text" class="form-input" id="val_4" placeholder=""></div>
               <div class="form-field"><label class="form-label" for="val_5">Value 5</label><input type="text" class="form-input" id="val_5" placeholder=""></div>
             </div>
-            <button class="btn-primary" onclick="saveValues()">Save Values</button>
+            <button class="btn-primary" onclick="saveValEntry()">Save Values</button>
             <span id="valuesSaveStatus" class="sr-only" aria-live="polite"></span>
-            <p class="ws-save-note">Saves over the previous version. Export JSON before major revisions to keep a history.</p>
+            <div class="urge-entries-list" id="valEntriesList" style="margin-top:16px;"></div>
           </div>
           <details class="tool-details">
             <summary class="tool-details-toggle">How it works</summary>
@@ -3275,7 +3287,15 @@ function toggleTheme() {
 
 try {
   const saved = lsGet('smartTheme');
-  if (saved === 'light') { html.classList.add('light'); syncThemeUI(true); }
+  if (saved === 'light') {
+    html.classList.add('light'); syncThemeUI(true);
+  } else if (saved === 'dark') {
+    syncThemeUI(false);
+  } else {
+    // No saved preference — follow system
+    const preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    if (preferLight) { html.classList.add('light'); syncThemeUI(true); } else { syncThemeUI(false); }
+  }
 } catch(e) {}
 
 document.getElementById('themeToggle').addEventListener('click', toggleTheme);
@@ -4013,40 +4033,62 @@ function checkCpReview(cp) {
 document.addEventListener('DOMContentLoaded', loadCp);
 
 // ── VALUES ────────────────────────────────────────────────
-const VAL_KEY = 'smart_values_v1';
+const VAL_KEY = 'smart_values_log_v1';
 
-function getValues() {
-  try { return JSON.parse(lsGet(VAL_KEY) || 'null'); } catch(e) { return null; }
+function getValLog() {
+  try { return JSON.parse(lsGet(VAL_KEY) || '[]'); } catch(e) { return []; }
 }
 
-function loadValues() {
-  const vals = getValues();
-  if (!vals) return;
-  const bEl = document.getElementById('val_behavior');
-  if (bEl && vals.behavior !== undefined) bEl.value = vals.behavior;
+function saveValEntry() {
+  const behavior = (document.getElementById('val_behavior').value || '').trim();
+  const values = [];
   for (let i = 1; i <= 5; i++) {
     const el = document.getElementById('val_' + i);
-    if (el && vals['v' + i] !== undefined) el.value = vals['v' + i];
+    values.push(el ? el.value.trim() : '');
   }
-}
-
-function saveValues() {
-  const data = {
-    behavior: (document.getElementById('val_behavior').value || '').trim(),
-    saved: new Date().toISOString()
-  };
+  if (!behavior && values.every(v => !v)) {
+    const el = document.getElementById('val_behavior');
+    if (el) { el.focus(); el.style.borderColor = 'var(--rose)'; setTimeout(() => { el.style.borderColor = ''; }, 1500); }
+    return;
+  }
+  const entries = getValLog();
+  entries.push({ id: Date.now(), ts: new Date().toISOString(), behavior, values });
+  lsSet(VAL_KEY, JSON.stringify(entries));
+  document.getElementById('val_behavior').value = '';
   for (let i = 1; i <= 5; i++) {
-    const el = document.getElementById('val_' + i);
-    data['v' + i] = el ? el.value.trim() : '';
+    const el = document.getElementById('val_' + i); if (el) el.value = '';
   }
-  lsSet(VAL_KEY, JSON.stringify(data));
-  const saveBtn = document.querySelector('#valuesInteractive .btn-primary');
-  if (saveBtn) { saveBtn.textContent = 'Saved!'; setTimeout(() => { saveBtn.textContent = 'Save Values'; }, 2000); }
-  const valSr = document.getElementById('valuesSaveStatus');
-  if (valSr) { valSr.textContent = 'Values saved.'; setTimeout(() => { valSr.textContent = ''; }, 3000); }
+  renderValLog();
+  renderDashboard();
 }
 
-document.addEventListener('DOMContentLoaded', loadValues);
+function deleteValEntry(id) {
+  lsSet(VAL_KEY, JSON.stringify(getValLog().filter(e => e.id !== parseInt(id))));
+  renderValLog();
+  renderDashboard();
+}
+
+function renderValLog() {
+  const list = document.getElementById('valEntriesList');
+  if (!list) return;
+  const entries = getValLog();
+  if (!entries.length) { list.innerHTML = ''; return; }
+  list.innerHTML = [...entries].reverse().slice(0, 10).map(entry => {
+    const dt = new Date(entry.ts);
+    const date = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const time = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const rows = [entry.behavior ? `<div class="ws-entry-label">Priority Behavior</div><div class="ws-entry-body">${esc(entry.behavior)}</div>` : '']
+      .concat((entry.values || []).map((v, i) => v ? `<div class="ws-entry-label">Value ${i + 1}</div><div class="ws-entry-body">${esc(v)}</div>` : '').filter(Boolean))
+      .join('');
+    return `<div class="ws-entry">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+        <div class="ws-entry-meta">${date} · ${time}</div>
+        <button class="btn-delete" onclick="deleteValEntry(${entry.id})" title="Delete" aria-label="Delete entry">✕</button>
+      </div>${rows}</div>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', renderValLog);
 
 // ── FIVE QUESTIONS ────────────────────────────────────────
 const FQ_KEY = 'smart_five_q_log_v1';
@@ -4106,7 +4148,7 @@ const BACKUP_KEYS = [
   'smart_abc_log_v1',
   'smart_cba_v1',
   'smart_change_plan_v1',
-  'smart_values_v1',
+  'smart_values_log_v1',
   'smart_five_q_log_v1'
 ];
 
