@@ -4392,7 +4392,14 @@ async function checkForUpdates() {
         if (dl) {
           dl.textContent = 'Reload Now';
           dl.href = '#';
-          dl.onclick = function(e) { e.preventDefault(); location.reload(); };
+          dl.onclick = async function(e) {
+            e.preventDefault();
+            if ('serviceWorker' in navigator) {
+              var reg = await navigator.serviceWorker.getRegistration();
+              if (reg) await reg.update();
+            }
+            location.reload();
+          };
           dl.style.display = 'inline-block';
         }
       }
@@ -4429,6 +4436,12 @@ function confirmClearAll() {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./service-worker.js');
+    // Auto-reload when a new SW version takes control (skips reinstall)
+    var hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (hadController) location.reload();
+      hadController = true;
+    });
   });
 }
 
