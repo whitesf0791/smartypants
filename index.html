@@ -1555,21 +1555,9 @@
             </div>
           </div>
           <button class="btn-primary" onclick="addUrgeEntry()">Log This Urge</button>
-          <div class="urge-chart-wrap" id="urgeChartWrap">
-            <div class="urge-chart-empty" id="urgeChartEmpty">Your urge history will appear here after your first entry.</div>
-            <svg id="urgeChartSvg" class="urge-chart-svg" style="display:none"></svg>
-          </div>
-          <div class="chart-legend" id="urgeLegend" style="display:none">
-            <span><span class="legend-dot" style="background:var(--sage)"></span>Resisted</span>
-            <span><span class="legend-dot" style="background:var(--amber)"></span>Partial</span>
-            <span><span class="legend-dot" style="background:var(--rose)"></span>Gave in</span>
-          </div>
-          <div class="urge-summary-grid" id="urgeSummary" style="display:none">
-            <div class="urge-summary-stat"><div class="stat-val" id="stat_total">0</div><div class="stat-label">Total Logged</div></div>
-            <div class="urge-summary-stat"><div class="stat-val" id="stat_resist">0%</div><div class="stat-label">Resistance Rate</div></div>
-            <div class="urge-summary-stat"><div class="stat-val" id="stat_avg">—</div><div class="stat-label">Avg Intensity</div></div>
-          </div>
-          <div class="urge-entries-list" id="urgeEntriesList"></div>
+          <p style="margin-top:12px;font-size:13px;color:var(--text-muted);">
+            <a href="javascript:void(0)" onclick="showPage('page-progress');scrollToId('urge-history');" style="color:var(--blue);">View urge history &rarr;</a>
+          </p>
         </div>
       </div>
     </div>
@@ -1964,6 +1952,33 @@
       </div>
     </div>
     <div class="overview-grid" id="dashboardGrid"></div>
+
+    <div class="page-section-header" style="margin-top:8px;">
+      <div class="page-section-title">Urge History</div>
+    </div>
+    <div class="tool-card" id="urge-history">
+      <div class="tool-card-header">
+        <span class="tool-type type-tool">Log</span>
+        <div class="tool-name">Urge History</div>
+      </div>
+      <div class="tool-body">
+        <div class="urge-chart-wrap" id="urgeChartWrap">
+          <div class="urge-chart-empty" id="urgeChartEmpty">Log your first urge on the Right Now tab to see your history here.</div>
+          <svg id="urgeChartSvg" class="urge-chart-svg" style="display:none"></svg>
+        </div>
+        <div class="chart-legend" id="urgeLegend" style="display:none">
+          <span><span class="legend-dot" style="background:var(--sage)"></span>Resisted</span>
+          <span><span class="legend-dot" style="background:var(--amber)"></span>Partial</span>
+          <span><span class="legend-dot" style="background:var(--rose)"></span>Gave in</span>
+        </div>
+        <div class="urge-summary-grid" id="urgeSummary" style="display:none">
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_total">0</div><div class="stat-label">Total Logged</div></div>
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_resist">0%</div><div class="stat-label">Resistance Rate</div></div>
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_avg">—</div><div class="stat-label">Avg Intensity</div></div>
+        </div>
+        <div class="urge-entries-list" id="urgeEntriesList"></div>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -4575,7 +4590,7 @@ document.addEventListener('DOMContentLoaded', renderDashboard);
 var PAGE_IDS = ['page-rightnow', 'page-worksheets', 'page-progress', 'page-learn', 'page-slip', 'page-settings'];
 
 var TOOL_PAGE_MAP = {
-  'halt': 'page-rightnow', 'urge-log': 'page-rightnow',
+  'halt': 'page-rightnow', 'urge-log': 'page-rightnow', 'urge-history': 'page-progress',
   'breathing': 'page-rightnow', 'urge-surfing': 'page-rightnow',
   'cba': 'page-worksheets', 'abc': 'page-worksheets', 'five-q': 'page-worksheets',
   'values': 'page-worksheets', 'change-plan': 'page-worksheets', 'wheel': 'page-worksheets',
@@ -4629,7 +4644,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.5';
+var APP_VERSION = '2.2.6';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
