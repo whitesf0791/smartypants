@@ -333,6 +333,78 @@
     line-height: 1.6;
   }
 
+
+  /* ── WORKSHEET DIRECTORY ── */
+  .ws-group-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 20px 0 6px;
+  }
+  .ws-index-list {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-card);
+  }
+  .ws-index-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+    color: var(--text);
+    font-family: var(--font-body);
+  }
+  .ws-index-row:last-child { border-bottom: none; }
+  .ws-index-row:hover { background: var(--bg); }
+  .ws-row-badge { flex-shrink: 0; font-size: 9px; }
+  .ws-row-text { flex: 1; min-width: 0; }
+  .ws-row-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .ws-row-desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+  .ws-row-arrow {
+    font-size: 20px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .ws-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--blue);
+    font-size: 13.5px;
+    font-family: var(--font-body);
+    padding: 8px 14px;
+    cursor: pointer;
+    margin: 20px 0 16px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .ws-back-btn:hover { background: var(--bg-card); border-color: var(--blue); }
+  .ws-pane { display: none; }
+  .ws-pane.ws-pane-active { display: block; }
+
   /* ── TOOL CARDS ── */
   .tool-card {
     background: var(--bg-card);
@@ -1445,7 +1517,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Right Now
     </a></li>
-    <li role="presentation"><a href="javascript:void(0)" class="p1" onclick="showPage('page-worksheets')" data-page="page-worksheets" role="tab" aria-selected="false">
+    <li role="presentation"><a href="javascript:void(0)" class="p1" onclick="showPage('page-worksheets');closeWorksheet()" data-page="page-worksheets" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
       Worksheets
     </a></li>
@@ -1711,13 +1783,88 @@
 <div class="page" id="page-worksheets">
   <div class="container">
 
-    <div class="point-section p1-section" style="border-top:none;padding-top:28px;">
-      <div class="page-section-header">
-        <div class="page-section-eyebrow">Point One</div>
-        <div class="page-section-title">Motivation</div>
+    <!-- Worksheet Index -->
+    <div class="ws-index" id="wsIndex">
+      <div style="padding-top:28px;padding-bottom:4px;border-top:none;">
+        <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;color:var(--text);">Worksheets</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Select a worksheet to open it</div>
       </div>
 
-      <div class="tool-card" id="cba">
+      <div class="ws-group-header">Point 1 &middot; Motivation</div>
+      <div class="ws-index-list">
+        <button class="ws-index-row" onclick="openWorksheet('cba')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Cost-Benefit Analysis</div>
+            <div class="ws-row-desc">Weigh the benefits and costs of changing vs. staying the same</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('values')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Define Your Values</div>
+            <div class="ws-row-desc">Surface what you actually care about and compare priorities</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('change-plan')">
+          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Create a Change Plan</div>
+            <div class="ws-row-desc">Convert intentions into actionable steps and checkpoints</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+      </div>
+
+      <div class="ws-group-header">Point 3 &middot; Thinking</div>
+      <div class="ws-index-list">
+        <button class="ws-index-row" onclick="openWorksheet('abc')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">The ABCs + D and E</div>
+            <div class="ws-row-desc">Map beliefs that drive urges and develop more effective responses</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('five-q')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Five Questions</div>
+            <div class="ws-row-desc">A pointed weekly check-in to stay connected to your intentions</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+      </div>
+
+      <div class="ws-group-header">Point 4 &middot; Balance</div>
+      <div class="ws-index-list">
+        <button class="ws-index-row" onclick="openWorksheet('wheel')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Lifestyle Balance Wheel</div>
+            <div class="ws-row-desc">Visualize satisfaction across life areas and identify where to focus</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('goals-worksheet')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">SMART Goal Tracker</div>
+            <div class="ws-row-desc">Create and track Specific, Measurable, Achievable, Relevant goals</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Worksheet Detail View -->
+    <div class="ws-view" id="wsView" style="display:none">
+      <button class="ws-back-btn" onclick="closeWorksheet()">&#8592; Back to Worksheets</button>
+
+      <div id="wsPane-cba" class="ws-pane">
+<div class="tool-card" id="cba">
         <div class="tool-card-header">
           <span class="tool-type type-sheet">Worksheet</span>
           <div class="tool-name">Cost-Benefit Analysis (CBA)</div>
@@ -1764,8 +1911,10 @@
           </details>
         </div>
       </div>
+      </div>
 
-      <div class="tool-card" id="values">
+      <div id="wsPane-values" class="ws-pane">
+<div class="tool-card" id="values">
         <div class="tool-card-header">
           <span class="tool-type type-sheet">Worksheet</span>
           <div class="tool-name">Define Your Values</div>
@@ -1800,8 +1949,10 @@
           </details>
         </div>
       </div>
+      </div>
 
-      <div class="tool-card" id="change-plan">
+      <div id="wsPane-change-plan" class="ws-pane">
+<div class="tool-card" id="change-plan">
         <div class="tool-card-header">
           <span class="tool-type type-tool">Tool</span>
           <div class="tool-name">Create a Change Plan</div>
@@ -1845,15 +1996,10 @@
           </details>
         </div>
       </div>
-    </div>
-
-    <div class="point-section p3-section">
-      <div class="page-section-header">
-        <div class="page-section-eyebrow">Point Three</div>
-        <div class="page-section-title">Thinking</div>
       </div>
 
-      <div class="tool-card" id="abc">
+      <div id="wsPane-abc" class="ws-pane">
+<div class="tool-card" id="abc">
         <div class="tool-card-header">
           <span class="tool-type type-sheet">Worksheet</span>
           <div class="tool-name">The ABCs + D and E</div>
@@ -1875,8 +2021,10 @@
           </details>
         </div>
       </div>
+      </div>
 
-      <div class="tool-card" id="five-q">
+      <div id="wsPane-five-q" class="ws-pane">
+<div class="tool-card" id="five-q">
         <div class="tool-card-header">
           <span class="tool-type type-sheet">Worksheet</span>
           <div class="tool-name">Five Questions</div>
@@ -1898,15 +2046,10 @@
           </details>
         </div>
       </div>
-    </div>
-
-    <div class="point-section p4-section">
-      <div class="page-section-header">
-        <div class="page-section-eyebrow">Point Four</div>
-        <div class="page-section-title">Balance</div>
       </div>
 
-      <div class="tool-card" id="wheel">
+      <div id="wsPane-wheel" class="ws-pane">
+<div class="tool-card" id="wheel">
         <div class="tool-card-header">
           <span class="tool-type type-sheet">Worksheet</span>
           <div class="tool-name">Lifestyle Balance Wheel</div>
@@ -1935,13 +2078,10 @@
           </details>
         </div>
       </div>
-    </div>
+      </div>
 
-    <!-- Goal Tracker (Point 4) -->
-    <div class="page-section-header">
-      <div class="page-section-title">Point 4 · Goal Tracker</div>
-    </div>
-    <div class="tool-card" id="goals-worksheet">
+      <div id="wsPane-goals-worksheet" class="ws-pane">
+<div class="tool-card" id="goals-worksheet">
       <div class="tool-card-header">
         <span class="tool-type type-worksheet">Worksheet</span>
         <div class="tool-name">SMART Goal Tracker</div>
@@ -1977,9 +2117,12 @@
         <div id="goalList"></div>
       </div>
     </div>
+      </div>
+    </div>
 
   </div>
 </div>
+
 
 <!-- ═══ PAGE: PROGRESS ═══ -->
 <div class="page" id="page-progress">
@@ -4727,7 +4870,44 @@ function showPage(id) {
   window.scrollTo(0, 0);
 }
 
+
+var _WS_IDS = ['cba','values','change-plan','abc','five-q','wheel','goals-worksheet'];
+
+function openWorksheet(id) {
+  var idx = document.getElementById('wsIndex');
+  var view = document.getElementById('wsView');
+  if (!idx || !view) return;
+  idx.style.display = 'none';
+  view.style.display = '';
+  _WS_IDS.forEach(function(wid) {
+    var p = document.getElementById('wsPane-' + wid);
+    if (p) p.classList.toggle('ws-pane-active', wid === id);
+  });
+  view.scrollIntoView({ block: 'start' });
+  if (id === 'wheel') {
+    try { var v = getWheelVals(); drawWheel(v); } catch(e) {}
+  }
+}
+
+function closeWorksheet() {
+  var idx = document.getElementById('wsIndex');
+  var view = document.getElementById('wsView');
+  if (!idx || !view) return;
+  view.style.display = 'none';
+  _WS_IDS.forEach(function(wid) {
+    var p = document.getElementById('wsPane-' + wid);
+    if (p) p.classList.remove('ws-pane-active');
+  });
+  idx.style.display = '';
+  idx.scrollIntoView({ block: 'start' });
+}
+
 function scrollToId(id) {
+  var wsIds = ['cba','values','change-plan','abc','five-q','wheel','goals-worksheet'];
+  if (wsIds.indexOf(id) !== -1) {
+    openWorksheet(id);
+    return;
+  }
   setTimeout(function() {
     var el = document.getElementById(id);
     if (el) el.scrollIntoView({ block: 'start' });
@@ -4752,7 +4932,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.9';
+var APP_VERSION = '2.2.10';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
