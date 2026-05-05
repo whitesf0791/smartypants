@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="SMART">
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   /* ── CENGAGE REACT MAGMA DESIGN TOKENS ── */
   :root {
@@ -100,6 +100,56 @@
   html.light .ov-num         { opacity: 0.65; }
   html.light .point-number   { opacity: 0.13; }
   html.light nav             { box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  /* ── EXTENDED THEMES ────────────────────────────────────── */
+  html.midnight {
+    --bg:           #0D1117; --bg-card:     #161B22; --bg-card2:    #1C2128;
+    --border:       #30363D; --border-accent:#388BFD; --surface:    #21262D;
+    --text:         #E6EDF3; --text-muted:  #8B949E; --text-dim:    #6E7681;
+    --text-heading: #F0F6FC; --text-strong: #C9D1D9;
+    --blue:         #58A6FF; --blue-dim:    rgba(88,166,255,0.12);
+  }
+  html.dusk {
+    --bg:           #1C1826; --bg-card:     #241F32; --bg-card2:    #2C273E;
+    --border:       #3E3858; --border-accent:#8B6FD4; --surface:    #322C46;
+    --text:         #E8E2F8; --text-muted:  #9B94C4; --text-dim:    #7A7298;
+    --text-heading: #F4F0FF; --text-strong: #CEC8E8;
+    --blue:         #9B7AE8; --blue-dim:    rgba(155,122,232,0.12);
+  }
+  html.parchment {
+    --bg:           #FAF6EF; --bg-card:     #FFFDF9; --bg-card2:    #F5F0E7;
+    --border:       #E2D8C2; --border-accent:#B08850; --surface:    #F0E8D8;
+    --text:         #3D2B1C; --text-muted:  #7A6040; --text-dim:    #9A8060;
+    --text-heading: #1A0E00; --text-strong: #3D2B1C;
+    --blue:         #5B6E8A; --blue-dim:    rgba(91,110,138,0.12);
+  }
+  html.sage-theme {
+    --bg:           #EFF5EE; --bg-card:     #FAFCF9; --bg-card2:    #E8F0E7;
+    --border:       #C2D4BE; --border-accent:#4E8A58; --surface:    #E0EDD9;
+    --text:         #1A2E1C; --text-muted:  #486050; --text-dim:    #688870;
+    --text-heading: #0A1E0C; --text-strong: #1A2E1C;
+    --blue:         #2E6878; --blue-dim:    rgba(46,104,120,0.12);
+  }
+  /* ── FONT OVERRIDES ─────────────────────────────────────── */
+  html.font-system  { --font-display:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif; --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif; }
+  html.font-lato    { --font-display:'Lato','Work Sans',Helvetica,Arial,sans-serif; --font-body:'Lato','Work Sans',Helvetica,Arial,sans-serif; }
+  html.font-georgia { --font-display:Georgia,Cambria,'Times New Roman',serif; --font-body:Georgia,Cambria,'Times New Roman',serif; }
+  html.font-calibri { --font-display:Calibri,'Gill Sans','Trebuchet MS',Helvetica,Arial,sans-serif; --font-body:Calibri,'Gill Sans','Trebuchet MS',Helvetica,Arial,sans-serif; }
+  html.font-aptos   { --font-display:Aptos,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif; --font-body:Aptos,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif; }
+  /* ── THEME SWATCH UI ────────────────────────────────────── */
+  .theme-swatches { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:4px; }
+  .theme-swatch { background:none; border:none; cursor:pointer; padding:0; display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .swatch-preview { width:54px; height:40px; border-radius:8px; border:2px solid transparent; display:flex; align-items:flex-end; padding:6px 5px; gap:4px; box-sizing:border-box; transition:border-color 0.15s,box-shadow 0.15s; }
+  .theme-swatch:hover .swatch-preview { border-color:var(--border-accent); }
+  .theme-swatch.swatch-active .swatch-preview { border-color:var(--blue); box-shadow:0 0 0 3px var(--blue-dim); }
+  .swatch-card { flex:1; height:16px; border-radius:3px; }
+  .swatch-dot  { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .swatch-name { font-size:11px; color:var(--text-muted); font-weight:500; white-space:nowrap; }
+  .theme-swatch.swatch-active .swatch-name { color:var(--blue); font-weight:600; }
+  /* ── FONT OPTION UI ─────────────────────────────────────── */
+  .font-options { display:flex; flex-wrap:wrap; gap:6px; }
+  .font-opt { background:var(--bg-card2); border:1px solid var(--border); color:var(--text-muted); padding:6px 13px; border-radius:6px; font-size:13.5px; cursor:pointer; line-height:1.4; transition:all 0.15s; }
+  .font-opt:hover { border-color:var(--border-accent); color:var(--text); }
+  .font-opt.font-active { border-color:var(--blue); color:var(--blue); background:var(--blue-dim); font-weight:600; }
 
   /* ── RESET ── */
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -3302,15 +3352,42 @@
     <div class="settings-section">
       <div class="settings-section-title">Appearance</div>
       <div class="settings-card">
-        <div class="settings-row">
-          <div class="settings-row-info">
-            <div class="settings-row-label">Color Theme</div>
-            <div class="settings-row-sub" id="themeSettingsSub">Dark mode</div>
-          </div>
-          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle color theme">
-            <div class="toggle-track"><div class="toggle-knob"></div></div>
-            <span class="toggle-label" id="toggleLabelSettings">Light</span>
+        <div class="settings-row-label" style="margin-bottom:14px;font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">Color Theme</div>
+        <div class="theme-swatches" id="themeSwatches" role="group" aria-label="Color theme">
+          <button class="theme-swatch" data-theme="dark" onclick="applyTheme('dark')" aria-label="Dark theme" title="Dark">
+            <div class="swatch-preview" style="background:#13131A;border-color:#2A2A3C;"><div class="swatch-card" style="background:#1C1C2A;"></div><div class="swatch-dot" style="background:#2FB3FF;"></div></div>
+            <div class="swatch-name">Dark</div>
           </button>
+          <button class="theme-swatch" data-theme="midnight" onclick="applyTheme('midnight')" aria-label="Midnight theme" title="Midnight">
+            <div class="swatch-preview" style="background:#0D1117;border-color:#30363D;"><div class="swatch-card" style="background:#161B22;"></div><div class="swatch-dot" style="background:#58A6FF;"></div></div>
+            <div class="swatch-name">Midnight</div>
+          </button>
+          <button class="theme-swatch" data-theme="dusk" onclick="applyTheme('dusk')" aria-label="Dusk theme" title="Dusk">
+            <div class="swatch-preview" style="background:#1C1826;border-color:#3E3858;"><div class="swatch-card" style="background:#241F32;"></div><div class="swatch-dot" style="background:#9B7AE8;"></div></div>
+            <div class="swatch-name">Dusk</div>
+          </button>
+          <button class="theme-swatch" data-theme="light" onclick="applyTheme('light')" aria-label="Light theme" title="Light">
+            <div class="swatch-preview" style="background:#F5F5F5;border-color:#D0D0D0;"><div class="swatch-card" style="background:#FFFFFF;"></div><div class="swatch-dot" style="background:#005F96;"></div></div>
+            <div class="swatch-name">Light</div>
+          </button>
+          <button class="theme-swatch" data-theme="parchment" onclick="applyTheme('parchment')" aria-label="Parchment theme" title="Parchment">
+            <div class="swatch-preview" style="background:#FAF6EF;border-color:#E2D8C2;"><div class="swatch-card" style="background:#FFFDF9;"></div><div class="swatch-dot" style="background:#B08850;"></div></div>
+            <div class="swatch-name">Parchment</div>
+          </button>
+          <button class="theme-swatch" data-theme="sage-theme" onclick="applyTheme('sage-theme')" aria-label="Sage theme" title="Sage">
+            <div class="swatch-preview" style="background:#EFF5EE;border-color:#C2D4BE;"><div class="swatch-card" style="background:#FAFCF9;"></div><div class="swatch-dot" style="background:#4E8A58;"></div></div>
+            <div class="swatch-name">Sage</div>
+          </button>
+        </div>
+        <div class="settings-row-label" style="margin-top:22px;margin-bottom:10px;font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">Font</div>
+        <p style="font-size:12px;color:var(--text-dim);margin:0 0 10px;">Calibri and Aptos are Microsoft fonts — they look best on Windows and Microsoft 365 devices.</p>
+        <div class="font-options" id="fontOptions" role="group" aria-label="Font selection">
+          <button class="font-opt" data-font="work-sans" onclick="applyFont('work-sans')" style="font-family:'Work Sans',Helvetica,sans-serif;">Work Sans</button>
+          <button class="font-opt" data-font="system"    onclick="applyFont('system')"    style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">System UI</button>
+          <button class="font-opt" data-font="lato"      onclick="applyFont('lato')"      style="font-family:'Lato',Helvetica,sans-serif;">Lato</button>
+          <button class="font-opt" data-font="georgia"   onclick="applyFont('georgia')"   style="font-family:Georgia,serif;">Georgia</button>
+          <button class="font-opt" data-font="calibri"   onclick="applyFont('calibri')"   style="font-family:Calibri,'Trebuchet MS',Helvetica,sans-serif;">Calibri</button>
+          <button class="font-opt" data-font="aptos"     onclick="applyFont('aptos')"     style="font-family:Aptos,'Segoe UI',Helvetica,sans-serif;">Aptos</button>
         </div>
       </div>
     </div>
@@ -3467,7 +3544,7 @@ function lsSet(key, val) {
   try {
     if (sbState.session && !sbState.pulling &&
         typeof BACKUP_KEYS !== 'undefined' &&
-        BACKUP_KEYS.indexOf(key) !== -1 && key !== 'smartTheme') {
+        BACKUP_KEYS.indexOf(key) !== -1 && key !== 'smartTheme' && key !== 'smartFont') {
       sbPushKey(key, val).catch(function() {});
     }
   } catch(e) {}
@@ -3481,30 +3558,64 @@ var sbState = { session: null, recoveryKey: null, pulling: false };
 
 const html = document.documentElement;
 
-function syncThemeUI(isLight) {
-  const text = isLight ? 'Dark' : 'Light';
-  document.querySelectorAll('.toggle-label').forEach(function(el) { el.textContent = text; });
-  const sub = document.getElementById('themeSettingsSub');
-  if (sub) sub.textContent = (isLight ? 'Light' : 'Dark') + ' mode';
+var _LIGHT_THEMES = ['light','parchment','sage-theme'];
+var _THEME_CLASSES = ['midnight','dusk','parchment','sage-theme'];
+var _FONT_CLASSES  = ['font-system','font-lato','font-georgia','font-calibri','font-aptos'];
+
+function applyTheme(id) {
+  _THEME_CLASSES.forEach(function(c) { html.classList.remove(c); });
+  html.classList.remove('light');
+  if (_LIGHT_THEMES.indexOf(id) !== -1) html.classList.add('light');
+  if (id !== 'dark' && id !== 'light') html.classList.add(id);
+  lsSet('smartTheme', id);
+  updateThemeSwatches(id);
+  setTimeout(function() { try { var v = getWheelVals(); drawWheel(v); } catch(e) {} }, 50);
 }
 
+function updateThemeSwatches(id) {
+  document.querySelectorAll('.theme-swatch').forEach(function(btn) {
+    btn.classList.toggle('swatch-active', btn.dataset.theme === id);
+    btn.setAttribute('aria-pressed', btn.dataset.theme === id ? 'true' : 'false');
+  });
+}
+
+function applyFont(id) {
+  _FONT_CLASSES.forEach(function(c) { html.classList.remove(c); });
+  if (id && id !== 'work-sans') html.classList.add('font-' + id);
+  lsSet('smartFont', id || 'work-sans');
+  updateFontButtons(id || 'work-sans');
+}
+
+function updateFontButtons(id) {
+  document.querySelectorAll('.font-opt').forEach(function(btn) {
+    btn.classList.toggle('font-active', btn.dataset.font === id);
+    btn.setAttribute('aria-pressed', btn.dataset.font === id ? 'true' : 'false');
+  });
+}
+
+// Legacy shims kept for import-restore compatibility
+function syncThemeUI(isLight) { updateThemeSwatches(isLight ? 'light' : 'dark'); }
 function toggleTheme() {
-  const isLight = html.classList.toggle('light');
-  lsSet('smartTheme', isLight ? 'light' : 'dark');
-  syncThemeUI(isLight);
-  setTimeout(() => { const v = getWheelVals(); drawWheel(v); }, 50);
+  var cur = lsGet('smartTheme') || 'dark';
+  applyTheme(_LIGHT_THEMES.indexOf(cur) !== -1 ? 'dark' : 'light');
 }
 
 try {
-  const saved = lsGet('smartTheme');
-  if (saved === 'light') {
-    html.classList.add('light'); syncThemeUI(true);
-  } else if (saved === 'dark') {
-    syncThemeUI(false);
+  var _savedTheme = lsGet('smartTheme');
+  var _lightThemesEarly = ['light','parchment','sage-theme'];
+  var _themeClassesEarly = ['midnight','dusk','parchment','sage-theme'];
+  if (_savedTheme && _savedTheme !== 'null') {
+    if (_lightThemesEarly.indexOf(_savedTheme) !== -1) html.classList.add('light');
+    if (_savedTheme !== 'dark' && _savedTheme !== 'light') html.classList.add(_savedTheme);
   } else {
-    // No saved preference — follow system
-    const preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-    if (preferLight) { html.classList.add('light'); syncThemeUI(true); } else { syncThemeUI(false); }
+    var _preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    if (_preferLight) html.classList.add('light');
+  }
+} catch(e) {}
+try {
+  var _savedFont = lsGet('smartFont');
+  if (_savedFont && _savedFont !== 'work-sans' && _savedFont !== 'null') {
+    html.classList.add('font-' + _savedFont);
   }
 } catch(e) {}
 
@@ -4398,6 +4509,7 @@ document.addEventListener('DOMContentLoaded', renderFiveQLog);
 // ── EXPORT / IMPORT ──────────────────────────────────────
 const BACKUP_KEYS = [
   'smartTheme',
+  'smartFont',
   'smart_urge_log_v1',
   'smart_balance_wheel_v1',
   'smart_sobriety_start_v1',
@@ -4452,15 +4564,11 @@ function importData(event) {
           lsSet(k, typeof val === 'string' ? val : JSON.stringify(val));
         }
       });
-      // Sync theme UI to restored value
-      const restoredTheme = lsGet('smartTheme');
-      if (restoredTheme === 'light') {
-        html.classList.add('light');
-        syncThemeUI(true);
-      } else {
-        html.classList.remove('light');
-        syncThemeUI(false);
-      }
+      // Restore theme and font
+      var restoredTheme = lsGet('smartTheme');
+      if (restoredTheme) applyTheme(restoredTheme);
+      var restoredFont = lsGet('smartFont');
+      if (restoredFont) applyFont(restoredFont);
       renderTracker();
       renderUrgeLog();
       initWheel();
@@ -4644,14 +4752,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.8';
+var APP_VERSION = '2.2.9';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
   var vd = document.getElementById('versionDisplay');
   if (vd) vd.textContent = 'v' + APP_VERSION;
-  var isLight = html.classList.contains('light');
-  syncThemeUI(isLight);
+  var curTheme = lsGet('smartTheme') || (html.classList.contains('light') ? 'light' : 'dark');
+  updateThemeSwatches(curTheme);
+  var curFont = lsGet('smartFont') || 'work-sans';
+  updateFontButtons(curFont);
 }
 
 async function checkForUpdates() {
@@ -5123,7 +5233,7 @@ async function sbPushKey(key, rawVal) {
 
 async function sbPushAll() {
   if (!sbState.session) return;
-  var keys = BACKUP_KEYS.filter(function(k) { return k !== 'smartTheme'; });
+  var keys = BACKUP_KEYS.filter(function(k) { return k !== 'smartTheme' && k !== 'smartFont'; });
   for (var i = 0; i < keys.length; i++) {
     var raw = lsGet(keys[i]);
     await sbPushKey(keys[i], raw !== null ? raw : 'null').catch(function() {});
@@ -5142,7 +5252,7 @@ async function sbPull() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var rows = await res.json();
     rows.forEach(function(row) {
-      if (row.key !== 'smartTheme') {
+      if (row.key !== 'smartTheme' && row.key !== 'smartFont') {
         lsSet(row.key, typeof row.value === 'string' ? row.value : JSON.stringify(row.value));
       }
     });
@@ -5316,6 +5426,12 @@ function syncDisconnect() {
 // Kick off session restore once DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
   sbRestoreSession().catch(function() { sbRenderSetup(); });
+  // Highlight active theme swatch and font button
+  try {
+    var t = lsGet('smartTheme') || (document.documentElement.classList.contains('light') ? 'light' : 'dark');
+    updateThemeSwatches(t);
+    updateFontButtons(lsGet('smartFont') || 'work-sans');
+  } catch(e) {}
 });
 
 // ── SERVICE WORKER ────────────────────────────────────────
