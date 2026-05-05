@@ -441,6 +441,8 @@
     flex-shrink: 0;
     font-family: var(--font-body);
   }
+  .type-guide { background: rgba(195,150,50,0.15); color: #C49A2E; border: 1px solid rgba(195,150,50,0.25); }
+  html.light .type-guide { background: rgba(160,110,10,0.10); color: #7A5A00; border-color: rgba(160,110,10,0.25); }
   .type-tool  { background: var(--sage-dim);  color: var(--sage);  border: 1px solid rgba(62,221,110,0.25); }
   .type-sheet { background: var(--blue-dim);  color: var(--blue);  border: 1px solid rgba(47,179,255,0.25); }
 
@@ -1521,6 +1523,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Right Now
     </a></li>
+    <li role="presentation"><a href="javascript:void(0)" class="p3" onclick="showPage('page-learn');closeLearnCard()" data-page="page-learn" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Learn
+    </a></li>
     <li role="presentation"><a href="javascript:void(0)" class="p1" onclick="showPage('page-worksheets');closeWorksheet()" data-page="page-worksheets" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
       Worksheets
@@ -1528,10 +1534,6 @@
     <li role="presentation"><a href="javascript:void(0)" class="p4" onclick="showPage('page-progress')" data-page="page-progress" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
       Progress
-    </a></li>
-    <li role="presentation"><a href="javascript:void(0)" class="p3" onclick="showPage('page-learn');closeLearnCard()" data-page="page-learn" role="tab" aria-selected="false">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      Learn
     </a></li>
     <li role="presentation"><a href="javascript:void(0)" class="plapse" onclick="showPage('page-slip')" data-page="page-slip" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -1865,7 +1867,7 @@
           <span class="ws-row-arrow" aria-hidden="true">›</span>
         </button>
         <button class="ws-index-row" onclick="openWorksheet('goals-worksheet')">
-          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
           <div class="ws-row-text">
             <div class="ws-row-name">SMART Goal Tracker</div>
             <div class="ws-row-desc">Create and track Specific, Measurable, Achievable, Relevant goals</div>
@@ -2117,7 +2119,7 @@
       <div id="wsPane-goals-worksheet" class="ws-pane">
 <div class="tool-card" id="goals-worksheet">
       <div class="tool-card-header">
-        <span class="tool-type type-worksheet">Worksheet</span>
+        <span class="tool-type type-sheet">Worksheet</span>
         <div class="tool-name">SMART Goal Tracker</div>
       </div>
       <div class="tool-body">
@@ -2227,7 +2229,7 @@
     <div class="ws-group-header">Point 1 &middot; Build and Maintain Motivation</div>
     <div class="ws-index-list">
         <button class="ws-index-row" onclick="openLearnCard('lp-cba')">
-          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
           <div class="ws-row-text">
             <div class="ws-row-name">Cost-Benefit Analysis</div>
             <div class="ws-row-desc">Examine what you gain and lose from your behavior, short-term and long-term</div>
@@ -2235,7 +2237,7 @@
           <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
         </button>
         <button class="ws-index-row" onclick="openLearnCard('lp-values')">
-          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
           <div class="ws-row-text">
             <div class="ws-row-name">Define Your Values</div>
             <div class="ws-row-desc">Surface what you actually care about and what your behavior has been displacing</div>
@@ -2243,7 +2245,7 @@
           <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
         </button>
         <button class="ws-index-row" onclick="openLearnCard('lp-change-plan')">
-          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
           <div class="ws-row-text">
             <div class="ws-row-name">Create a Change Plan</div>
             <div class="ws-row-desc">Structure your intentions as specific steps, support systems, and checkpoints</div>
@@ -2263,7 +2265,7 @@
     <div class="ws-group-header">Point 2 &middot; Cope with Urges</div>
     <div class="ws-index-list">
         <button class="ws-index-row" onclick="openLearnCard('lp-halt')">
-          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
           <div class="ws-row-text">
             <div class="ws-row-name">HALT Check</div>
             <div class="ws-row-desc">Identify the four states most responsible for unplanned urges</div>
@@ -2331,7 +2333,7 @@
           <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
         </button>
         <button class="ws-index-row" onclick="openLearnCard('lp-abc')">
-          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
           <div class="ws-row-text">
             <div class="ws-row-name">The ABCs + D and E</div>
             <div class="ws-row-desc">Map how events trigger beliefs that produce consequences — then dispute them</div>
@@ -2339,7 +2341,7 @@
           <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
         </button>
         <button class="ws-index-row" onclick="openLearnCard('lp-dispute')">
-          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
           <div class="ws-row-text">
             <div class="ws-row-name">Dispute Unhelpful Beliefs</div>
             <div class="ws-row-desc">Identify and replace the belief patterns that fuel addictive behavior</div>
@@ -2347,7 +2349,7 @@
           <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
         </button>
         <button class="ws-index-row" onclick="openLearnCard('lp-five-q')">
-          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
           <div class="ws-row-text">
             <div class="ws-row-name">Five Questions</div>
             <div class="ws-row-desc">A structured check-in that surfaces the gap between actions and intentions</div>
@@ -2375,7 +2377,7 @@
           <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
         </button>
         <button class="ws-index-row" onclick="openLearnCard('lp-pursuits')">
-          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
           <div class="ws-row-text">
             <div class="ws-row-name">Explore New Pursuits</div>
             <div class="ws-row-desc">Discover what can replace the functions your addictive behavior was serving</div>
@@ -2392,7 +2394,7 @@
     <div id="lp-cba" class="lp-pane">
 <div class="tool-card">
     <div class="tool-card-header">
-      <span class="tool-type type-sheet">Worksheet</span>
+      <span class="tool-type type-guide">Guide</span>
       <div class="tool-name">Cost-Benefit Analysis (CBA)</div>
     </div>
     <div class="tool-body">
@@ -2469,7 +2471,7 @@
     <div id="lp-values" class="lp-pane">
 <div class="tool-card">
     <div class="tool-card-header">
-      <span class="tool-type type-sheet">Worksheet</span>
+      <span class="tool-type type-guide">Guide</span>
       <div class="tool-name">Define Your Values (Hierarchy of Values)</div>
     </div>
     <div class="tool-body">
@@ -2531,7 +2533,7 @@
     <div id="lp-change-plan" class="lp-pane">
 <div class="tool-card">
     <div class="tool-card-header">
-      <span class="tool-type type-tool">Tool</span>
+      <span class="tool-type type-guide">Guide</span>
       <div class="tool-name">Create a Change Plan</div>
     </div>
     <div class="tool-body">
@@ -2612,7 +2614,7 @@
     <div id="lp-self-compassion" class="lp-pane">
 <div class="tool-card" id="self-compassion">
     <div class="tool-card-header">
-      <span class="tool-type type-sheet">Worksheet</span>
+      <span class="tool-type type-sheet">Practice</span>
       <div class="tool-name">Practice Self-Compassion</div>
     </div>
     <div class="tool-body">
@@ -2743,7 +2745,7 @@
     <div id="lp-dents" class="lp-pane">
 <div class="tool-card" id="dents">
     <div class="tool-card-header">
-      <span class="tool-type type-sheet">Worksheet</span>
+      <span class="tool-type type-tool">Framework</span>
       <div class="tool-name">Put DENTS in Your Urges</div>
     </div>
     <div class="tool-body">
@@ -2817,7 +2819,7 @@
     <div id="lp-personify" class="lp-pane">
 <div class="tool-card" id="personify">
     <div class="tool-card-header">
-      <span class="tool-type type-sheet">Worksheet</span>
+      <span class="tool-type type-sheet">Practice</span>
       <div class="tool-name">Personify and Disarm</div>
     </div>
     <div class="tool-body">
@@ -3028,7 +3030,7 @@
     <div id="lp-abc" class="lp-pane">
 <div class="tool-card">
     <div class="tool-card-header">
-      <span class="tool-type type-tool">Tool</span>
+      <span class="tool-type type-guide">Guide</span>
       <div class="tool-name">The ABCs (+ D and E)</div>
     </div>
     <div class="tool-body">
@@ -3103,7 +3105,7 @@
     <div id="lp-dispute" class="lp-pane">
 <div class="tool-card" id="dispute">
     <div class="tool-card-header">
-      <span class="tool-type type-sheet">Worksheet</span>
+      <span class="tool-type type-guide">Guide</span>
       <div class="tool-name">Dispute Unhelpful Beliefs</div>
     </div>
     <div class="tool-body">
@@ -3174,7 +3176,7 @@
     <div id="lp-five-q" class="lp-pane">
 <div class="tool-card">
     <div class="tool-card-header">
-      <span class="tool-type type-sheet">Worksheet</span>
+      <span class="tool-type type-guide">Guide</span>
       <div class="tool-name">Five Questions</div>
     </div>
     <div class="tool-body">
@@ -3246,7 +3248,7 @@
     <div id="lp-wheel" class="lp-pane">
 <div class="tool-card">
     <div class="tool-card-header">
-      <span class="tool-type type-sheet">Worksheet</span>
+      <span class="tool-type type-guide">Guide</span>
       <div class="tool-name">Lifestyle Balance Wheel</div>
     </div>
     <div class="tool-body">
@@ -3329,7 +3331,7 @@
     <div id="lp-goals" class="lp-pane">
 <div class="tool-card" id="goals">
     <div class="tool-card-header">
-      <span class="tool-type type-tool">Tool</span>
+      <span class="tool-type type-guide">Guide</span>
       <div class="tool-name">Set an Effective Goal (SMART Goals)</div>
     </div>
     <div class="tool-body">
@@ -3412,7 +3414,7 @@
     <div id="lp-pursuits" class="lp-pane">
 <div class="tool-card" id="pursuits">
     <div class="tool-card-header">
-      <span class="tool-type type-tool">Tool</span>
+      <span class="tool-type type-guide">Guide</span>
       <div class="tool-name">Explore New Pursuits and Passions</div>
     </div>
     <div class="tool-body">
@@ -5143,7 +5145,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.12';
+var APP_VERSION = '2.2.13';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
