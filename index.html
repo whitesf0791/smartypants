@@ -405,6 +405,10 @@
   .ws-pane { display: none; }
   .ws-pane.ws-pane-active { display: block; }
 
+
+  .lp-pane { display: none; }
+  .lp-pane.lp-pane-active { display: block; }
+
   /* ── TOOL CARDS ── */
   .tool-card {
     background: var(--bg-card);
@@ -1525,7 +1529,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
       Progress
     </a></li>
-    <li role="presentation"><a href="javascript:void(0)" class="p3" onclick="showPage('page-learn')" data-page="page-learn" role="tab" aria-selected="false">
+    <li role="presentation"><a href="javascript:void(0)" class="p3" onclick="showPage('page-learn');closeLearnCard()" data-page="page-learn" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       Learn
     </a></li>
@@ -2178,24 +2182,182 @@
 
 <!-- ═══ PAGE: LEARN ═══ -->
 <div class="page" id="page-learn">
-
 <div class="container">
 
-<!-- ══════════════════════════════════════════════ -->
-<!-- POINT 1 — MOTIVATION                          -->
-<!-- ══════════════════════════════════════════════ -->
-<section class="point-section p1-section" id="point1">
-  <div class="point-header">
-    <div class="point-number">1</div>
-    <div class="point-title-group">
-      <div class="point-label">Point One</div>
-      <div class="point-title">Build and Maintain Motivation</div>
-      <div class="point-desc">Examine the real costs and benefits of your behavior, connect change to your actual values, and construct a concrete plan forward.</div>
+  <!-- Learn Index -->
+  <div class="lp-index" id="lpIndex">
+    <div style="padding-top:28px;padding-bottom:4px;border-top:none;">
+      <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;color:var(--text);">Learn</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:4px;">Tap any topic to read the full guide</div>
+    </div>
+
+    <div class="ws-group-header">Point 1 &middot; Build and Maintain Motivation</div>
+    <div class="ws-index-list">
+        <button class="ws-index-row" onclick="openLearnCard('lp-cba')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Cost-Benefit Analysis</div>
+            <div class="ws-row-desc">Examine what you gain and lose from your behavior, short-term and long-term</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-values')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Define Your Values</div>
+            <div class="ws-row-desc">Surface what you actually care about and what your behavior has been displacing</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-change-plan')">
+          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Create a Change Plan</div>
+            <div class="ws-row-desc">Structure your intentions as specific steps, support systems, and checkpoints</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-self-compassion')">
+          <span class="tool-type type-sheet ws-row-badge">Practice</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Practice Self-Compassion</div>
+            <div class="ws-row-desc">Meet hard moments with care instead of shame or self-attack</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+    </div>
+
+    <div class="ws-group-header">Point 2 &middot; Cope with Urges</div>
+    <div class="ws-index-list">
+        <button class="ws-index-row" onclick="openLearnCard('lp-halt')">
+          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">HALT Check</div>
+            <div class="ws-row-desc">Identify the four states most responsible for unplanned urges</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-urge-log')">
+          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Urge Log</div>
+            <div class="ws-row-desc">Track patterns in your urges to build awareness and better responses</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-dents')">
+          <span class="tool-type type-sheet ws-row-badge">Framework</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Put DENTS in Your Urges</div>
+            <div class="ws-row-desc">A five-step acronym for managing active urges in the moment</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-breathing')">
+          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Breathing &amp; Grounding</div>
+            <div class="ws-row-desc">Two techniques that reduce nervous system activation in under two minutes</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-personify')">
+          <span class="tool-type type-sheet ws-row-badge">Practice</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Personify and Disarm</div>
+            <div class="ws-row-desc">Name your urge, identify its scripts, and talk back to reclaim control</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-urge-surfing')">
+          <span class="tool-type type-sheet ws-row-badge">Practice</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Urge Surfing</div>
+            <div class="ws-row-desc">Observe the wave pattern of an urge without fighting or acting on it</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-boundaries')">
+          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Setting Healthy Boundaries</div>
+            <div class="ws-row-desc">Protect your time, energy, and recovery with clear, direct limits</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+    </div>
+
+    <div class="ws-group-header">Point 3 &middot; Manage Thoughts, Feelings &amp; Behaviors</div>
+    <div class="ws-index-list">
+        <button class="ws-index-row" onclick="openLearnCard('lp-thinking-styles')">
+          <span class="tool-type type-sheet ws-row-badge">Reference</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Unhelpful Thinking Styles</div>
+            <div class="ws-row-desc">Quick-reference card for common cognitive distortions and their signal words</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-abc')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">The ABCs + D and E</div>
+            <div class="ws-row-desc">Map how events trigger beliefs that produce consequences — then dispute them</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-dispute')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Dispute Unhelpful Beliefs</div>
+            <div class="ws-row-desc">Identify and replace the belief patterns that fuel addictive behavior</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-five-q')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Five Questions</div>
+            <div class="ws-row-desc">A structured check-in that surfaces the gap between actions and intentions</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+    </div>
+
+    <div class="ws-group-header">Point 4 &middot; Live a Balanced Life</div>
+    <div class="ws-index-list">
+        <button class="ws-index-row" onclick="openLearnCard('lp-wheel')">
+          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Lifestyle Balance Wheel</div>
+            <div class="ws-row-desc">Assess satisfaction across life domains and identify where to focus</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-goals')">
+          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">SMART Goal Setting</div>
+            <div class="ws-row-desc">Build goals that are specific, measurable, achievable, relevant, and time-bound</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
+        <button class="ws-index-row" onclick="openLearnCard('lp-pursuits')">
+          <span class="tool-type type-tool ws-row-badge">Tool</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Explore New Pursuits</div>
+            <div class="ws-row-desc">Discover what can replace the functions your addictive behavior was serving</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
+        </button>
     </div>
   </div>
 
-  <!-- CBA -->
-  <div class="tool-card">
+  <!-- Learn Detail View -->
+  <div class="lp-view" id="lpView" style="display:none">
+    <button class="ws-back-btn" onclick="closeLearnCard()">&#8592; Back to Learn</button>
+
+    <div id="lp-cba" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Worksheet</span>
       <div class="tool-name">Cost-Benefit Analysis (CBA)</div>
@@ -2269,9 +2431,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- DEFINE YOUR VALUES -->
-  <div class="tool-card">
+    <div id="lp-values" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Worksheet</span>
       <div class="tool-name">Define Your Values (Hierarchy of Values)</div>
@@ -2330,9 +2493,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- CREATE A CHANGE PLAN -->
-  <div class="tool-card">
+    <div id="lp-change-plan" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-tool">Tool</span>
       <div class="tool-name">Create a Change Plan</div>
@@ -2410,9 +2574,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- SELF-COMPASSION -->
-  <div class="tool-card" id="self-compassion">
+    <div id="lp-self-compassion" class="lp-pane">
+<div class="tool-card" id="self-compassion">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Worksheet</span>
       <div class="tool-name">Practice Self-Compassion</div>
@@ -2459,24 +2624,10 @@
       </div>
     </div>
   </div>
-
-</section>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- POINT 2 — URGES                               -->
-<!-- ══════════════════════════════════════════════ -->
-<section class="point-section p2-section" id="point2">
-  <div class="point-header">
-    <div class="point-number">2</div>
-    <div class="point-title-group">
-      <div class="point-label">Point Two</div>
-      <div class="point-title">Cope with Urges</div>
-      <div class="point-desc">Urges are normal and temporary — they come in waves that last minutes, not forever. These tools help you recognize patterns, buy time, and build a response repertoire.</div>
     </div>
-  </div>
 
-  <!-- URGE LOG -->
-  <div class="tool-card">
+    <div id="lp-halt" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-tool">Tool</span>
       <div class="tool-name">HALT — Quick Urge Triage</div>
@@ -2489,8 +2640,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <div class="tool-card">
+    <div id="lp-urge-log" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-tool">Tool</span>
       <div class="tool-name">Urge Log</div>
@@ -2552,9 +2705,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- DENTS -->
-  <div class="tool-card" id="dents">
+    <div id="lp-dents" class="lp-pane">
+<div class="tool-card" id="dents">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Worksheet</span>
       <div class="tool-name">Put DENTS in Your Urges</div>
@@ -2609,9 +2763,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- PERSONIFY AND DISARM -->
-  <div class="tool-card">
+    <div id="lp-breathing" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-tool">Tool</span>
       <div class="tool-name">Breathing &amp; Grounding</div>
@@ -2624,8 +2779,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <div class="tool-card" id="personify">
+    <div id="lp-personify" class="lp-pane">
+<div class="tool-card" id="personify">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Worksheet</span>
       <div class="tool-name">Personify and Disarm</div>
@@ -2683,9 +2840,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- SETTING HEALTHY BOUNDARIES -->
-  <div class="tool-card">
+    <div id="lp-urge-surfing" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Guided Practice</span>
       <div class="tool-name">Urge Surfing</div>
@@ -2713,8 +2871,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <div class="tool-card" id="boundaries">
+    <div id="lp-boundaries" class="lp-pane">
+<div class="tool-card" id="boundaries">
     <div class="tool-card-header">
       <span class="tool-type type-tool">Tool</span>
       <div class="tool-name">Setting Healthy Boundaries</div>
@@ -2773,24 +2933,10 @@
       </div>
     </div>
   </div>
-
-</section>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- POINT 3 — THOUGHTS & FEELINGS                 -->
-<!-- ══════════════════════════════════════════════ -->
-<section class="point-section p3-section" id="point3">
-  <div class="point-header">
-    <div class="point-number">3</div>
-    <div class="point-title-group">
-      <div class="point-label">Point Three</div>
-      <div class="point-title">Manage Thoughts, Feelings &amp; Behaviors</div>
-      <div class="point-desc">Beliefs drive emotions, emotions drive behavior. These tools help you identify unhelpful thought patterns, challenge them, and replace them with beliefs that support your goals.</div>
     </div>
-  </div>
 
-  <!-- ABC EXERCISE -->
-  <div class="tool-card" id="thinking-styles">
+    <div id="lp-thinking-styles" class="lp-pane">
+<div class="tool-card" id="thinking-styles">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Reference</span>
       <div class="tool-name">Unhelpful Thinking Styles — Quick Reference</div>
@@ -2844,8 +2990,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <div class="tool-card">
+    <div id="lp-abc" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-tool">Tool</span>
       <div class="tool-name">The ABCs (+ D and E)</div>
@@ -2917,9 +3065,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- DISPUTE UNHELPFUL BELIEFS -->
-  <div class="tool-card" id="dispute">
+    <div id="lp-dispute" class="lp-pane">
+<div class="tool-card" id="dispute">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Worksheet</span>
       <div class="tool-name">Dispute Unhelpful Beliefs</div>
@@ -2987,9 +3136,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- FIVE QUESTIONS -->
-  <div class="tool-card">
+    <div id="lp-five-q" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Worksheet</span>
       <div class="tool-name">Five Questions</div>
@@ -3058,24 +3208,10 @@
       </div>
     </div>
   </div>
-
-</section>
-
-<!-- ══════════════════════════════════════════════ -->
-<!-- POINT 4 — LIFESTYLE BALANCE                   -->
-<!-- ══════════════════════════════════════════════ -->
-<section class="point-section p4-section" id="point4">
-  <div class="point-header">
-    <div class="point-number">4</div>
-    <div class="point-title-group">
-      <div class="point-label">Point Four</div>
-      <div class="point-title">Live a Balanced Life</div>
-      <div class="point-desc">Recovery isn't only about stopping — it's about building a life that's genuinely worth living. These tools help you assess satisfaction across all domains, set meaningful goals, and discover what makes life feel worth showing up for.</div>
     </div>
-  </div>
 
-  <!-- LIFESTYLE BALANCE WHEEL -->
-  <div class="tool-card">
+    <div id="lp-wheel" class="lp-pane">
+<div class="tool-card">
     <div class="tool-card-header">
       <span class="tool-type type-sheet">Worksheet</span>
       <div class="tool-name">Lifestyle Balance Wheel</div>
@@ -3155,9 +3291,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- GOAL SETTING -->
-  <div class="tool-card" id="goals">
+    <div id="lp-goals" class="lp-pane">
+<div class="tool-card" id="goals">
     <div class="tool-card-header">
       <span class="tool-type type-tool">Tool</span>
       <div class="tool-name">Set an Effective Goal (SMART Goals)</div>
@@ -3237,9 +3374,10 @@
       </div>
     </div>
   </div>
+    </div>
 
-  <!-- EXPLORE NEW PURSUITS -->
-  <div class="tool-card" id="pursuits">
+    <div id="lp-pursuits" class="lp-pane">
+<div class="tool-card" id="pursuits">
     <div class="tool-card-header">
       <span class="tool-type type-tool">Tool</span>
       <div class="tool-name">Explore New Pursuits and Passions</div>
@@ -3305,11 +3443,13 @@
       </div>
     </div>
   </div>
+    </div>
 
-</section>
+  </div>
 
 </div><!-- /container -->
 </div><!-- /page-learn -->
+
 
 <!-- ═══ PAGE: IF YOU SLIP ═══ -->
 <div class="page" id="page-slip">
@@ -4871,6 +5011,41 @@ function showPage(id) {
 }
 
 
+
+var _LP_IDS = [
+  'lp-cba','lp-values','lp-change-plan','lp-self-compassion',
+  'lp-halt','lp-urge-log','lp-dents','lp-breathing',
+  'lp-personify','lp-urge-surfing','lp-boundaries',
+  'lp-thinking-styles','lp-abc','lp-dispute','lp-five-q',
+  'lp-wheel','lp-goals','lp-pursuits'
+];
+
+function openLearnCard(id) {
+  var idx = document.getElementById('lpIndex');
+  var view = document.getElementById('lpView');
+  if (!idx || !view) return;
+  idx.style.display = 'none';
+  view.style.display = '';
+  _LP_IDS.forEach(function(lid) {
+    var p = document.getElementById(lid);
+    if (p) p.classList.toggle('lp-pane-active', lid === id);
+  });
+  view.scrollIntoView({ block: 'start' });
+}
+
+function closeLearnCard() {
+  var idx = document.getElementById('lpIndex');
+  var view = document.getElementById('lpView');
+  if (!idx || !view) return;
+  view.style.display = 'none';
+  _LP_IDS.forEach(function(lid) {
+    var p = document.getElementById(lid);
+    if (p) p.classList.remove('lp-pane-active');
+  });
+  idx.style.display = '';
+  idx.scrollIntoView({ block: 'start' });
+}
+
 var _WS_IDS = ['cba','values','change-plan','abc','five-q','wheel','goals-worksheet'];
 
 function openWorksheet(id) {
@@ -4904,10 +5079,13 @@ function closeWorksheet() {
 
 function scrollToId(id) {
   var wsIds = ['cba','values','change-plan','abc','five-q','wheel','goals-worksheet'];
-  if (wsIds.indexOf(id) !== -1) {
-    openWorksheet(id);
-    return;
-  }
+  if (wsIds.indexOf(id) !== -1) { openWorksheet(id); return; }
+  var lpMap = {
+    'self-compassion':'lp-self-compassion','dents':'lp-dents','personify':'lp-personify',
+    'boundaries':'lp-boundaries','thinking-styles':'lp-thinking-styles','dispute':'lp-dispute',
+    'self-compassion':'lp-self-compassion','goals':'lp-goals','pursuits':'lp-pursuits'
+  };
+  if (lpMap[id]) { openLearnCard(lpMap[id]); return; }
   setTimeout(function() {
     var el = document.getElementById(id);
     if (el) el.scrollIntoView({ block: 'start' });
@@ -4932,7 +5110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.10';
+var APP_VERSION = '2.2.11';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
