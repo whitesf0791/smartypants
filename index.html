@@ -1139,7 +1139,36 @@
     transition: all 0.2s; font-family: var(--font-body);
   }
   .btn-tracker-reset:hover { color: var(--rose); border-color: var(--rose); }
+  .btn-log-slip {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--amber); background: none; border: 1px solid var(--amber);
+    border-radius: 4px; padding: 5px 10px; cursor: pointer;
+    transition: all 0.2s; font-family: var(--font-body); opacity: 0.85;
+  }
+  .btn-log-slip:hover { opacity: 1; }
+  .btn-reset-link {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-dim); background: none; border: none;
+    padding: 4px 2px; cursor: pointer; font-family: var(--font-body);
+    text-decoration: underline; text-underline-offset: 2px; display: block; margin-top: 4px;
+  }
+  .btn-reset-link:hover { color: var(--rose); }
+  .tracker-streak-best { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
   .tracker-empty { font-size: 13.5px; color: var(--text-dim); font-style: italic; padding: 4px 0; }
+  /* Journal */
+  .journal-entry { border-top: 1px solid var(--border); padding: 10px 0; }
+  .journal-entry:first-child { border-top: none; }
+  .journal-entry-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .journal-entry-date { font-size: 11px; color: var(--text-dim); }
+  .journal-entry-text { font-size: 13.5px; color: var(--text-muted); white-space: pre-wrap; word-break: break-word; }
+  /* Notifications */
+  .btn-notif-toggle {
+    font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text-muted);
+    transition: all 0.2s; font-family: var(--font-body); white-space: nowrap; flex-shrink: 0;
+  }
+  .btn-notif-toggle.notif-on { background: rgba(47,179,255,0.12); border-color: var(--blue); color: var(--blue); }
+  .btn-notif-toggle:hover { border-color: var(--blue); color: var(--blue); }
 
   /* ── EXTERNAL RESOURCES ───────────────────────────── */
   .resources-section { padding: 28px 0 44px; }
@@ -1795,6 +1824,21 @@
 </div>
     </div>
 
+    <!-- JOURNAL -->
+    <div class="tool-card" id="journal" style="margin-top:20px;">
+      <div class="tool-card-header">
+        <span class="tool-type type-tool">Journal</span>
+        <div class="tool-name">Free Write</div>
+      </div>
+      <div class="tool-body">
+        <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:12px;">No prompts, no structure — just write. Getting thoughts out of your head reduces emotional load and creates distance from urges.</p>
+        <textarea id="journalText" rows="4" placeholder="What's on your mind right now?"
+          style="width:100%;box-sizing:border-box;margin:0 0 10px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;resize:vertical;font-family:var(--font-body);"></textarea>
+        <button class="btn-primary" onclick="saveJournalEntry()">Save Entry</button>
+        <div id="journalList" style="margin-top:16px;"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -2181,7 +2225,8 @@
           <div class="tracker-date-label">Sobriety Start Date</div>
           <input type="date" class="tracker-date-input" id="trackerDate" onchange="setTrackerDate()">
         </div>
-        <button class="btn-tracker-reset" onclick="resetTracker()">Reset</button>
+        <button class="btn-log-slip" id="btnLogSlip" onclick="recordSlip()" style="display:none;">Log a Slip</button>
+        <button class="btn-reset-link" onclick="resetTracker()">Full Reset</button>
       </div>
     </div>
     <div class="overview-grid" id="dashboardGrid"></div>
@@ -3711,6 +3756,21 @@
       </div>
     </div>
 
+    <!-- NOTIFICATIONS -->
+    <div class="settings-section" id="notifSection" style="display:none;">
+      <div class="settings-section-title">Reminders</div>
+      <div class="settings-card">
+        <div class="settings-row" style="align-items:flex-start;gap:12px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:160px;">
+            <div class="settings-row-label">Daily Check-in Reminder</div>
+            <div class="settings-row-sub" style="margin-top:4px;">Receive a daily nudge to check in with your recovery. Shown once per day when you open the app.</div>
+          </div>
+          <button class="btn-notif-toggle" id="notifToggle" onclick="toggleReminder()">Enable</button>
+        </div>
+        <div id="notifStatus" style="font-size:12px;color:var(--text-dim);margin-top:8px;display:none;"></div>
+      </div>
+    </div>
+
     <!-- CLOUD SYNC -->
     <div class="settings-section">
       <div class="settings-section-title">Cloud Sync</div>
@@ -4270,6 +4330,10 @@ function drawWheel(vals) {
 document.addEventListener('DOMContentLoaded', initWheel);
 // ── SOBRIETY TRACKER ─────────────────────────────────────
 const TRACKER_KEY = 'smart_sobriety_start_v1';
+const SLIP_KEY    = 'smart_slip_events_v1';
+const JOURNAL_KEY = 'smart_journal_v1';
+const NOTIF_KEY      = 'smart_notif_enabled_v1';
+const NOTIF_LAST_KEY = 'smart_notif_last_shown_v1';
 const MILESTONES = [7,30,60,90,180,365];
 
 function setTrackerDate() {
@@ -4277,9 +4341,46 @@ function setTrackerDate() {
   if (d) { lsSet(TRACKER_KEY, d); renderTracker(); renderDashboard(); }
 }
 
+function getSlipEvents() {
+  try { return JSON.parse(lsGet(SLIP_KEY)) || []; } catch(e) { return []; }
+}
+
+function getLongestStreak() {
+  var start = lsGet(TRACKER_KEY);
+  if (!start) return 0;
+  var slips = getSlipEvents().slice().sort(function(a, b) { return a.ts < b.ts ? -1 : 1; });
+  var segments = [];
+  var prev = start;
+  slips.forEach(function(s) {
+    var days = Math.floor((new Date(s.ts) - new Date(prev + 'T00:00:00')) / 86400000);
+    if (days > 0) segments.push(days);
+    prev = s.newStart;
+  });
+  var current = Math.max(0, Math.floor((new Date() - new Date(prev + 'T00:00:00')) / 86400000));
+  segments.push(current);
+  return Math.max.apply(null, segments);
+}
+
+function recordSlip() {
+  var start = lsGet(TRACKER_KEY);
+  if (!start) return;
+  var today = new Date().toISOString().slice(0, 10);
+  var days = Math.max(0, Math.floor((new Date() - new Date(start + 'T00:00:00')) / 86400000));
+  if (!confirm('Log a slip? This will save your current streak (' + days + ' day' + (days === 1 ? '' : 's') + ') and reset your counter to today.')) return;
+  var slips = getSlipEvents();
+  slips.push({ ts: new Date().toISOString(), prevStart: start, days: days, newStart: today });
+  lsSet(SLIP_KEY, JSON.stringify(slips));
+  lsSet(TRACKER_KEY, today);
+  var el = document.getElementById('trackerDate');
+  if (el) el.value = today;
+  renderTracker();
+  renderDashboard();
+}
+
 function resetTracker() {
-  if (!confirm('Reset your sobriety tracker? This cannot be undone.')) return;
+  if (!confirm('Full reset — delete all streak history and start over?')) return;
   lsRemove(TRACKER_KEY);
+  lsRemove(SLIP_KEY);
   var el = document.getElementById('trackerDate');
   if (el) el.value = '';
   renderTracker();
@@ -4287,18 +4388,21 @@ function resetTracker() {
 }
 
 function renderTracker() {
-  var stored = lsGet(TRACKER_KEY);
+  var stored  = lsGet(TRACKER_KEY);
   var display = document.getElementById('trackerDisplay');
   var milDiv  = document.getElementById('trackerMilestones');
   var dateEl  = document.getElementById('trackerDate');
+  var slipBtn = document.getElementById('btnLogSlip');
   if (!display) return;
 
   if (!stored) {
     display.innerHTML = '<div class="tracker-empty">Set your start date to begin tracking.</div>';
     if (milDiv) milDiv.style.display = 'none';
+    if (slipBtn) slipBtn.style.display = 'none';
     return;
   }
 
+  if (slipBtn) slipBtn.style.display = '';
   if (dateEl && !dateEl.value) dateEl.value = stored;
 
   var start = new Date(stored + 'T00:00:00');
@@ -4306,14 +4410,19 @@ function renderTracker() {
   var diff  = Math.floor((now - start) / 86400000);
   if (diff < 0) diff = 0;
 
-  var opts = { year:'numeric', month:'long', day:'numeric' };
+  var opts  = { year:'numeric', month:'long', day:'numeric' };
   var since = start.toLocaleDateString('en-US', opts);
+  var best  = getLongestStreak();
+  var bestHtml = (best > diff)
+    ? '<div class="tracker-streak-best">Best streak: ' + best + ' day' + (best === 1 ? '' : 's') + '</div>'
+    : '';
 
   display.innerHTML = '<div class="tracker-count">'
     + '<span class="tracker-num">' + diff + '</span>'
     + '<span class="tracker-unit">day' + (diff === 1 ? '' : 's') + '</span>'
     + '</div>'
-    + '<div class="tracker-since">Since ' + since + '</div>';
+    + '<div class="tracker-since">Since ' + since + '</div>'
+    + bestHtml;
 
   if (milDiv) {
     milDiv.style.display = 'flex';
@@ -4825,6 +4934,59 @@ function renderFiveQLog() {
 
 document.addEventListener('DOMContentLoaded', renderFiveQLog);
 
+// ── JOURNAL ───────────────────────────────────────────────
+var JOURNAL_PAGE_SIZE = 5;
+
+function getJournal() {
+  try { return JSON.parse(lsGet(JOURNAL_KEY)) || []; } catch(e) { return []; }
+}
+
+function saveJournalEntry() {
+  var el = document.getElementById('journalText');
+  if (!el) return;
+  var text = el.value.trim();
+  if (!text) return;
+  var entries = getJournal();
+  entries.unshift({ id: Date.now(), ts: new Date().toISOString(), text: text });
+  lsSet(JOURNAL_KEY, JSON.stringify(entries));
+  el.value = '';
+  renderJournal();
+}
+
+function deleteJournalEntry(id) {
+  var entries = getJournal().filter(function(e) { return e.id !== id; });
+  lsSet(JOURNAL_KEY, JSON.stringify(entries));
+  renderJournal();
+}
+
+function renderJournal() {
+  var list = document.getElementById('journalList');
+  if (!list) return;
+  var all = getJournal();
+  if (!all.length) {
+    list.innerHTML = '';
+    return;
+  }
+  var page = _pagerPage['journalList'] || 0;
+  var start = page * JOURNAL_PAGE_SIZE;
+  var slice = all.slice(start, start + JOURNAL_PAGE_SIZE);
+  list.innerHTML = slice.map(function(e) {
+    var d = new Date(e.ts);
+    var date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    var time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    var escaped = e.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return '<div class="journal-entry">'
+      + '<div class="journal-entry-meta">'
+      + '<span class="journal-entry-date">' + date + ' · ' + time + '</span>'
+      + '<button class="btn-delete" onclick="deleteJournalEntry(' + e.id + ')" title="Delete" aria-label="Delete entry">✕</button>'
+      + '</div>'
+      + '<div class="journal-entry-text">' + escaped + '</div>'
+      + '</div>';
+  }).join('') + _pagerHtml('journalList', all.length, JOURNAL_PAGE_SIZE);
+}
+
+document.addEventListener('DOMContentLoaded', renderJournal);
+
 // ── EXPORT / IMPORT ──────────────────────────────────────
 const BACKUP_KEYS = [
   'smartTheme',
@@ -4832,11 +4994,13 @@ const BACKUP_KEYS = [
   'smart_urge_log_v1',
   'smart_balance_wheel_v1',
   'smart_sobriety_start_v1',
+  'smart_slip_events_v1',
   'smart_abc_log_v1',
   'smart_cba_v1',
   'smart_change_plan_v1',
   'smart_values_log_v1',
   'smart_five_q_log_v1',
+  'smart_journal_v1',
   'smart_checkin_v1',
   'smart_support_v1',
   'smart_goals_v1'
@@ -4967,7 +5131,8 @@ function renderDashboard() {
   const abcLog = getAbcLog();
   const cbaLog = getCbaLog();
   const fqLog  = getFiveQLog();
-  const totalWs = abcLog.length + cbaLog.length + fqLog.length;
+  const valLog = (() => { try { return JSON.parse(lsGet(VAL_KEY)) || []; } catch(e) { return []; } })();
+  const totalWs = abcLog.length + cbaLog.length + fqLog.length + valLog.length;
   const lastAbc = abcLog.length ? abcLog[abcLog.length - 1].ts : null;
   const lastFq  = fqLog.length  ? fqLog[fqLog.length - 1].ts  : null;
 
@@ -5000,8 +5165,8 @@ function renderDashboard() {
     <div class="overview-card ov-c3">
       <div class="ov-num${noWs ? ' ov-num-empty' : ''}">${!noWs ? totalWs : '—'}</div>
       <div class="ov-title">Worksheet Entries</div>
-      <div class="ov-desc">${lastAbc ? 'Last ABC: ' + rel(lastAbc) : 'No ABC entries yet'}</div>
-      <div class="ov-desc" style="margin-top:4px;">${lastFq ? 'Last check-in: ' + rel(lastFq) : 'No check-ins yet'}</div>
+      <div class="ov-desc">${abcLog.length} ABC · ${cbaLog.length} CBA · ${fqLog.length} 5Q · ${valLog.length} Values</div>
+      <div class="ov-desc" style="margin-top:4px;">${lastAbc ? 'Last ABC: ' + rel(lastAbc) : lastFq ? 'Last 5Q: ' + rel(lastFq) : 'No entries yet'}</div>
     </div>
     <div class="overview-card ov-c4">
       <div class="ov-num${!wheelSaved ? ' ov-num-empty' : ''}">${wheelSaved ? wheelAvg : '—'}</div>
@@ -5013,12 +5178,84 @@ function renderDashboard() {
 
 document.addEventListener('DOMContentLoaded', renderDashboard);
 
+// ── NOTIFICATIONS ─────────────────────────────────────────
+function initNotifications() {
+  var sec = document.getElementById('notifSection');
+  if (!sec) return;
+  if (!('Notification' in window)) return;
+  sec.style.display = '';
+  var enabled = lsGet(NOTIF_KEY) === 'true';
+  var btn = document.getElementById('notifToggle');
+  if (btn) {
+    btn.textContent = enabled ? 'Enabled' : 'Enable';
+    btn.classList.toggle('notif-on', enabled);
+  }
+}
+
+function toggleReminder() {
+  if (!('Notification' in window)) return;
+  var enabled = lsGet(NOTIF_KEY) === 'true';
+  if (!enabled) {
+    Notification.requestPermission().then(function(perm) {
+      if (perm === 'granted') {
+        lsSet(NOTIF_KEY, 'true');
+        updateNotifUi(true);
+        showNotifStatus('Daily reminders enabled.');
+      } else {
+        showNotifStatus('Permission denied — check your browser settings.');
+      }
+    });
+  } else {
+    lsSet(NOTIF_KEY, 'false');
+    updateNotifUi(false);
+    showNotifStatus('Reminders disabled.');
+  }
+}
+
+function updateNotifUi(enabled) {
+  var btn = document.getElementById('notifToggle');
+  if (!btn) return;
+  btn.textContent = enabled ? 'Enabled' : 'Enable';
+  btn.classList.toggle('notif-on', enabled);
+}
+
+function showNotifStatus(msg) {
+  var el = document.getElementById('notifStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = '';
+  setTimeout(function() { el.style.display = 'none'; }, 4000);
+}
+
+function maybeShowDailyReminder() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+  if (lsGet(NOTIF_KEY) !== 'true') return;
+  var today = new Date().toISOString().slice(0, 10);
+  if (lsGet(NOTIF_LAST_KEY) === today) return;
+  lsSet(NOTIF_LAST_KEY, today);
+  var messages = [
+    'Check in with your recovery today.',
+    'A moment of reflection keeps the momentum going.',
+    'Your progress is worth protecting — take a minute today.',
+    'Recovery is built one day at a time. Today counts.',
+    'Open SMART Recovery to log your check-in for today.'
+  ];
+  var msg = messages[Math.floor(Math.random() * messages.length)];
+  new Notification('SMART Recovery', { body: msg, icon: './icon.svg' });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  initNotifications();
+  maybeShowDailyReminder();
+});
+
 // ── PAGE NAVIGATION ──────────────────────────────────────
 var PAGE_IDS = ['page-rightnow', 'page-worksheets', 'page-progress', 'page-learn', 'page-slip', 'page-settings'];
 
 var TOOL_PAGE_MAP = {
   'halt': 'page-rightnow', 'urge-log': 'page-rightnow', 'urge-history': 'page-progress',
-  'breathing': 'page-rightnow', 'urge-surfing': 'page-rightnow',
+  'breathing': 'page-rightnow', 'urge-surfing': 'page-rightnow', 'journal': 'page-rightnow',
   'cba': 'page-worksheets', 'abc': 'page-worksheets', 'five-q': 'page-worksheets',
   'values': 'page-worksheets', 'change-plan': 'page-worksheets', 'wheel': 'page-worksheets',
   'dents': 'page-learn', 'personify': 'page-learn', 'boundaries': 'page-learn',
