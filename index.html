@@ -791,6 +791,10 @@
   .urge-entry-intensity.low  { color: var(--sage); background: var(--sage-dim); }
   .urge-entry-intensity.mid  { color: var(--amber); background: var(--amber-dim); }
   .urge-entry-intensity.high { color: var(--rose); background: var(--rose-dim); }
+  .pager { display:flex; align-items:center; justify-content:center; gap:12px; margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+  .pager-btn { background:var(--surface); border:1px solid var(--border); color:var(--text-muted); padding:5px 14px; border-radius:6px; font-size:12.5px; cursor:pointer; line-height:1.4; }
+  .pager-btn:disabled { opacity:0.3; cursor:default; pointer-events:none; }
+  .pager-info { font-size:12px; color:var(--text-dim); min-width:56px; text-align:center; }
   .urge-entry-outcome { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
   .outcome-resisted { color: var(--sage); }
   .outcome-gave-in  { color: var(--rose); }
@@ -3503,6 +3507,24 @@ function toggleHalt(el) {
 }
 
 // ── URGE LOG ─────────────────────────────────────────────
+// ── PAGINATION HELPERS ───────────────────────────────────
+var _pagerPage = {};
+var _pagerRender = {};
+function _changePage(id, delta) {
+  _pagerPage[id] = (_pagerPage[id] || 0) + delta;
+  if (_pagerRender[id]) _pagerRender[id]();
+}
+function _pagerHtml(id, total, size) {
+  if (total <= size) return '';
+  var pages = Math.ceil(total / size);
+  var cur = _pagerPage[id] || 0;
+  return '<div class="pager">'
+    + '<button class="pager-btn"' + (cur === 0 ? ' disabled' : ' onclick="_changePage(\'' + id + '\',-1)"') + '>&#8592; Prev</button>'
+    + '<span class="pager-info">' + (cur + 1) + ' of ' + pages + '</span>'
+    + '<button class="pager-btn"' + (cur >= pages - 1 ? ' disabled' : ' onclick="_changePage(\'' + id + '\',1)"') + '>Next &#8594;</button>'
+    + '</div>';
+}
+
 const URGE_KEY = 'smart_urge_log_v1';
 
 function esc(str) {
@@ -3544,6 +3566,7 @@ function addUrgeEntry() {
   document.getElementById('ul_notes').value = '';
   document.getElementById('ul_outcome').value = 'resisted';
 
+  _pagerPage['urgeEntriesList'] = 0;
   renderUrgeLog();
 }
 
@@ -3587,12 +3610,17 @@ function renderUrgeLog() {
     renderUrgeChart(entries, chartEl);
   }
 
-  // Entry list (most recent first, max 20)
-  const recent = [...entries].reverse().slice(0, 20);
+  // Entry list (paginated, most recent first)
+  const URGE_PAGE_SIZE = 8;
+  _pagerRender['urgeEntriesList'] = renderUrgeLog;
+  const urgePage = Math.max(0, Math.min(_pagerPage['urgeEntriesList'] || 0, Math.ceil(entries.length / URGE_PAGE_SIZE) - 1));
+  _pagerPage['urgeEntriesList'] = urgePage;
+  const urgeAll = [...entries].reverse();
+  const urgePaged = urgeAll.slice(urgePage * URGE_PAGE_SIZE, (urgePage + 1) * URGE_PAGE_SIZE);
   const outcomeColor = { 'resisted':'sage', 'partial':'amber', 'gave-in':'rose' };
   const outcomeLabel = { 'resisted':'Resisted', 'partial':'Partial', 'gave-in':'Gave in' };
 
-  list.innerHTML = recent.map(e => {
+  list.innerHTML = urgePaged.map(e => {
     const d    = new Date(e.ts);
     const date = d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
     const time = d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
@@ -3609,7 +3637,7 @@ function renderUrgeLog() {
         <button class="btn-delete" onclick="deleteUrge(${e.id})" title="Delete" aria-label="Delete entry">✕</button>
       </div>
     </div>`;
-  }).join('');
+  }).join('') + _pagerHtml('urgeEntriesList', urgeAll.length, URGE_PAGE_SIZE);
 }
 
 function renderUrgeChart(entries, svg) {
@@ -3622,7 +3650,7 @@ function renderUrgeChart(entries, svg) {
   const tMin = times[0], tMax = times[times.length-1] || tMin+1;
   const tRange = tMax - tMin || 1;
 
-  const cx = e => PAD.l + ((new Date(e.ts).getTime()-tMin)/tRange)*iW;
+  const cx = (e, i) => PAD.l + (sorted.length > 1 ? i / (sorted.length - 1) : 0.5) * iW;
   const cy = e => PAD.t + iH - ((e.intensity-1)/9)*iH;
 
   const colorMap = { 'resisted':'var(--sage)', 'partial':'var(--amber)', 'gave-in':'var(--rose)' };
@@ -3640,14 +3668,14 @@ function renderUrgeChart(entries, svg) {
   // Trend line (if 2+ entries)
   let trendLine = '';
   if (sorted.length >= 2) {
-    const pts = sorted.map(e => `${cx(e).toFixed(1)},${cy(e).toFixed(1)}`).join(' ');
+    const pts = sorted.map((e, i) => `${cx(e,i).toFixed(1)},${cy(e).toFixed(1)}`).join(' ');
     trendLine = `<polyline points="${pts}" fill="none" stroke="var(--border-accent)" stroke-width="1.5" stroke-linejoin="round"/>`;
   }
 
   // Dots
-  const dots = sorted.map(e => {
+  const dots = sorted.map((e, i) => {
     const col = colorMap[e.outcome] || 'var(--blue)';
-    return `<circle cx="${cx(e).toFixed(1)}" cy="${cy(e).toFixed(1)}" r="5"
+    return `<circle cx="${cx(e,i).toFixed(1)}" cy="${cy(e).toFixed(1)}" r="5"
       fill="${col}" opacity="0.85"/>`;
   }).join('');
 
@@ -4058,6 +4086,7 @@ function saveAbcEntry() {
   ['abc_a','abc_b','abc_c','abc_d','abc_e'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
+  _pagerPage['abcEntriesList'] = 0;
   renderAbcLog();
   renderDashboard();
 }
@@ -4074,7 +4103,13 @@ function renderAbcLog() {
   const entries = getAbcLog();
   if (!entries.length) { list.innerHTML = ''; return; }
   const LABELS = { a:'A — Event', b:'B — Beliefs', c:'C — Consequences', d:'D — Dispute', e:'E — New Belief' };
-  list.innerHTML = [...entries].reverse().slice(0, 20).map(entry => {
+  const ABC_PAGE_SIZE = 5;
+  _pagerRender['abcEntriesList'] = renderAbcLog;
+  const abcPage = Math.max(0, Math.min(_pagerPage['abcEntriesList'] || 0, Math.ceil(entries.length / ABC_PAGE_SIZE) - 1));
+  _pagerPage['abcEntriesList'] = abcPage;
+  const abcAll = [...entries].reverse();
+  const abcPaged = abcAll.slice(abcPage * ABC_PAGE_SIZE, (abcPage + 1) * ABC_PAGE_SIZE);
+  list.innerHTML = abcPaged.map(entry => {
     const dt = new Date(entry.ts);
     const date = dt.toLocaleDateString('en-US', { month:'short', day:'numeric' });
     const time = dt.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
@@ -4086,7 +4121,7 @@ function renderAbcLog() {
         <div class="ws-entry-meta">${date} · ${time}</div>
         <button class="btn-delete" onclick="deleteAbcEntry(${entry.id})" title="Delete" aria-label="Delete entry">✕</button>
       </div>${rows}</div>`;
-  }).join('');
+  }).join('') + _pagerHtml('abcEntriesList', abcAll.length, ABC_PAGE_SIZE);
 }
 
 document.addEventListener('DOMContentLoaded', renderAbcLog);
@@ -4115,6 +4150,7 @@ function saveCbaEntry() {
   ['cba_behavior','cba_b_do','cba_c_do','cba_b_stop','cba_c_stop'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
+  _pagerPage['cbaEntriesList'] = 0;
   renderCbaLog();
   renderDashboard();
 }
@@ -4130,7 +4166,13 @@ function renderCbaLog() {
   if (!list) return;
   const entries = getCbaLog();
   if (!entries.length) { list.innerHTML = ''; return; }
-  list.innerHTML = [...entries].reverse().slice(0, 10).map(entry => {
+  const CBA_PAGE_SIZE = 5;
+  _pagerRender['cbaEntriesList'] = renderCbaLog;
+  const cbaPage = Math.max(0, Math.min(_pagerPage['cbaEntriesList'] || 0, Math.ceil(entries.length / CBA_PAGE_SIZE) - 1));
+  _pagerPage['cbaEntriesList'] = cbaPage;
+  const cbaAll = [...entries].reverse();
+  const cbaPaged = cbaAll.slice(cbaPage * CBA_PAGE_SIZE, (cbaPage + 1) * CBA_PAGE_SIZE);
+  list.innerHTML = cbaPaged.map(entry => {
     const dt = new Date(entry.ts);
     const date = dt.toLocaleDateString('en-US', { month:'short', day:'numeric' });
     const time = dt.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
@@ -4150,7 +4192,7 @@ function renderCbaLog() {
         </div>
         <button class="btn-delete" onclick="deleteCbaEntry(${entry.id})" title="Delete" aria-label="Delete entry">✕</button>
       </div>${quad}</div>`;
-  }).join('');
+  }).join('') + _pagerHtml('cbaEntriesList', cbaAll.length, CBA_PAGE_SIZE);
 }
 
 document.addEventListener('DOMContentLoaded', renderCbaLog);
@@ -4243,6 +4285,7 @@ function saveValEntry() {
   for (let i = 1; i <= 5; i++) {
     const el = document.getElementById('val_' + i); if (el) el.value = '';
   }
+  _pagerPage['valEntriesList'] = 0;
   renderValLog();
   renderDashboard();
 }
@@ -4258,7 +4301,13 @@ function renderValLog() {
   if (!list) return;
   const entries = getValLog();
   if (!entries.length) { list.innerHTML = ''; return; }
-  list.innerHTML = [...entries].reverse().slice(0, 10).map(entry => {
+  const VAL_PAGE_SIZE = 5;
+  _pagerRender['valEntriesList'] = renderValLog;
+  const valPage = Math.max(0, Math.min(_pagerPage['valEntriesList'] || 0, Math.ceil(entries.length / VAL_PAGE_SIZE) - 1));
+  _pagerPage['valEntriesList'] = valPage;
+  const valAll = [...entries].reverse();
+  const valPaged = valAll.slice(valPage * VAL_PAGE_SIZE, (valPage + 1) * VAL_PAGE_SIZE);
+  list.innerHTML = valPaged.map(entry => {
     const dt = new Date(entry.ts);
     const date = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const time = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
@@ -4270,7 +4319,7 @@ function renderValLog() {
         <div class="ws-entry-meta">${date} · ${time}</div>
         <button class="btn-delete" onclick="deleteValEntry(${entry.id})" title="Delete" aria-label="Delete entry">✕</button>
       </div>${rows}</div>`;
-  }).join('');
+  }).join('') + _pagerHtml('valEntriesList', valAll.length, VAL_PAGE_SIZE);
 }
 
 document.addEventListener('DOMContentLoaded', renderValLog);
@@ -4291,6 +4340,7 @@ function saveFiveQEntry() {
   entries.push({ id: Date.now(), ts: new Date().toISOString(), answers });
   lsSet(FQ_KEY, JSON.stringify(entries));
   [1,2,3,4,5].forEach(i => { const el = document.getElementById('fq_' + i); if (el) el.value = ''; });
+  _pagerPage['fiveqEntriesList'] = 0;
   renderFiveQLog();
   renderDashboard();
 }
@@ -4307,7 +4357,13 @@ function renderFiveQLog() {
   const entries = getFiveQLog();
   if (!entries.length) { list.innerHTML = ''; return; }
   const LABELS = ['Future','Doing','Feeling','Different','Result'];
-  list.innerHTML = [...entries].reverse().slice(0, 5).map(entry => {
+  const FQ_PAGE_SIZE = 5;
+  _pagerRender['fiveqEntriesList'] = renderFiveQLog;
+  const fqPage = Math.max(0, Math.min(_pagerPage['fiveqEntriesList'] || 0, Math.ceil(entries.length / FQ_PAGE_SIZE) - 1));
+  _pagerPage['fiveqEntriesList'] = fqPage;
+  const fqAll = [...entries].reverse();
+  const fqPaged = fqAll.slice(fqPage * FQ_PAGE_SIZE, (fqPage + 1) * FQ_PAGE_SIZE);
+  list.innerHTML = fqPaged.map(entry => {
     const dt = new Date(entry.ts);
     const date = dt.toLocaleDateString('en-US', { month:'short', day:'numeric' });
     const time = dt.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
@@ -4319,7 +4375,7 @@ function renderFiveQLog() {
         <div class="ws-entry-meta">${date} · ${time}</div>
         <button class="btn-delete" onclick="deleteFiveQEntry(${entry.id})" title="Delete" aria-label="Delete entry">✕</button>
       </div>${rows}</div>`;
-  }).join('');
+  }).join('') + _pagerHtml('fiveqEntriesList', fqAll.length, FQ_PAGE_SIZE);
 }
 
 document.addEventListener('DOMContentLoaded', renderFiveQLog);
@@ -4573,7 +4629,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.4';
+var APP_VERSION = '2.2.5';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
