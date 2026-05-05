@@ -4644,7 +4644,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.6';
+var APP_VERSION = '2.2.7';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
@@ -4707,25 +4707,22 @@ async function checkForUpdates() {
           dl.href = '#';
           dl.onclick = async function(e) {
             e.preventDefault();
-            dl.textContent = 'Applying update…';
+            dl.textContent = 'Clearing cache…';
             dl.onclick = null;
-            if ('serviceWorker' in navigator) {
-              var reg = await navigator.serviceWorker.getRegistration();
-              if (reg) {
-                // Trigger SW update check; controllerchange listener handles
-                // the reload once the new SW has installed and taken control.
-                // Fallback fires if the SW doesn't change within 6s.
-                var reloadTimer = setTimeout(function() { location.reload(); }, 6000);
-                navigator.serviceWorker.addEventListener('controllerchange', function() {
-                  clearTimeout(reloadTimer);
-                  location.reload();
-                }, { once: true });
-                await reg.update();
-                if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-                return;
+            try {
+              // Delete every SW cache so no stale file survives the reload
+              if ('caches' in window) {
+                var cacheKeys = await caches.keys();
+                await Promise.all(cacheKeys.map(function(k) { return caches.delete(k); }));
               }
-            }
-            location.reload();
+              // Unregister the SW so it cannot intercept the next request
+              if ('serviceWorker' in navigator) {
+                var reg = await navigator.serviceWorker.getRegistration();
+                if (reg) await reg.unregister();
+              }
+            } catch(err) {}
+            // Navigate to a cache-busted URL — browser fetches fresh from network
+            window.location.replace(window.location.href.split('?')[0] + '?_upd=' + Date.now());
           };
           dl.style.display = 'inline-block';
         }
