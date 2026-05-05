@@ -3354,7 +3354,7 @@
         <div class="settings-row">
           <div class="settings-row-info">
             <div class="settings-row-label"><span class="sync-dot" id="syncDot"></span>Cloud Sync Active</div>
-            <div class="settings-row-sub" id="syncLastSynced">Syncing…</div>
+            <div class="settings-row-sub" id="syncLastSynced"></div>
           </div>
           <button class="btn-backup" onclick="syncNow()">Sync Now</button>
         </div>
@@ -4644,7 +4644,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.2.7';
+var APP_VERSION = '2.2.8';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
@@ -5051,6 +5051,16 @@ function sbGenKey() {
   return Array.from(arr).map(function(b) { return SB_WORDS[b]; }).join('-');
 }
 
+function sbUserId() {
+  if (sbState.session) {
+    if (sbState.session.user && sbState.session.user.id) return sbState.session.user.id;
+  }
+  try {
+    var s = JSON.parse(lsGet(SB_SESSION_KEY) || 'null');
+    return s && s.user_id;
+  } catch(e) { return null; }
+}
+
 function sbHeaders(extra) {
   var h = { 'apikey': SB_ANON, 'Content-Type': 'application/json' };
   if (sbState.session) h['Authorization'] = 'Bearer ' + sbState.session.access_token;
@@ -5101,11 +5111,13 @@ async function sbRefresh() {
 
 async function sbPushKey(key, rawVal) {
   if (!sbState.session) return;
+  var uid = sbUserId();
+  if (!uid) return;
   var val; try { val = JSON.parse(rawVal); } catch(e) { val = rawVal; }
   await fetch(SB_URL + '/rest/v1/user_data', {
     method: 'POST',
     headers: sbHeaders({ 'Prefer': 'resolution=merge-duplicates' }),
-    body: JSON.stringify({ user_id: sbState.session.user.id, key: key, value: val, updated_at: new Date().toISOString() })
+    body: JSON.stringify({ user_id: uid, key: key, value: val, updated_at: new Date().toISOString() })
   });
 }
 
@@ -5122,11 +5134,12 @@ async function sbPull() {
   if (!sbState.session) return;
   sbState.pulling = true;
   try {
-    var uid = sbState.session.user.id;
+    var uid = sbUserId();
+    if (!uid) throw new Error('No user ID');
     var res = await fetch(SB_URL + '/rest/v1/user_data?select=key,value&user_id=eq.' + uid, {
       headers: sbHeaders()
     });
-    if (!res.ok) return;
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     var rows = await res.json();
     rows.forEach(function(row) {
       if (row.key !== 'smartTheme') {
@@ -5138,6 +5151,12 @@ async function sbPull() {
     loadCp(); loadValues(); renderDashboard();
     var el = document.getElementById('syncLastSynced');
     if (el) el.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    var el = document.getElementById('syncLastSynced');
+    if (el && !el.textContent.match(/^Last synced/)) {
+      el.textContent = 'Could not sync — tap Sync Now to retry.';
+    }
+    throw e;
   } finally {
     sbState.pulling = false;
   }
@@ -5164,6 +5183,8 @@ function sbRenderSetup() {
   var a = document.getElementById('syncUiActive');
   if (s) s.style.display = '';
   if (a) a.style.display = 'none';
+  var ls = document.getElementById('syncLastSynced');
+  if (ls) ls.textContent = '';
 }
 
 function sbRenderActive() {
@@ -5173,6 +5194,8 @@ function sbRenderActive() {
   if (a) a.style.display = '';
   var kd = document.getElementById('syncActiveKeyDisplay');
   if (kd && sbState.recoveryKey) kd.textContent = sbState.recoveryKey;
+  var ls = document.getElementById('syncLastSynced');
+  if (ls && !ls.textContent.match(/^Last synced/)) ls.textContent = 'Connecting…';
 }
 
 function setSyncStatus(msg, isError) {
@@ -5256,11 +5279,22 @@ async function syncNow() {
   if (!sbState.session) return;
   setSyncStatus('Syncing…');
   try {
+    // Refresh token first — access tokens expire after ~1 hour
+    try { await sbRefresh(); } catch(e) {}
     await sbPushAll();
     await sbPull();
     setSyncStatus('Synced successfully.');
   } catch(e) {
-    setSyncStatus('Sync failed — check your connection.', true);
+    // One retry after a fresh token exchange
+    try {
+      var ok = await sbRefresh();
+      if (!ok) throw new Error('refresh failed');
+      await sbPushAll();
+      await sbPull();
+      setSyncStatus('Synced successfully.');
+    } catch(e2) {
+      setSyncStatus('Sync failed — check your connection.', true);
+    }
   }
 }
 
