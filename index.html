@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMART Recovery — Complete Toolbox Reference</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#3535A8">
+<meta name="theme-color" content="#1E1E2C" id="metaThemeColor">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SMART">
@@ -752,7 +752,7 @@
   .distortion-ex     { font-size: 12px; color: var(--md-on-surface-variant); margin-top: 4px; font-style: italic; opacity: 0.75; }
 
   /* ══ IF YOU SLIP ═══════════════════════════════════════════ */
-  .lapse-section  { padding: 56px 0 20px; border-top: 2px solid var(--md-primary); }
+  .lapse-section  { padding: 56px 0 20px; }
   .lapse-header   { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 32px; }
   .lapse-icon     { font-size: 40px; line-height: 1; flex-shrink: 0; width: 56px; text-align: center; padding-top: 4px; }
   .lapse-title-group { padding-top: 4px; }
@@ -3258,6 +3258,13 @@ function initAccentColor() {
   else _updateAccentUI('');
 }
 
+function _syncThemeColor() {
+  var m = document.getElementById('metaThemeColor');
+  if (!m) return;
+  var c = getComputedStyle(document.documentElement).getPropertyValue('--md-surface-container').trim();
+  if (c) m.content = c;
+}
+
 function applyTheme(id) {
   _THEME_CLASSES.forEach(function(c) { html.classList.remove(c); });
   html.classList.remove('light');
@@ -3265,6 +3272,7 @@ function applyTheme(id) {
   if (id !== 'dark' && id !== 'light') html.classList.add(id);
   lsSet('smartTheme', id);
   updateThemeSwatches(id);
+  _syncThemeColor();
   // Re-apply accent so tones recalculate for the new light/dark variant
   var savedAccent = lsGet(ACCENT_KEY);
   if (savedAccent) applyAccent(savedAccent);
@@ -3310,6 +3318,7 @@ try {
     var _preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
     if (_preferLight) html.classList.add('light');
   }
+  setTimeout(_syncThemeColor, 0);
 } catch(e) {}
 try {
   var _savedFont = lsGet('smartFont');
@@ -4665,7 +4674,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.4.5';
+var APP_VERSION = '2.4.6';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
