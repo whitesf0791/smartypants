@@ -74,42 +74,47 @@
     --md-shadow:                     rgba(0,0,0,0.4);
   }
 
-  /* ── LIGHT scheme ───────────────────────────────────────── */
+  /* ── LIGHT scheme — MD3 Baseline (Google reference palette) ── */
   html.light {
-    --md-primary:              #4040C0;
+    /* Primary — violet (#6750A4 baseline seed) */
+    --md-primary:              #6750A4;
     --md-on-primary:           #FFFFFF;
-    --md-primary-container:    #E0E0FF;
-    --md-on-primary-container: #00006C;
-    --md-secondary:              #5C5C7A;
+    --md-primary-container:    #EADDFF;
+    --md-on-primary-container: #21005D;
+    /* Secondary — mauve */
+    --md-secondary:              #625B71;
     --md-on-secondary:           #FFFFFF;
-    --md-secondary-container:    #E1E0F9;
-    --md-on-secondary-container: #181830;
-    --md-tertiary:              #3D6653;
+    --md-secondary-container:    #E8DEF8;
+    --md-on-secondary-container: #1D192B;
+    /* Tertiary — rose */
+    --md-tertiary:              #7D5260;
     --md-on-tertiary:           #FFFFFF;
-    --md-tertiary-container:    #C0E8D2;
-    --md-on-tertiary-container: #001F14;
-    --md-error:              #BA1A1A;
+    --md-tertiary-container:    #FFD8E4;
+    --md-on-tertiary-container: #31111D;
+    /* Error */
+    --md-error:              #B3261E;
     --md-on-error:           #FFFFFF;
-    --md-error-container:    #FFDAD6;
-    --md-on-error-container: #410002;
-    --md-background:                 #FAFAFF;
-    --md-on-background:              #1B1B25;
-    --md-surface:                    #FAFAFF;
-    --md-on-surface:                 #1B1B25;
-    --md-surface-variant:            #E4E3F3;
-    --md-on-surface-variant:         #47475F;
-    --md-outline:                    #777790;
-    --md-outline-variant:            #C7C6DD;
-    --md-surface-tint:               #4040C0;
+    --md-error-container:    #F9DEDC;
+    --md-on-error-container: #410E0B;
+    /* Surfaces */
+    --md-background:                 #FFFBFE;
+    --md-on-background:              #1C1B1F;
+    --md-surface:                    #FFFBFE;
+    --md-on-surface:                 #1C1B1F;
+    --md-surface-variant:            #E7E0EC;
+    --md-on-surface-variant:         #49454F;
+    --md-outline:                    #79747E;
+    --md-outline-variant:            #CAC4D0;
+    --md-surface-tint:               #6750A4;
     --md-surface-container-lowest:   #FFFFFF;
-    --md-surface-container-low:      #F4F4FF;
-    --md-surface-container:          #EEEEF6;
-    --md-surface-container-high:     #E8E8F0;
-    --md-surface-container-highest:  #E2E2EA;
-    --md-inverse-surface:            #1B1B25;
-    --md-inverse-on-surface:         #F2F2FF;
-    --md-inverse-primary:            #BBC2FF;
-    --md-shadow:                     rgba(0,0,0,0.12);
+    --md-surface-container-low:      #F7F2FA;
+    --md-surface-container:          #F3EDF7;
+    --md-surface-container-high:     #ECE6F0;
+    --md-surface-container-highest:  #E6E0E9;
+    --md-inverse-surface:            #313033;
+    --md-inverse-on-surface:         #F4EFF4;
+    --md-inverse-primary:            #D0BCFF;
+    --md-shadow:                     rgba(0,0,0,0.15);
   }
 
   /* ── MIDNIGHT scheme ────────────────────────────────────── */
@@ -351,6 +356,30 @@
   .ws-pane.ws-pane-active { display: block; }
   .lp-pane { display: none; }
   .lp-pane.lp-pane-active { display: block; }
+  /* ══ WS-PRIMER (collapsible guide background) ═════════════ */
+  .ws-primer {
+    margin-top: 12px;
+    border: 1px solid var(--md-outline-variant);
+    border-radius: var(--md-shape-md);
+    overflow: hidden;
+    background: var(--md-surface-container-low);
+  }
+  .ws-primer-summary {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 20px;
+    cursor: pointer; list-style: none;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
+    color: var(--md-on-surface-variant);
+    transition: background var(--md-dur-short) var(--md-easing-standard);
+  }
+  .ws-primer-summary::-webkit-details-marker { display: none; }
+  .ws-primer-summary::before { content: "›"; font-size: 17px; line-height: 1; transition: transform var(--md-dur-short) var(--md-easing-standard); }
+  .ws-primer[open] > .ws-primer-summary::before { transform: rotate(90deg); }
+  .ws-primer[open] > .ws-primer-summary { border-bottom: 1px solid var(--md-outline-variant); }
+  .ws-primer-summary:hover { background: color-mix(in srgb, var(--md-on-surface) 8%, transparent); }
+  .ws-primer-body { padding: 4px 20px 16px; }
+  .ws-primer-body .tool-summary { margin-top: 14px; }
+
 
   /* ══ MD3 TOOL CARDS (Outlined) ═════════════════════════════ */
   .tool-card {
@@ -982,13 +1011,13 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Right Now
     </a></li>
-    <li role="presentation"><a href="javascript:void(0)" class="p3" onclick="showPage('page-learn');closeLearnCard()" data-page="page-learn" role="tab" aria-selected="false">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      Learn
+    <li role="presentation"><a href="javascript:void(0)" class="p3" onclick="showPage('page-journal')" data-page="page-journal" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Journal
     </a></li>
     <li role="presentation"><a href="javascript:void(0)" class="p1" onclick="showPage('page-worksheets');closeWorksheet()" data-page="page-worksheets" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-      Worksheets
+      Practice
     </a></li>
     <li role="presentation"><a href="javascript:void(0)" class="p4" onclick="showPage('page-progress')" data-page="page-progress" role="tab" aria-selected="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
@@ -1101,9 +1130,7 @@
             <p>Sleep deprivation directly impairs impulse control. If you can sleep, do. If not, use DENTS (Tasks or Swap) to occupy your mind until you can rest. Postpone difficult decisions until after you've slept.</p>
           </div>
         </div>
-            <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-halt');return false;">&#8594; Read the guide in Learn</a>
-      </div>
+
 </div>
     </div>
 
@@ -1149,9 +1176,7 @@
             <a href="javascript:void(0)" onclick="showPage('page-progress');scrollToId('urge-history');" style="color:var(--md-secondary);">View urge history &rarr;</a>
           </p>
         </div>
-            <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-urge-log');return false;">&#8594; Read the guide in Learn</a>
-      </div>
+
 </div>
     </div>
 
@@ -1197,9 +1222,7 @@
             <div class="ground-step g-taste"><div class="ground-count">1</div><div><div class="ground-sense-label">Taste</div><div class="ground-desc">Name 1 thing you can taste. Drink water, chew gum, eat something small. The act of tasting grounds the final sense and often provides a clear break from the urge state.</div></div></div>
           </div>
         </div>
-            <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-breathing');return false;">&#8594; Read the guide in Learn</a>
-      </div>
+
 </div>
     </div>
 
@@ -1247,26 +1270,11 @@
           <button class="btn-surf btn-surf-reset" onclick="surfReset()">Reset</button>
           <span class="surf-status" id="surfStatus">Ready when you are.</span>
         </div>
-            <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-urge-surfing');return false;">&#8594; Read the guide in Learn</a>
-      </div>
+
 </div>
     </div>
 
-    <!-- JOURNAL -->
-    <div class="tool-card" id="journal" style="margin-top:20px;">
-      <div class="tool-card-header">
-        <span class="tool-type type-tool">Journal</span>
-        <div class="tool-name">Free Write</div>
-      </div>
-      <div class="tool-body">
-        <p style="font-size:13.5px;color:var(--md-on-surface-variant);margin-bottom:12px;">No prompts, no structure — just write. Getting thoughts out of your head reduces emotional load and creates distance from urges.</p>
-        <textarea id="journalText" rows="4" placeholder="What's on your mind right now?"
-          style="width:100%;box-sizing:border-box;margin:0 0 10px;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;resize:vertical;font-family:var(--md-font-body);"></textarea>
-        <button class="btn-primary" onclick="saveJournalEntry()">Save Entry</button>
-        <div id="journalList" style="margin-top:16px;"></div>
-      </div>
-    </div>
+
 
   </div>
 </div>
@@ -1278,8 +1286,8 @@
     <!-- Worksheet Index -->
     <div class="ws-index" id="wsIndex">
       <div style="padding-top:28px;padding-bottom:4px;border-top:none;">
-        <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;color:var(--md-on-surface);">Worksheets</div>
-        <div style="font-size:13px;color:var(--md-on-surface-variant);margin-top:4px;">Select a worksheet to open it</div>
+        <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;color:var(--md-on-surface);">Practice</div>
+        <div style="font-size:13px;color:var(--md-on-surface-variant);margin-top:4px;">Worksheets and reference guides for all four SMART points</div>
       </div>
 
       <div class="ws-group-header">Point 1 &middot; Motivation</div>
@@ -1349,11 +1357,70 @@
           <span class="ws-row-arrow" aria-hidden="true">›</span>
         </button>
       </div>
+      <div class="ws-group-header">Reference &middot; Guides &amp; Practices</div>
+      <div class="ws-index-list">
+        <button class="ws-index-row" onclick="openWorksheet('self-compassion')">
+          <span class="tool-type type-sheet ws-row-badge">Practice</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Practice Self-Compassion</div>
+            <div class="ws-row-desc">Meet hard moments with care instead of shame or self-attack</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('dents')">
+          <span class="tool-type type-guide ws-row-badge">Framework</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Put DENTS in Your Urges</div>
+            <div class="ws-row-desc">A five-step acronym for managing active urges in the moment</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('personify')">
+          <span class="tool-type type-sheet ws-row-badge">Practice</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Personify and Disarm</div>
+            <div class="ws-row-desc">Name your urge, identify its scripts, and talk back to reclaim control</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('boundaries')">
+          <span class="tool-type type-guide ws-row-badge">Tool</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Setting Healthy Boundaries</div>
+            <div class="ws-row-desc">Protect your time, energy, and recovery with clear communication</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('thinking-styles')">
+          <span class="tool-type type-guide ws-row-badge">Reference</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Unhelpful Thinking Styles</div>
+            <div class="ws-row-desc">Quick-reference guide to the eight most common cognitive distortions</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('dispute')">
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Dispute Unhelpful Beliefs</div>
+            <div class="ws-row-desc">Identify belief patterns and replace them with more helpful thinking</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="ws-index-row" onclick="openWorksheet('pursuits')">
+          <span class="tool-type type-guide ws-row-badge">Guide</span>
+          <div class="ws-row-text">
+            <div class="ws-row-name">Explore New Pursuits and Passions</div>
+            <div class="ws-row-desc">Find what can genuinely replace the functions addictive behavior served</div>
+          </div>
+          <span class="ws-row-arrow" aria-hidden="true">›</span>
+        </button>
+      </div>
     </div>
 
     <!-- Worksheet Detail View -->
     <div class="ws-view" id="wsView" style="display:none">
-      <button class="ws-back-btn" onclick="closeWorksheet()">&#8592; Back to Worksheets</button>
+      <button class="ws-back-btn" onclick="closeWorksheet()">&#8592; Back to Practice</button>
 
       <div id="wsPane-cba" class="ws-pane">
 <div class="tool-card" id="cba">
@@ -1401,478 +1468,13 @@
               </ul>
             </div>
           </details>
-              <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-cba');return false;">&#8594; Read the guide in Learn</a>
-      </div>
+
 </div>
       </div>
-      </div>
-
-      <div id="wsPane-values" class="ws-pane">
-<div class="tool-card" id="values">
-        <div class="tool-card-header">
-          <span class="tool-type type-sheet">Worksheet</span>
-          <div class="tool-name">Define Your Values</div>
-        </div>
-        <div class="tool-body">
-          <div class="ws-interactive" id="valuesInteractive">
-            <div class="section-label">Your Values</div>
-            <div class="form-field" style="margin-bottom:10px;">
-              <label class="form-label" for="val_behavior">Behavior Currently Getting Top Priority</label>
-              <input type="text" class="form-input" id="val_behavior" placeholder="e.g. alcohol">
-            </div>
-            <div style="display:grid;gap:8px;margin-bottom:14px;">
-              <div class="form-field"><label class="form-label" for="val_1">Value 1 — Most Important</label><input type="text" class="form-input" id="val_1" placeholder=""></div>
-              <div class="form-field"><label class="form-label" for="val_2">Value 2</label><input type="text" class="form-input" id="val_2" placeholder=""></div>
-              <div class="form-field"><label class="form-label" for="val_3">Value 3</label><input type="text" class="form-input" id="val_3" placeholder=""></div>
-              <div class="form-field"><label class="form-label" for="val_4">Value 4</label><input type="text" class="form-input" id="val_4" placeholder=""></div>
-              <div class="form-field"><label class="form-label" for="val_5">Value 5</label><input type="text" class="form-input" id="val_5" placeholder=""></div>
-            </div>
-            <button class="btn-primary" onclick="saveValEntry()">Save Values</button>
-            <span id="valuesSaveStatus" class="sr-only" aria-live="polite"></span>
-            <div class="urge-entries-list" id="valEntriesList" style="margin-top:16px;"></div>
-          </div>
-          <details class="tool-details">
-            <summary class="tool-details-toggle">How it works</summary>
-            <div class="tool-summary">Values underpin every feeling and decision you make — but most people never write them down. This tool surfaces what you actually care about, then confronts you with what you've been putting ahead of those things.</div>
-            <div class="example-block" style="margin-top:14px;">
-              <div class="ex-label">Example Hierarchy</div>
-              <div class="ex-item"><strong>1. Alcohol</strong> ← (what's been getting priority)</div>
-              <div class="ex-item"><strong>2.</strong> My children</div>
-              <div class="ex-item"><strong>3.</strong> Health · <strong>4.</strong> Honesty · <strong>5.</strong> Stability</div>
-            </div>
-          </details>
-              <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-values');return false;">&#8594; Read the guide in Learn</a>
-      </div>
-</div>
-      </div>
-      </div>
-
-      <div id="wsPane-change-plan" class="ws-pane">
-<div class="tool-card" id="change-plan">
-        <div class="tool-card-header">
-          <span class="tool-type type-tool">Tool</span>
-          <div class="tool-name">Create a Change Plan</div>
-        </div>
-        <div class="tool-body">
-          <div class="ws-interactive" id="cpInteractive">
-            <div class="section-label">Your Change Plan</div>
-            <div id="cpReviewNotice" class="review-notice"></div>
-            <div class="form-field" style="margin-bottom:10px;">
-              <label class="form-label" for="cp_changes">Changes I Want to Make</label>
-              <textarea class="form-textarea" id="cp_changes" rows="3" placeholder="Specific, concrete changes..."></textarea>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px;">
-              <div class="form-field">
-                <label class="form-label" for="cp_importance">Importance (1–10)</label>
-                <div class="cp-scale-row">
-                  <input type="range" min="1" max="10" value="5" id="cp_importance" oninput="document.getElementById('cp_importance_val').textContent=this.value">
-                  <span class="cp-scale-val" id="cp_importance_val">5</span>
-                </div>
-              </div>
-              <div class="form-field">
-                <label class="form-label" for="cp_confidence">Confidence (1–10)</label>
-                <div class="cp-scale-row">
-                  <input type="range" min="1" max="10" value="5" id="cp_confidence" oninput="document.getElementById('cp_confidence_val').textContent=this.value">
-                  <span class="cp-scale-val" id="cp_confidence_val">5</span>
-                </div>
-              </div>
-            </div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="cp_reasons">My Most Important Reasons</label><textarea class="form-textarea" id="cp_reasons" rows="3" placeholder="Why does this change matter to you personally?"></textarea></div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="cp_steps">Steps I Plan to Take</label><textarea class="form-textarea" id="cp_steps" rows="3" placeholder="Small, actionable steps for the next days or weeks..."></textarea></div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="cp_support">Who Can Help Me and How</label><textarea class="form-textarea" id="cp_support" rows="2" placeholder="Specific people and what kind of help each can give..."></textarea></div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="cp_obstacles">Signs of Progress / Potential Obstacles</label><textarea class="form-textarea" id="cp_obstacles" rows="2" placeholder="What will tell you it's working? What could derail it?"></textarea></div>
-            <div class="form-field" style="margin-bottom:14px;"><label class="form-label" for="cp_review">Review Date</label><input type="date" class="tracker-date-input" id="cp_review"></div>
-            <button class="btn-primary" onclick="saveCp()">Save Plan</button>
-            <span id="cpSaveStatus" class="sr-only" aria-live="polite"></span>
-            <p class="ws-save-note">Saves over the previous version. Export JSON before major revisions to keep a history.</p>
-          </div>
-          <details class="tool-details">
-            <summary class="tool-details-toggle">How it works</summary>
-            <div class="tool-summary">Intention without structure is just hope. The Change Plan converts what you want into specific steps, support systems, and checkpoints. Your plan doesn't have to be perfect — if it doesn't work, revise it.</div>
-          </details>
-              <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-change-plan');return false;">&#8594; Read the guide in Learn</a>
-      </div>
-</div>
-      </div>
-      </div>
-
-      <div id="wsPane-abc" class="ws-pane">
-<div class="tool-card" id="abc">
-        <div class="tool-card-header">
-          <span class="tool-type type-sheet">Worksheet</span>
-          <div class="tool-name">The ABCs + D and E</div>
-        </div>
-        <div class="tool-body">
-          <div class="ws-interactive" id="abcInteractive">
-            <div class="section-label">Your ABC Log</div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="abc_a">A — Activating Event</label><input type="text" class="form-input" id="abc_a" placeholder="What happened just before the urge or reaction?"></div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="abc_b">B — Beliefs</label><textarea class="form-textarea" id="abc_b" rows="3" placeholder="What were you telling yourself?"></textarea></div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="abc_c">C — Consequences</label><textarea class="form-textarea" id="abc_c" rows="2" placeholder="How did you feel? What was the urge?"></textarea></div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="abc_d">D — Dispute</label><textarea class="form-textarea" id="abc_d" rows="2" placeholder="Is that belief accurate or helpful?"></textarea></div>
-            <div class="form-field" style="margin-bottom:14px;"><label class="form-label" for="abc_e">E — Effective New Belief</label><textarea class="form-textarea" id="abc_e" rows="2" placeholder="A more balanced, honest thought..."></textarea></div>
-            <button class="btn-primary" onclick="saveAbcEntry()">Save Entry</button>
-            <div class="urge-entries-list" id="abcEntriesList" style="margin-top:16px;"></div>
-          </div>
-          <details class="tool-details">
-            <summary class="tool-details-toggle">How it works</summary>
-            <div class="tool-summary">The ABCDE model maps how external events trigger internal beliefs that produce emotional consequences — and gives you a process to dispute those beliefs and replace them with more effective ones. Recurring patterns across entries point to your specific cognitive tendencies — the ones worth focusing on.</div>
-          </details>
-              <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-abc');return false;">&#8594; Read the guide in Learn</a>
-      </div>
-</div>
-      </div>
-      </div>
-
-      <div id="wsPane-five-q" class="ws-pane">
-<div class="tool-card" id="five-q">
-        <div class="tool-card-header">
-          <span class="tool-type type-sheet">Worksheet</span>
-          <div class="tool-name">Five Questions</div>
-        </div>
-        <div class="tool-body">
-          <div class="ws-interactive" id="fiveqInteractive">
-            <div class="section-label">Your Check-In</div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="fq_1">1. What do I want for my future?</label><textarea class="form-textarea" id="fq_1" rows="2" placeholder="Goals, values, the life you want..."></textarea></div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="fq_2">2. What am I doing to get what I want?</label><textarea class="form-textarea" id="fq_2" rows="2" placeholder="Current actions, helpful or not..."></textarea></div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="fq_3">3. How do I feel about what I'm doing now?</label><textarea class="form-textarea" id="fq_3" rows="2" placeholder="Be honest..."></textarea></div>
-            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="fq_4">4. What could I do differently?</label><textarea class="form-textarea" id="fq_4" rows="2" placeholder="One or two small changes..."></textarea></div>
-            <div class="form-field" style="margin-bottom:14px;"><label class="form-label" for="fq_5">5. How would changing what I do make me feel?</label><textarea class="form-textarea" id="fq_5" rows="2" placeholder="Imagine taking even a small step forward..."></textarea></div>
-            <button class="btn-primary" onclick="saveFiveQEntry()">Save Check-In</button>
-            <div class="urge-entries-list" id="fiveqEntriesList" style="margin-top:16px;"></div>
-          </div>
-          <details class="tool-details">
-            <summary class="tool-details-toggle">How it works</summary>
-            <div class="tool-summary">Five pointed questions that help you evaluate whether what you're currently doing actually serves what you actually want. Use it as a regular check-in — weekly works well — to stay connected to your intentions.</div>
-          </details>
-              <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-five-q');return false;">&#8594; Read the guide in Learn</a>
-      </div>
-</div>
-      </div>
-      </div>
-
-      <div id="wsPane-wheel" class="ws-pane">
-<div class="tool-card" id="wheel">
-        <div class="tool-card-header">
-          <span class="tool-type type-sheet">Worksheet</span>
-          <div class="tool-name">Lifestyle Balance Wheel</div>
-        </div>
-        <div class="tool-body">
-          <div class="wheel-interactive">
-            <div class="section-label">Interactive Balance Wheel</div>
-            <p style="font-size:13.5px;color:var(--md-on-surface-variant);margin-bottom:16px;">Adjust each slider to reflect your current satisfaction. The wheel redraws live. A lumpy or lopsided shape shows where to focus. Your settings are saved automatically.</p>
-            <div class="wheel-layout">
-              <div class="wheel-svg-wrap">
-                <svg id="wheelSvg" viewBox="-70 -5 400 270" width="100%" style="max-width:380px"></svg>
-              </div>
-              <div>
-                <div class="wheel-sliders" id="wheelSliders"></div>
-                <div class="wheel-score-block">
-                  <div><div class="wheel-score-label">Avg Satisfaction</div><div class="wheel-score-sub">across all areas</div></div>
-                  <div class="wheel-score-val" id="wheelScore">5.0</div>
-                </div>
-                <button class="btn-reset-wheel" onclick="resetWheel()">Reset to 5</button>
-              </div>
-            </div>
-          </div>
-          <details class="tool-details">
-            <summary class="tool-details-toggle">How it works</summary>
-            <div class="tool-summary">A visual snapshot of how satisfied you currently feel across the key domains of your life. When one area is neglected, it throws off the rest. This tool shows you where you are and where to focus. Which areas scored lowest? Which are overdeveloped? Are the highest-scoring areas aligned with your values, or just where you spend the most time?</div>
-          </details>
-              <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-wheel');return false;">&#8594; Read the guide in Learn</a>
-      </div>
-</div>
-      </div>
-      </div>
-
-      <div id="wsPane-goals-worksheet" class="ws-pane">
-<div class="tool-card" id="goals-worksheet">
-      <div class="tool-card-header">
-        <span class="tool-type type-sheet">Worksheet</span>
-        <div class="tool-name">SMART Goal Tracker</div>
-      </div>
-      <div class="tool-body">
-        <!-- Create goal form -->
-        <details class="tool-details" id="goalFormDetails">
-          <summary class="tool-details-toggle">+ Add a New Goal</summary>
-          <div style="padding-top:10px;">
-            <input type="text" id="goalTitle" placeholder="Goal title *"
-              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);margin-bottom:8px;">
-            <textarea id="goalSpecific" rows="2" placeholder="Specific — exactly what will you do?"
-              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);resize:vertical;margin-bottom:8px;"></textarea>
-            <textarea id="goalMeasurable" rows="2" placeholder="Measurable — how will you know you've succeeded?"
-              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);resize:vertical;margin-bottom:8px;"></textarea>
-            <textarea id="goalAchievable" rows="2" placeholder="Achievable — what steps will you take?"
-              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);resize:vertical;margin-bottom:8px;"></textarea>
-            <textarea id="goalRelevant" rows="2" placeholder="Relevant — why does this matter to your recovery?"
-              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);resize:vertical;margin-bottom:8px;"></textarea>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-              <label style="font-size:13px;color:var(--md-on-surface-variant);white-space:nowrap;">Target date</label>
-              <input type="date" id="goalDeadline"
-                style="padding:8px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);">
-            </div>
-            <button class="btn-primary" onclick="saveGoal()">Save Goal</button>
-          </div>
-        </details>
-        <!-- Goal list -->
-        <div class="goal-filter-row" style="margin-top:16px;">
-          <button class="goal-filter-btn active" id="goalTabActive" onclick="setGoalFilter(true)">Active</button>
-          <button class="goal-filter-btn" id="goalTabDone" onclick="setGoalFilter(false)">Completed</button>
-        </div>
-        <div id="goalList"></div>
-            <div class="tool-use-link">
-        <a href="javascript:void(0)" onclick="showPage('page-learn');openLearnCard('lp-goals');return false;">&#8594; Read the guide in Learn</a>
-      </div>
-</div>
-    </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-<!-- ═══ PAGE: PROGRESS ═══ -->
-<div class="page" id="page-progress">
-  <div class="container" style="padding-top:32px;">
-
-    <div class="tracker-wrap" id="tracker">
-      <div class="tracker-left">
-        <div class="tracker-eyebrow">Sobriety Tracker</div>
-        <div id="trackerDisplay">
-          <div class="tracker-empty">Set your start date to begin tracking.</div>
-        </div>
-        <div class="tracker-milestones" id="trackerMilestones" style="display:none"></div>
-      </div>
-      <div class="tracker-right">
-        <div class="tracker-date-group">
-          <div class="tracker-date-label">Sobriety Start Date</div>
-          <input type="date" class="tracker-date-input" id="trackerDate" onchange="setTrackerDate()">
-        </div>
-        <button class="btn-log-slip" id="btnLogSlip" onclick="recordSlip()" style="display:none;">Log a Slip</button>
-        <button class="btn-reset-link" onclick="resetTracker()">Full Reset</button>
-      </div>
-    </div>
-    <div class="overview-grid" id="dashboardGrid"></div>
-
-    <div class="page-section-header" style="margin-top:8px;">
-      <div class="page-section-title">Urge History</div>
-    </div>
-    <div class="tool-card" id="urge-history">
-      <div class="tool-card-header">
-        <span class="tool-type type-tool">Log</span>
-        <div class="tool-name">Urge History</div>
-      </div>
-      <div class="tool-body">
-        <div class="urge-chart-wrap" id="urgeChartWrap">
-          <div class="urge-chart-empty" id="urgeChartEmpty">Log your first urge on the Right Now tab to see your history here.</div>
-          <svg id="urgeChartSvg" class="urge-chart-svg" style="display:none"></svg>
-        </div>
-        <div class="chart-legend" id="urgeLegend" style="display:none">
-          <span><span class="legend-dot" style="background:var(--md-tertiary)"></span>Resisted</span>
-          <span><span class="legend-dot" style="background:var(--md-primary)"></span>Partial</span>
-          <span><span class="legend-dot" style="background:var(--md-error)"></span>Gave in</span>
-        </div>
-        <div class="urge-summary-grid" id="urgeSummary" style="display:none">
-          <div class="urge-summary-stat"><div class="stat-val" id="stat_total">0</div><div class="stat-label">Total Logged</div></div>
-          <div class="urge-summary-stat"><div class="stat-val" id="stat_resist">0%</div><div class="stat-label">Resistance Rate</div></div>
-          <div class="urge-summary-stat"><div class="stat-val" id="stat_avg">—</div><div class="stat-label">Avg Intensity</div></div>
-        </div>
-        <div class="urge-entries-list" id="urgeEntriesList"></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ═══ PAGE: LEARN ═══ -->
-<div class="page" id="page-learn">
-<div class="container">
-
-  <!-- Learn Index -->
-  <div class="lp-index" id="lpIndex">
-    <div style="padding-top:28px;padding-bottom:4px;border-top:none;">
-      <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;color:var(--md-on-surface);">Learn</div>
-      <div style="font-size:13px;color:var(--md-on-surface-variant);margin-top:4px;">Tap any topic to read the full guide</div>
-    </div>
-
-    <div class="ws-group-header">Point 1 &middot; Build and Maintain Motivation</div>
-    <div class="ws-index-list">
-        <button class="ws-index-row" onclick="openLearnCard('lp-cba')">
-          <span class="tool-type type-guide ws-row-badge">Guide</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Cost-Benefit Analysis</div>
-            <div class="ws-row-desc">Examine what you gain and lose from your behavior, short-term and long-term</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-values')">
-          <span class="tool-type type-guide ws-row-badge">Guide</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Define Your Values</div>
-            <div class="ws-row-desc">Surface what you actually care about and what your behavior has been displacing</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-change-plan')">
-          <span class="tool-type type-guide ws-row-badge">Guide</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Create a Change Plan</div>
-            <div class="ws-row-desc">Structure your intentions as specific steps, support systems, and checkpoints</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-self-compassion')">
-          <span class="tool-type type-sheet ws-row-badge">Practice</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Practice Self-Compassion</div>
-            <div class="ws-row-desc">Meet hard moments with care instead of shame or self-attack</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-    </div>
-
-    <div class="ws-group-header">Point 2 &middot; Cope with Urges</div>
-    <div class="ws-index-list">
-        <button class="ws-index-row" onclick="openLearnCard('lp-halt')">
-          <span class="tool-type type-guide ws-row-badge">Guide</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">HALT Check</div>
-            <div class="ws-row-desc">Identify the four states most responsible for unplanned urges</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-urge-log')">
-          <span class="tool-type type-tool ws-row-badge">Tool</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Urge Log</div>
-            <div class="ws-row-desc">Track patterns in your urges to build awareness and better responses</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-dents')">
-          <span class="tool-type type-sheet ws-row-badge">Framework</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Put DENTS in Your Urges</div>
-            <div class="ws-row-desc">A five-step acronym for managing active urges in the moment</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-breathing')">
-          <span class="tool-type type-tool ws-row-badge">Tool</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Breathing &amp; Grounding</div>
-            <div class="ws-row-desc">Two techniques that reduce nervous system activation in under two minutes</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-personify')">
-          <span class="tool-type type-sheet ws-row-badge">Practice</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Personify and Disarm</div>
-            <div class="ws-row-desc">Name your urge, identify its scripts, and talk back to reclaim control</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-urge-surfing')">
-          <span class="tool-type type-sheet ws-row-badge">Practice</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Urge Surfing</div>
-            <div class="ws-row-desc">Observe the wave pattern of an urge without fighting or acting on it</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-boundaries')">
-          <span class="tool-type type-tool ws-row-badge">Tool</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Setting Healthy Boundaries</div>
-            <div class="ws-row-desc">Protect your time, energy, and recovery with clear, direct limits</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-    </div>
-
-    <div class="ws-group-header">Point 3 &middot; Manage Thoughts, Feelings &amp; Behaviors</div>
-    <div class="ws-index-list">
-        <button class="ws-index-row" onclick="openLearnCard('lp-thinking-styles')">
-          <span class="tool-type type-sheet ws-row-badge">Reference</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Unhelpful Thinking Styles</div>
-            <div class="ws-row-desc">Quick-reference card for common cognitive distortions and their signal words</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-abc')">
-          <span class="tool-type type-guide ws-row-badge">Guide</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">The ABCs + D and E</div>
-            <div class="ws-row-desc">Map how events trigger beliefs that produce consequences — then dispute them</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-dispute')">
-          <span class="tool-type type-guide ws-row-badge">Guide</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Dispute Unhelpful Beliefs</div>
-            <div class="ws-row-desc">Identify and replace the belief patterns that fuel addictive behavior</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-five-q')">
-          <span class="tool-type type-guide ws-row-badge">Guide</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Five Questions</div>
-            <div class="ws-row-desc">A structured check-in that surfaces the gap between actions and intentions</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-    </div>
-
-    <div class="ws-group-header">Point 4 &middot; Live a Balanced Life</div>
-    <div class="ws-index-list">
-        <button class="ws-index-row" onclick="openLearnCard('lp-wheel')">
-          <span class="tool-type type-sheet ws-row-badge">Worksheet</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Lifestyle Balance Wheel</div>
-            <div class="ws-row-desc">Assess satisfaction across life domains and identify where to focus</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-goals')">
-          <span class="tool-type type-tool ws-row-badge">Tool</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">SMART Goal Setting</div>
-            <div class="ws-row-desc">Build goals that are specific, measurable, achievable, relevant, and time-bound</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-        <button class="ws-index-row" onclick="openLearnCard('lp-pursuits')">
-          <span class="tool-type type-guide ws-row-badge">Guide</span>
-          <div class="ws-row-text">
-            <div class="ws-row-name">Explore New Pursuits</div>
-            <div class="ws-row-desc">Discover what can replace the functions your addictive behavior was serving</div>
-          </div>
-          <span class="ws-row-arrow" aria-hidden="true">&#8250;</span>
-        </button>
-    </div>
-  </div>
-
-  <!-- Learn Detail View -->
-  <div class="lp-view" id="lpView" style="display:none">
-    <button class="ws-back-btn" onclick="closeLearnCard()">&#8592; Back to Learn</button>
-
-    <div id="lp-cba" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-guide">Guide</span>
-      <div class="tool-name">Cost-Benefit Analysis (CBA)</div>
-    </div>
-    <div class="tool-body">
+      
+      <details class="ws-primer">
+        <summary class="ws-primer-summary">Read the guide</summary>
+        <div class="ws-primer-body">
       <div class="tool-summary">You get something from every behavior you engage in — that's why you did it. The CBA makes you examine both sides honestly: what you gain from the behavior and what you lose, both by continuing and by stopping.</div>
 
       <div class="tool-content-section">
@@ -1935,21 +1537,52 @@
           <li>What's one small action this reflection points to?</li>
         </ul>
       </div>
+    
+        </div>
+      </details>
+</div>
 
-      <div class="tool-use-link">
-        <a href="#cba" onclick="showPage('page-worksheets');scrollToId('cba');return false;">→ Open CBA Worksheet</a>
+      <div id="wsPane-values" class="ws-pane">
+<div class="tool-card" id="values">
+        <div class="tool-card-header">
+          <span class="tool-type type-sheet">Worksheet</span>
+          <div class="tool-name">Define Your Values</div>
+        </div>
+        <div class="tool-body">
+          <div class="ws-interactive" id="valuesInteractive">
+            <div class="section-label">Your Values</div>
+            <div class="form-field" style="margin-bottom:10px;">
+              <label class="form-label" for="val_behavior">Behavior Currently Getting Top Priority</label>
+              <input type="text" class="form-input" id="val_behavior" placeholder="e.g. alcohol">
+            </div>
+            <div style="display:grid;gap:8px;margin-bottom:14px;">
+              <div class="form-field"><label class="form-label" for="val_1">Value 1 — Most Important</label><input type="text" class="form-input" id="val_1" placeholder=""></div>
+              <div class="form-field"><label class="form-label" for="val_2">Value 2</label><input type="text" class="form-input" id="val_2" placeholder=""></div>
+              <div class="form-field"><label class="form-label" for="val_3">Value 3</label><input type="text" class="form-input" id="val_3" placeholder=""></div>
+              <div class="form-field"><label class="form-label" for="val_4">Value 4</label><input type="text" class="form-input" id="val_4" placeholder=""></div>
+              <div class="form-field"><label class="form-label" for="val_5">Value 5</label><input type="text" class="form-input" id="val_5" placeholder=""></div>
+            </div>
+            <button class="btn-primary" onclick="saveValEntry()">Save Values</button>
+            <span id="valuesSaveStatus" class="sr-only" aria-live="polite"></span>
+            <div class="urge-entries-list" id="valEntriesList" style="margin-top:16px;"></div>
+          </div>
+          <details class="tool-details">
+            <summary class="tool-details-toggle">How it works</summary>
+            <div class="tool-summary">Values underpin every feeling and decision you make — but most people never write them down. This tool surfaces what you actually care about, then confronts you with what you've been putting ahead of those things.</div>
+            <div class="example-block" style="margin-top:14px;">
+              <div class="ex-label">Example Hierarchy</div>
+              <div class="ex-item"><strong>1. Alcohol</strong> ← (what's been getting priority)</div>
+              <div class="ex-item"><strong>2.</strong> My children</div>
+              <div class="ex-item"><strong>3.</strong> Health · <strong>4.</strong> Honesty · <strong>5.</strong> Stability</div>
+            </div>
+          </details>
+
+</div>
       </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-values" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-guide">Guide</span>
-      <div class="tool-name">Define Your Values (Hierarchy of Values)</div>
-    </div>
-    <div class="tool-body">
+      
+      <details class="ws-primer">
+        <summary class="ws-primer-summary">Read the guide</summary>
+        <div class="ws-primer-body">
       <div class="tool-summary">Values underpin every feeling and decision you make — but most people never write them down. This tool surfaces what you actually care about, then confronts you with what you've been putting ahead of those things.</div>
 
       <div class="tool-content-section">
@@ -1997,21 +1630,61 @@
           <li>How can your values help you stay grounded during a setback or urge?</li>
         </ul>
       </div>
+    
+        </div>
+      </details>
+</div>
 
-      <div class="tool-use-link">
-        <a href="#values" onclick="showPage('page-worksheets');scrollToId('values');return false;">→ Open Values Worksheet</a>
+      <div id="wsPane-change-plan" class="ws-pane">
+<div class="tool-card" id="change-plan">
+        <div class="tool-card-header">
+          <span class="tool-type type-tool">Tool</span>
+          <div class="tool-name">Create a Change Plan</div>
+        </div>
+        <div class="tool-body">
+          <div class="ws-interactive" id="cpInteractive">
+            <div class="section-label">Your Change Plan</div>
+            <div id="cpReviewNotice" class="review-notice"></div>
+            <div class="form-field" style="margin-bottom:10px;">
+              <label class="form-label" for="cp_changes">Changes I Want to Make</label>
+              <textarea class="form-textarea" id="cp_changes" rows="3" placeholder="Specific, concrete changes..."></textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px;">
+              <div class="form-field">
+                <label class="form-label" for="cp_importance">Importance (1–10)</label>
+                <div class="cp-scale-row">
+                  <input type="range" min="1" max="10" value="5" id="cp_importance" oninput="document.getElementById('cp_importance_val').textContent=this.value">
+                  <span class="cp-scale-val" id="cp_importance_val">5</span>
+                </div>
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="cp_confidence">Confidence (1–10)</label>
+                <div class="cp-scale-row">
+                  <input type="range" min="1" max="10" value="5" id="cp_confidence" oninput="document.getElementById('cp_confidence_val').textContent=this.value">
+                  <span class="cp-scale-val" id="cp_confidence_val">5</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="cp_reasons">My Most Important Reasons</label><textarea class="form-textarea" id="cp_reasons" rows="3" placeholder="Why does this change matter to you personally?"></textarea></div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="cp_steps">Steps I Plan to Take</label><textarea class="form-textarea" id="cp_steps" rows="3" placeholder="Small, actionable steps for the next days or weeks..."></textarea></div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="cp_support">Who Can Help Me and How</label><textarea class="form-textarea" id="cp_support" rows="2" placeholder="Specific people and what kind of help each can give..."></textarea></div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="cp_obstacles">Signs of Progress / Potential Obstacles</label><textarea class="form-textarea" id="cp_obstacles" rows="2" placeholder="What will tell you it's working? What could derail it?"></textarea></div>
+            <div class="form-field" style="margin-bottom:14px;"><label class="form-label" for="cp_review">Review Date</label><input type="date" class="tracker-date-input" id="cp_review"></div>
+            <button class="btn-primary" onclick="saveCp()">Save Plan</button>
+            <span id="cpSaveStatus" class="sr-only" aria-live="polite"></span>
+            <p class="ws-save-note">Saves over the previous version. Export JSON before major revisions to keep a history.</p>
+          </div>
+          <details class="tool-details">
+            <summary class="tool-details-toggle">How it works</summary>
+            <div class="tool-summary">Intention without structure is just hope. The Change Plan converts what you want into specific steps, support systems, and checkpoints. Your plan doesn't have to be perfect — if it doesn't work, revise it.</div>
+          </details>
+
+</div>
       </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-change-plan" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-guide">Guide</span>
-      <div class="tool-name">Create a Change Plan</div>
-    </div>
-    <div class="tool-body">
+      
+      <details class="ws-primer">
+        <summary class="ws-primer-summary">Read the guide</summary>
+        <div class="ws-primer-body">
       <div class="tool-summary">Intention without structure is just hope. The Change Plan converts what you want into specific steps, support systems, and checkpoints. Your plan doesn't have to be perfect — if it doesn't work, revise it.</div>
 
       <div class="tool-content-section">
@@ -2078,437 +1751,39 @@
           <li>How will you know it's time to revise or restart your plan?</li>
         </ul>
       </div>
+    
+        </div>
+      </details>
+</div>
 
-      <div class="tool-use-link">
-        <a href="#change-plan" onclick="showPage('page-worksheets');scrollToId('change-plan');return false;">→ Open Change Plan</a>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-self-compassion" class="lp-pane">
-<div class="tool-card" id="self-compassion">
-    <div class="tool-card-header">
-      <span class="tool-type type-sheet">Practice</span>
-      <div class="tool-name">Practice Self-Compassion</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">Shame and self-judgment don't drive lasting change — they drive relapse. This tool, based on Dr. Kristin Neff's research, gives you a concrete practice for meeting hard moments with care instead of attack.</div>
-
-      <div class="tool-content-section">
-        <div class="section-label">3 Pillars (Neff Model)</div>
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-content">
-              <strong>Self-Kindness vs. Self-Judgment</strong>
-              <p>Talk to yourself the way you'd talk to a friend. Reduce name-calling and blame. Try: "I'm doing the best I can" or "This is hard, and I still deserve support." Ask: would I say this to someone I care about?</p>
-            </div>
+      <div id="wsPane-abc" class="ws-pane">
+<div class="tool-card" id="abc">
+        <div class="tool-card-header">
+          <span class="tool-type type-sheet">Worksheet</span>
+          <div class="tool-name">The ABCs + D and E</div>
+        </div>
+        <div class="tool-body">
+          <div class="ws-interactive" id="abcInteractive">
+            <div class="section-label">Your ABC Log</div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="abc_a">A — Activating Event</label><input type="text" class="form-input" id="abc_a" placeholder="What happened just before the urge or reaction?"></div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="abc_b">B — Beliefs</label><textarea class="form-textarea" id="abc_b" rows="3" placeholder="What were you telling yourself?"></textarea></div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="abc_c">C — Consequences</label><textarea class="form-textarea" id="abc_c" rows="2" placeholder="How did you feel? What was the urge?"></textarea></div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="abc_d">D — Dispute</label><textarea class="form-textarea" id="abc_d" rows="2" placeholder="Is that belief accurate or helpful?"></textarea></div>
+            <div class="form-field" style="margin-bottom:14px;"><label class="form-label" for="abc_e">E — Effective New Belief</label><textarea class="form-textarea" id="abc_e" rows="2" placeholder="A more balanced, honest thought..."></textarea></div>
+            <button class="btn-primary" onclick="saveAbcEntry()">Save Entry</button>
+            <div class="urge-entries-list" id="abcEntriesList" style="margin-top:16px;"></div>
           </div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-content">
-              <strong>Common Humanity vs. Isolation</strong>
-              <p>You are not uniquely broken. Struggle is universal. Attend a mutual support meeting, talk with someone who understands, reflect on how others have faced setbacks and kept going.</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-content">
-              <strong>Mindfulness vs. Over-Identification</strong>
-              <p>Notice emotions without being consumed by them. Take a few deep breaths and name what you're feeling. Go for a walk and listen to what's around you. Practice brief grounding or meditation moments.</p>
-            </div>
-          </div>
-        </div>
+          <details class="tool-details">
+            <summary class="tool-details-toggle">How it works</summary>
+            <div class="tool-summary">The ABCDE model maps how external events trigger internal beliefs that produce emotional consequences — and gives you a process to dispute those beliefs and replace them with more effective ones. Recurring patterns across entries point to your specific cognitive tendencies — the ones worth focusing on.</div>
+          </details>
+
+</div>
       </div>
-
-      <div class="reflection-block">
-        <div class="r-label">Reflection Prompts</div>
-        <ul>
-          <li>How do you usually talk to yourself when things go wrong? Would you speak that way to someone you care about?</li>
-          <li>Which pillar feels most natural? Which feels most difficult?</li>
-          <li>Can you name a recent moment where you could have given yourself more compassion?</li>
-          <li>What might change if you offered encouragement instead of criticism after setbacks?</li>
-          <li>What's one small self-compassion practice you can try this week?</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-halt" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-tool">Tool</span>
-      <div class="tool-name">HALT — Quick Urge Triage</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">Before reaching for DENTS or the Urge Log, run this 10-second check. Four states — Hungry, Angry/Anxious, Lonely, Tired — are responsible for the majority of unplanned urges. Identifying the state doesn't eliminate the urge, but it points you at the right intervention.</div>
-
-      <div class="tool-use-link">
-        <a href="#halt" onclick="showPage('page-rightnow');scrollToId('halt');return false;">→ Run the HALT Check</a>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-urge-log" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-tool">Tool</span>
-      <div class="tool-name">Urge Log</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">Urges are the social, mental, and emotional experience of wanting something — distinct from physical withdrawal. Logging them systematically reveals patterns you'd otherwise miss and builds your capacity to respond intentionally.</div>
-
-      <div class="tool-content-section">
-        <div class="section-label">What to Track Each Time</div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Field</th><th>What to Record</th></tr></thead>
-            <tbody>
-              <tr><td>Date &amp; Time</td><td>When did the urge occur?</td></tr>
-              <tr><td>Strength (1–10)</td><td>1 = very mild, 10 = overwhelming</td></tr>
-              <tr><td>Duration</td><td>How long did it last? (e.g., 2 min, 15 min)</td></tr>
-              <tr><td>Trigger</td><td>What happened just before? Feeling, thought, situation, interaction?</td></tr>
-              <tr><td>Who / Where</td><td>Anyone else around? What location?</td></tr>
-              <tr><td>How You Coped</td><td>What did you do? Did anything help? If you gave in, how did that feel?</td></tr>
-              <tr><td>Ideas for Next Time</td><td>What might you try differently? What could you plan for or avoid?</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="example-block">
-        <div class="ex-label">Example Entry</div>
-        <div class="ex-item"><strong>Date/Time:</strong> 8/29 at 1:15 PM</div>
-        <div class="ex-item"><strong>Strength:</strong> 8 / 10 — lasted about 1 minute</div>
-        <div class="ex-item"><strong>Trigger:</strong> Lunch in a wine bar with Lisa and Stephanie</div>
-        <div class="ex-item"><strong>How I coped:</strong> Told them I wasn't drinking. Forgot about it quickly.</div>
-        <div class="ex-item"><strong>Next time:</strong> Find a new lunch spot that doesn't trigger this.</div>
-      </div>
-
-      <div class="tool-content-section">
-        <div class="section-label">Tips</div>
-        <div class="key-points">
-          <ul>
-            <li>One or two entries per week reveals useful patterns; a full week shows more</li>
-            <li>Even logging an urge you gave in to reduces the chance of repeating the cycle</li>
-            <li>Carry the worksheet or track on your phone — consistency matters more than perfection</li>
-            <li>Urges are temporary. They always pass, whether you act on them or not.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="reflection-block">
-        <div class="r-label">Reflection Prompts</div>
-        <ul>
-          <li>What patterns appear after reviewing a few entries?</li>
-          <li>Are there specific times of day or recurring triggers?</li>
-          <li>Which coping strategies have worked best?</li>
-          <li>What can you plan for or avoid next time?</li>
-        </ul>
-      </div>
-
-      <div class="tool-use-link">
-        <a href="#urge-log" onclick="showPage('page-rightnow');scrollToId('urge-log');return false;">→ Open the Urge Log</a>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-dents" class="lp-pane">
-<div class="tool-card" id="dents">
-    <div class="tool-card-header">
-      <span class="tool-type type-tool">Framework</span>
-      <div class="tool-name">Put DENTS in Your Urges</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">A structured acronym for in-the-moment urge management. Use it when an urge is active and you need an immediate intervention framework.</div>
-
-      <div class="tool-content-section">
-        <div class="section-label">The DENTS Framework</div>
-        <div class="acronym-grid">
-          <div class="acronym-row">
-            <div class="acronym-letter">D</div>
-            <div class="acronym-def">
-              <strong>Deny or Delay</strong>
-              <p>Refuse to give in, no matter what. If full refusal feels impossible, delay by just one moment at a time. Remind yourself as many times as needed that the urge will pass.</p>
-            </div>
-          </div>
-          <div class="acronym-row">
-            <div class="acronym-letter">E</div>
-            <div class="acronym-def">
-              <strong>Escape</strong>
-              <p>If you know what's triggering the urge, leave immediately or end the trigger. Leave the place, conversation, or social setting that's intensifying it.</p>
-            </div>
-          </div>
-          <div class="acronym-row">
-            <div class="acronym-letter">N</div>
-            <div class="acronym-def">
-              <strong>Neutralize</strong>
-              <p>Attack it and prove it wrong, or acknowledge it and let it pass. Create emotional distance: watch the urge build, crest, and fade. It doesn't define you — it's separate from you.</p>
-            </div>
-          </div>
-          <div class="acronym-row">
-            <div class="acronym-letter">T</div>
-            <div class="acronym-def">
-              <strong>Tasks</strong>
-              <p>Give yourself something to do. Urges need oxygen — deprive them by engaging your mind. Call a friend, count, recite something, start a task. Urges can't easily compete with active attention.</p>
-            </div>
-          </div>
-          <div class="acronym-row">
-            <div class="acronym-letter">S</div>
-            <div class="acronym-def">
-              <strong>Swap</strong>
-              <p>Change your internal monologue. Replace "This urge will kill me" with "This urge will pass." If you feel sad or lonely, deliberately change it: go to a coffee shop, take a walk, attend a SMART meeting.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tool-content-section">
-        <div class="section-label">Core Principle</div>
-        <p style="font-size:14px;color:var(--md-on-surface-variant);">DENTS isn't about eliminating urges — it's about developing a structured, sustainable way to manage them. The goal is not to get rid of urges completely but to stop being automatically controlled by them.</p>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-breathing" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-tool">Tool</span>
-      <div class="tool-name">Breathing &amp; Grounding</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">These two techniques work in under two minutes and operate physiologically rather than cognitively — they reduce the nervous system activation that makes urges feel unsurvivable before you attempt to reason with them.</div>
-
-      <div class="tool-use-link">
-        <a href="#breathing" onclick="showPage('page-rightnow');scrollToId('breathing');return false;">→ Open Breathing &amp; Grounding</a>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-personify" class="lp-pane">
-<div class="tool-card" id="personify">
-    <div class="tool-card-header">
-      <span class="tool-type type-sheet">Practice</span>
-      <div class="tool-name">Personify and Disarm</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">The urge is not you. It's a temporary impulse shaped by past habits and stress. Giving it a name and treating it as an external manipulator creates enough mental distance to pause and choose differently.</div>
-
-      <div class="tool-content-section">
-        <div class="section-label">3-Step Process</div>
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-content">
-              <strong>Name the Urge</strong>
-              <p>If this urge had a personality, what would it be? Give it a name without judgment. Examples: The Smooth Talker, The Whiner, The Hurt Child, The Negotiator, The Saboteur.</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-content">
-              <strong>Identify Its Scripts</strong>
-              <p>What does this urge try to convince you of? Write down its lines. Examples: "You've earned this." / "This is too hard — you can't do it." / "Everyone else does it." / "You're already messed up, so why stop now?"</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-content">
-              <strong>Talk Back</strong>
-              <p>Write what you want to say back to reclaim control. Say it aloud, write it, or repeat it internally when the urge arrives. Examples: "You're lying to me again — I'm not listening." / "You're not in charge — I am." / "You're not worth trading my goals for."</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tool-content-section">
-        <div class="section-label">When External Pressure Is Involved</div>
-        <div class="key-points">
-          <ul>
-            <li>Make eye contact — show you're serious</li>
-            <li>Speak in a firm, calm, confident voice</li>
-            <li>Don't feel guilty — you have the right to choose</li>
-            <li>After saying no, change the subject. Don't keep defending your choice.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="reflection-block">
-        <div class="r-label">Reflection Prompts</div>
-        <ul>
-          <li>What name fits your most common urge?</li>
-          <li>What does that urge try to convince you of — and how can you respond?</li>
-          <li>How does it feel to treat the urge as something separate from yourself?</li>
-          <li>When might this strategy help you stay on track this week?</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-urge-surfing" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-sheet">Guided Practice</span>
-      <div class="tool-name">Urge Surfing</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">Where DENTS is active resistance, urge surfing is observational. You don't fight the urge — you watch it. Urges follow a wave pattern: they build, crest, and recede. The goal is to observe that cycle without acting on it. This practice, drawn from mindfulness-based relapse prevention, reduces the urge's power by removing the struggle against it.</div>
-
-      <div class="tool-content-section">
-        <div class="section-label">Core Principle</div>
-        <p style="font-size:14px;color:var(--md-on-surface-variant);margin-bottom:18px;">You are not your urge. The urge is a temporary sensation passing through you — not a command you must obey. The average urge peaks within 3–5 minutes and dissipates within 20–30 minutes if not acted on. This guided walkthrough takes you through one full cycle.</p>
-      </div>
-
-      <div class="tool-use-link">
-        <a href="#urge-surfing" onclick="showPage('page-rightnow');scrollToId('urge-surfing');return false;">→ Try Urge Surfing</a>
-      </div>
-
-      <div class="reflection-block" style="margin-top:18px;">
-        <div class="r-label">After You Finish</div>
-        <ul>
-          <li>How did the urge intensity change from start to finish?</li>
-          <li>Where in your body did you feel it most strongly?</li>
-          <li>What did you notice about the wave pattern?</li>
-          <li>What made this harder or easier than you expected?</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-boundaries" class="lp-pane">
-<div class="tool-card" id="boundaries">
-    <div class="tool-card-header">
-      <span class="tool-type type-tool">Tool</span>
-      <div class="tool-name">Setting Healthy Boundaries</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">Boundaries protect your time, energy, and recovery. They're not walls — they're fences that make relationships more workable and reduce the stress and resentment that fuel urges.</div>
-
-      <div class="tool-content-section">
-        <div class="section-label">Key Concepts</div>
-        <div class="key-points">
-          <ul>
-            <li>Boundaries are about your needs, not controlling others</li>
-            <li>They can be physical, emotional, or behavioral</li>
-            <li>You have the right to protect your peace and stay connected on your terms</li>
-            <li>If someone pushes back, it doesn't mean your boundary is wrong — it means it's working</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tool-content-section">
-        <div class="section-label">Common Challenges (Identify Yours)</div>
-        <div class="key-points">
-          <ul>
-            <li>Fear of conflict or rejection</li>
-            <li>Feeling selfish for saying no</li>
-            <li>Not knowing how to phrase it clearly</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="tool-content-section">
-        <div class="section-label">The Boundary Formula</div>
-        <div class="formula-block">
-          <div class="formula-line"><strong>"I feel"</strong> (name the emotion)</div>
-          <div class="formula-line"><strong>"When"</strong> (describe the specific behavior)</div>
-          <div class="formula-line"><strong>"Can I ask you to"</strong> (make the reasonable request)?</div>
-        </div>
-        <div class="example-block">
-          <div class="ex-label">Example</div>
-          <div class="ex-item">"I feel frustrated when plans change last minute. Can I ask you to let me know earlier next time?"</div>
-        </div>
-      </div>
-
-      <div class="tool-content-section">
-        <div class="section-label">Practice Step</div>
-        <p style="font-size:14px;color:var(--md-on-surface-variant);">Think of a real situation where you need a boundary. Fill in: What's happening that doesn't feel okay? How are you feeling? What would make you feel more respected or supported? Then use the formula above.</p>
-      </div>
-
-      <div class="reflection-block">
-        <div class="r-label">Reflection Prompts</div>
-        <ul>
-          <li>How did it feel to write or say your boundary out loud?</li>
-          <li>What do you think might happen if you try this in real life?</li>
-          <li>What's one small boundary you can practice setting this week?</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-thinking-styles" class="lp-pane">
-<div class="tool-card" id="thinking-styles">
-    <div class="tool-card-header">
-      <span class="tool-type type-sheet">Reference</span>
-      <div class="tool-name">Unhelpful Thinking Styles — Quick Reference</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">The ABC and Dispute Unhelpful Beliefs tools both require you to identify the type of unhelpful thought you're having. This reference card maps the most common patterns, their signal words, and what they look like in practice — use it alongside those tools.</div>
-
-      <div class="distortion-grid">
-        <div class="distortion-card">
-          <div><div class="distortion-name">All-or-Nothing Thinking</div><div class="distortion-signal">always · never · completely · total failure</div></div>
-          <div><div class="distortion-desc">Seeing things in black and white with no middle ground. One mistake means total failure; one slip means recovery is over.</div><div class="distortion-ex">"I missed one meeting — I've completely fallen off the wagon."</div></div>
-        </div>
-        <div class="distortion-card">
-          <div><div class="distortion-name">Catastrophizing</div><div class="distortion-signal">terrible · worst · can't handle · disaster</div></div>
-          <div><div class="distortion-desc">Assuming the worst possible outcome is certain. Magnifies difficulties until they feel unsurvivable.</div><div class="distortion-ex">"If I feel this urge, I'm definitely going to give in and ruin everything."</div></div>
-        </div>
-        <div class="distortion-card">
-          <div><div class="distortion-name">Overgeneralization</div><div class="distortion-signal">always · everyone · nothing ever · every time</div></div>
-          <div><div class="distortion-desc">Drawing sweeping conclusions from a single event. One negative experience becomes an endless pattern.</div><div class="distortion-ex">"This always happens to me. I never get a break."</div></div>
-        </div>
-        <div class="distortion-card">
-          <div><div class="distortion-name">Mind Reading</div><div class="distortion-signal">they think · I know she · he must · they probably</div></div>
-          <div><div class="distortion-desc">Assuming you know what others are thinking — usually something negative — without actual evidence.</div><div class="distortion-ex">"Everyone at the meeting could tell I was struggling. They're judging me."</div></div>
-        </div>
-        <div class="distortion-card">
-          <div><div class="distortion-name">Emotional Reasoning</div><div class="distortion-signal">I feel it · it must be true · I feel like · therefore it is</div></div>
-          <div><div class="distortion-desc">Treating feelings as facts. Because you feel hopeless, you conclude the situation is hopeless.</div><div class="distortion-ex">"I feel like a failure, so I must be one."</div></div>
-        </div>
-        <div class="distortion-card">
-          <div><div class="distortion-name">Should Statements</div><div class="distortion-signal">I should · I must · I ought to · I have to</div></div>
-          <div><div class="distortion-desc">Rigid rules about how you or others must behave. Violations generate guilt, shame, or anger rather than motivation.</div><div class="distortion-ex">"I should be stronger than this. I shouldn't even be having urges."</div></div>
-        </div>
-        <div class="distortion-card">
-          <div><div class="distortion-name">Labeling</div><div class="distortion-signal">I'm a · I am such a · I'm just a</div></div>
-          <div><div class="distortion-desc">Attaching a global negative label to yourself or others based on a specific behavior. More extreme than overgeneralization.</div><div class="distortion-ex">"I'm an addict. That's just who I am. I can't change it."</div></div>
-        </div>
-        <div class="distortion-card">
-          <div><div class="distortion-name">Frustration Intolerance</div><div class="distortion-signal">can't stand · unbearable · I can't take · too much</div></div>
-          <div><div class="distortion-desc">Believing you cannot tolerate discomfort, even temporarily. Underestimates your actual capacity to endure difficulty.</div><div class="distortion-ex">"I can't stand feeling this way. I need relief right now."</div></div>
-        </div>
-      </div>
-
-      <div class="reflection-block">
-        <div class="r-label">How to use this</div>
-        <ul>
-          <li>When an urge or difficult emotion hits, write the thought down first (the B in ABC).</li>
-          <li>Scan this list for the pattern that matches — naming it creates distance from it.</li>
-          <li>Then move to Dispute Unhelpful Beliefs: write the challenge question, then the more helpful belief.</li>
-          <li>Recurring patterns across entries point to your specific cognitive tendencies — the ones worth focusing on.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-abc" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-guide">Guide</span>
-      <div class="tool-name">The ABCs (+ D and E)</div>
-    </div>
-    <div class="tool-body">
+      
+      <details class="ws-primer">
+        <summary class="ws-primer-summary">Read the guide</summary>
+        <div class="ws-primer-body">
       <div class="tool-summary">Rooted in Rational Emotive Behavior Therapy (REBT). Urges rarely come from nowhere — they're connected to how you interpret events. The ABC tool breaks down the chain from situation to reaction so you can intervene at the belief level.</div>
 
       <div class="tool-content-section">
@@ -2569,92 +1844,39 @@
           <li>What's one situation this week where you could try the ABC tool?</li>
         </ul>
       </div>
-
-      <div class="tool-use-link">
-        <a href="#abc" onclick="showPage('page-worksheets');scrollToId('abc');return false;">→ Open the ABCs Worksheet</a>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-dispute" class="lp-pane">
-<div class="tool-card" id="dispute">
-    <div class="tool-card-header">
-      <span class="tool-type type-guide">Guide</span>
-      <div class="tool-name">Dispute Unhelpful Beliefs</div>
-    </div>
-    <div class="tool-body">
-      <div class="tool-summary">Beliefs can be changed. You don't have to believe everything you think. This tool identifies the specific patterns of unhelpful thinking that fuel addictive behavior, then gives you a systematic practice for replacing them.</div>
-
-      <div class="tool-content-section">
-        <div class="section-label">Common Unhelpful Belief Patterns</div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Type</th><th>Signal Words</th><th>The Problem</th></tr></thead>
-            <tbody>
-              <tr><td>Demands</td><td>"I must," "I have to"</td><td>Creates pressure and emotional distress</td></tr>
-              <tr><td>Overgeneralizations</td><td>"Always," "never," "only"</td><td>Misses the nuance of real life</td></tr>
-              <tr><td>Frustration intolerance</td><td>"I can't handle this"</td><td>Underestimates your resilience</td></tr>
-              <tr><td>Awfulizations</td><td>"Worst," "most unfair," "stupidest"</td><td>Exaggerates pain and difficulty</td></tr>
-              <tr><td>Self-attacks</td><td>"I always fail," "I'm worthless"</td><td>Blocks self-compassion and progress</td></tr>
-            </tbody>
-          </table>
+    
         </div>
-      </div>
+      </details>
+</div>
 
-      <div class="tool-content-section">
-        <div class="section-label">3-Step Disputing Process (Use the Worksheet)</div>
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-content">
-              <strong>Write the Unhelpful Belief</strong>
-              <p>What thought is getting in your way right now?</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-content">
-              <strong>Ask a Challenge Question</strong>
-              <p>Is this always true? Would I say this to a friend? What's another way of seeing this?</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-content">
-              <strong>Write a More Helpful Belief</strong>
-              <p>Replace with something honest, balanced, and supportive of your long-term goals — not toxic positivity, not denial, just a more accurate view.</p>
-            </div>
-          </div>
+      <div id="wsPane-five-q" class="ws-pane">
+<div class="tool-card" id="five-q">
+        <div class="tool-card-header">
+          <span class="tool-type type-sheet">Worksheet</span>
+          <div class="tool-name">Five Questions</div>
         </div>
-      </div>
+        <div class="tool-body">
+          <div class="ws-interactive" id="fiveqInteractive">
+            <div class="section-label">Your Check-In</div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="fq_1">1. What do I want for my future?</label><textarea class="form-textarea" id="fq_1" rows="2" placeholder="Goals, values, the life you want..."></textarea></div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="fq_2">2. What am I doing to get what I want?</label><textarea class="form-textarea" id="fq_2" rows="2" placeholder="Current actions, helpful or not..."></textarea></div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="fq_3">3. How do I feel about what I'm doing now?</label><textarea class="form-textarea" id="fq_3" rows="2" placeholder="Be honest..."></textarea></div>
+            <div class="form-field" style="margin-bottom:10px;"><label class="form-label" for="fq_4">4. What could I do differently?</label><textarea class="form-textarea" id="fq_4" rows="2" placeholder="One or two small changes..."></textarea></div>
+            <div class="form-field" style="margin-bottom:14px;"><label class="form-label" for="fq_5">5. How would changing what I do make me feel?</label><textarea class="form-textarea" id="fq_5" rows="2" placeholder="Imagine taking even a small step forward..."></textarea></div>
+            <button class="btn-primary" onclick="saveFiveQEntry()">Save Check-In</button>
+            <div class="urge-entries-list" id="fiveqEntriesList" style="margin-top:16px;"></div>
+          </div>
+          <details class="tool-details">
+            <summary class="tool-details-toggle">How it works</summary>
+            <div class="tool-summary">Five pointed questions that help you evaluate whether what you're currently doing actually serves what you actually want. Use it as a regular check-in — weekly works well — to stay connected to your intentions.</div>
+          </details>
 
-      <div class="example-block">
-        <div class="ex-label">Worked Examples</div>
-        <div class="ex-item"><strong>Unhelpful:</strong> "I can't deal with this without using." → <strong>Challenge:</strong> Can I? → <strong>Helpful:</strong> "It might be hard, but I can. It gets easier."</div>
-        <div class="ex-item"><strong>Unhelpful:</strong> "I always mess things up." → <strong>Challenge:</strong> Is that really true? → <strong>Helpful:</strong> "I've made mistakes, but I've also made progress. I'm still learning."</div>
-        <div class="ex-item"><strong>Unhelpful:</strong> "I'm worthless." → <strong>Challenge:</strong> Have I never done anything worthwhile? → <strong>Helpful:</strong> "I have made meaningful contributions. I have value."</div>
+</div>
       </div>
-
-      <div class="reflection-block">
-        <div class="r-label">Reflection Prompts</div>
-        <ul>
-          <li>What unhelpful beliefs do you tend to fall back on?</li>
-          <li>How do these thoughts affect your behavior and emotions?</li>
-          <li>What changes when you respond to a thought rather than just accepting it?</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-five-q" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-guide">Guide</span>
-      <div class="tool-name">Five Questions</div>
-    </div>
-    <div class="tool-body">
+      
+      <details class="ws-primer">
+        <summary class="ws-primer-summary">Read the guide</summary>
+        <div class="ws-primer-body">
       <div class="tool-summary">A structured check-in for when you're stuck, just had a setback, or need to realign. Five direct questions surface the gap between what you're doing and what you want — and what you can do about it.</div>
 
       <div class="tool-content-section">
@@ -2712,21 +1934,46 @@
           <li>How might you use these questions in future moments of stress or uncertainty?</li>
         </ul>
       </div>
+    
+        </div>
+      </details>
+</div>
 
-      <div class="tool-use-link">
-        <a href="#five-q" onclick="showPage('page-worksheets');scrollToId('five-q');return false;">→ Open the Five Questions Worksheet</a>
+      <div id="wsPane-wheel" class="ws-pane">
+<div class="tool-card" id="wheel">
+        <div class="tool-card-header">
+          <span class="tool-type type-sheet">Worksheet</span>
+          <div class="tool-name">Lifestyle Balance Wheel</div>
+        </div>
+        <div class="tool-body">
+          <div class="wheel-interactive">
+            <div class="section-label">Interactive Balance Wheel</div>
+            <p style="font-size:13.5px;color:var(--md-on-surface-variant);margin-bottom:16px;">Adjust each slider to reflect your current satisfaction. The wheel redraws live. A lumpy or lopsided shape shows where to focus. Your settings are saved automatically.</p>
+            <div class="wheel-layout">
+              <div class="wheel-svg-wrap">
+                <svg id="wheelSvg" viewBox="-70 -5 400 270" width="100%" style="max-width:380px"></svg>
+              </div>
+              <div>
+                <div class="wheel-sliders" id="wheelSliders"></div>
+                <div class="wheel-score-block">
+                  <div><div class="wheel-score-label">Avg Satisfaction</div><div class="wheel-score-sub">across all areas</div></div>
+                  <div class="wheel-score-val" id="wheelScore">5.0</div>
+                </div>
+                <button class="btn-reset-wheel" onclick="resetWheel()">Reset to 5</button>
+              </div>
+            </div>
+          </div>
+          <details class="tool-details">
+            <summary class="tool-details-toggle">How it works</summary>
+            <div class="tool-summary">A visual snapshot of how satisfied you currently feel across the key domains of your life. When one area is neglected, it throws off the rest. This tool shows you where you are and where to focus. Which areas scored lowest? Which are overdeveloped? Are the highest-scoring areas aligned with your values, or just where you spend the most time?</div>
+          </details>
+
+</div>
       </div>
-    </div>
-  </div>
-    </div>
-
-    <div id="lp-wheel" class="lp-pane">
-<div class="tool-card">
-    <div class="tool-card-header">
-      <span class="tool-type type-guide">Guide</span>
-      <div class="tool-name">Lifestyle Balance Wheel</div>
-    </div>
-    <div class="tool-body">
+      
+      <details class="ws-primer">
+        <summary class="ws-primer-summary">Read the guide</summary>
+        <div class="ws-primer-body">
       <div class="tool-summary">A visual snapshot of how satisfied you currently feel across the key domains of your life. When one area is neglected, it throws off the rest. This tool shows you where you are and where to focus.</div>
 
       <div class="tool-content-section">
@@ -2795,23 +2042,54 @@
           <li>Are your values reflected in how you spend your time?</li>
         </ul>
       </div>
+    
+        </div>
+      </details>
+</div>
 
-      <div class="tool-use-link">
-        <a href="#wheel" onclick="showPage('page-worksheets');scrollToId('wheel');return false;">→ Open the Balance Wheel</a>
+      <div id="wsPane-goals-worksheet" class="ws-pane">
+<div class="tool-card" id="goals-worksheet">
+      <div class="tool-card-header">
+        <span class="tool-type type-sheet">Worksheet</span>
+        <div class="tool-name">SMART Goal Tracker</div>
       </div>
-    </div>
-  </div>
-    </div>
+      <div class="tool-body">
+        <!-- Create goal form -->
+        <details class="tool-details" id="goalFormDetails">
+          <summary class="tool-details-toggle">+ Add a New Goal</summary>
+          <div style="padding-top:10px;">
+            <input type="text" id="goalTitle" placeholder="Goal title *"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);margin-bottom:8px;">
+            <textarea id="goalSpecific" rows="2" placeholder="Specific — exactly what will you do?"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);resize:vertical;margin-bottom:8px;"></textarea>
+            <textarea id="goalMeasurable" rows="2" placeholder="Measurable — how will you know you've succeeded?"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);resize:vertical;margin-bottom:8px;"></textarea>
+            <textarea id="goalAchievable" rows="2" placeholder="Achievable — what steps will you take?"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);resize:vertical;margin-bottom:8px;"></textarea>
+            <textarea id="goalRelevant" rows="2" placeholder="Relevant — why does this matter to your recovery?"
+              style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);resize:vertical;margin-bottom:8px;"></textarea>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <label style="font-size:13px;color:var(--md-on-surface-variant);white-space:nowrap;">Target date</label>
+              <input type="date" id="goalDeadline"
+                style="padding:8px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;font-family:var(--md-font-body);">
+            </div>
+            <button class="btn-primary" onclick="saveGoal()">Save Goal</button>
+          </div>
+        </details>
+        <!-- Goal list -->
+        <div class="goal-filter-row" style="margin-top:16px;">
+          <button class="goal-filter-btn active" id="goalTabActive" onclick="setGoalFilter(true)">Active</button>
+          <button class="goal-filter-btn" id="goalTabDone" onclick="setGoalFilter(false)">Completed</button>
+        </div>
+        <div id="goalList"></div>
 
-    <div id="lp-goals" class="lp-pane">
-<div class="tool-card" id="goals">
-    <div class="tool-card-header">
-      <span class="tool-type type-guide">Guide</span>
-      <div class="tool-name">Set an Effective Goal (SMART Goals)</div>
+</div>
     </div>
-    <div class="tool-body">
+      
+      <details class="ws-primer">
+        <summary class="ws-primer-summary">Read the guide</summary>
+        <div class="ws-primer-body">
       <div class="tool-summary">Goals give recovery structure, direction, and purpose. The most meaningful ones are connected to your values. This tool walks you through building goals that are actually achievable, then breaking them into steps.</div>
-      <p style="margin:8px 0 0;"><a href="#goals-worksheet" onclick="showPage('page-worksheets');scrollToId('goals-worksheet');return false;" style="color:var(--md-secondary);font-size:13.5px;">→ Open Goal Tracker</a></p>
 
       <div class="tool-content-section">
         <div class="section-label">What Makes a Goal Effective — SMART Criteria</div>
@@ -2882,11 +2160,425 @@
           <li>What will success look or feel like?</li>
         </ul>
       </div>
-    </div>
-  </div>
+    
+        </div>
+      </details>
+</div>
     </div>
 
-    <div id="lp-pursuits" class="lp-pane">
+  </div>
+</div>
+
+
+<!-- ═══ PAGE: PROGRESS ═══ -->
+<div class="page" id="page-progress">
+  <div class="container" style="padding-top:32px;">
+
+    <div class="tracker-wrap" id="tracker">
+      <div class="tracker-left">
+        <div class="tracker-eyebrow">Sobriety Tracker</div>
+        <div id="trackerDisplay">
+          <div class="tracker-empty">Set your start date to begin tracking.</div>
+        </div>
+        <div class="tracker-milestones" id="trackerMilestones" style="display:none"></div>
+      </div>
+      <div class="tracker-right">
+        <div class="tracker-date-group">
+          <div class="tracker-date-label">Sobriety Start Date</div>
+          <input type="date" class="tracker-date-input" id="trackerDate" onchange="setTrackerDate()">
+        </div>
+        <button class="btn-log-slip" id="btnLogSlip" onclick="recordSlip()" style="display:none;">Log a Slip</button>
+        <button class="btn-reset-link" onclick="resetTracker()">Full Reset</button>
+      </div>
+    </div>
+    <div class="overview-grid" id="dashboardGrid"></div>
+
+    <div class="page-section-header" style="margin-top:8px;">
+      <div class="page-section-title">Urge History</div>
+    </div>
+    <div class="tool-card" id="urge-history">
+      <div class="tool-card-header">
+        <span class="tool-type type-tool">Log</span>
+        <div class="tool-name">Urge History</div>
+      </div>
+      <div class="tool-body">
+        <div class="urge-chart-wrap" id="urgeChartWrap">
+          <div class="urge-chart-empty" id="urgeChartEmpty">Log your first urge on the Right Now tab to see your history here.</div>
+          <svg id="urgeChartSvg" class="urge-chart-svg" style="display:none"></svg>
+        </div>
+        <div class="chart-legend" id="urgeLegend" style="display:none">
+          <span><span class="legend-dot" style="background:var(--md-tertiary)"></span>Resisted</span>
+          <span><span class="legend-dot" style="background:var(--md-primary)"></span>Partial</span>
+          <span><span class="legend-dot" style="background:var(--md-error)"></span>Gave in</span>
+        </div>
+        <div class="urge-summary-grid" id="urgeSummary" style="display:none">
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_total">0</div><div class="stat-label">Total Logged</div></div>
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_resist">0%</div><div class="stat-label">Resistance Rate</div></div>
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_avg">—</div><div class="stat-label">Avg Intensity</div></div>
+        </div>
+        <div class="urge-entries-list" id="urgeEntriesList"></div>
+      </div>
+
+      <div id="wsPane-self-compassion" class="ws-pane">
+<div class="tool-card" id="self-compassion">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Practice</span>
+      <div class="tool-name">Practice Self-Compassion</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Shame and self-judgment don't drive lasting change — they drive relapse. This tool, based on Dr. Kristin Neff's research, gives you a concrete practice for meeting hard moments with care instead of attack.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">3 Pillars (Neff Model)</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Self-Kindness vs. Self-Judgment</strong>
+              <p>Talk to yourself the way you'd talk to a friend. Reduce name-calling and blame. Try: "I'm doing the best I can" or "This is hard, and I still deserve support." Ask: would I say this to someone I care about?</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Common Humanity vs. Isolation</strong>
+              <p>You are not uniquely broken. Struggle is universal. Attend a mutual support meeting, talk with someone who understands, reflect on how others have faced setbacks and kept going.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Mindfulness vs. Over-Identification</strong>
+              <p>Notice emotions without being consumed by them. Take a few deep breaths and name what you're feeling. Go for a walk and listen to what's around you. Practice brief grounding or meditation moments.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>How do you usually talk to yourself when things go wrong? Would you speak that way to someone you care about?</li>
+          <li>Which pillar feels most natural? Which feels most difficult?</li>
+          <li>Can you name a recent moment where you could have given yourself more compassion?</li>
+          <li>What might change if you offered encouragement instead of criticism after setbacks?</li>
+          <li>What's one small self-compassion practice you can try this week?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+      </div>
+
+      <div id="wsPane-dents" class="ws-pane">
+<div class="tool-card" id="dents">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Framework</span>
+      <div class="tool-name">Put DENTS in Your Urges</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">A structured acronym for in-the-moment urge management. Use it when an urge is active and you need an immediate intervention framework.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">The DENTS Framework</div>
+        <div class="acronym-grid">
+          <div class="acronym-row">
+            <div class="acronym-letter">D</div>
+            <div class="acronym-def">
+              <strong>Deny or Delay</strong>
+              <p>Refuse to give in, no matter what. If full refusal feels impossible, delay by just one moment at a time. Remind yourself as many times as needed that the urge will pass.</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">E</div>
+            <div class="acronym-def">
+              <strong>Escape</strong>
+              <p>If you know what's triggering the urge, leave immediately or end the trigger. Leave the place, conversation, or social setting that's intensifying it.</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">N</div>
+            <div class="acronym-def">
+              <strong>Neutralize</strong>
+              <p>Attack it and prove it wrong, or acknowledge it and let it pass. Create emotional distance: watch the urge build, crest, and fade. It doesn't define you — it's separate from you.</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">T</div>
+            <div class="acronym-def">
+              <strong>Tasks</strong>
+              <p>Give yourself something to do. Urges need oxygen — deprive them by engaging your mind. Call a friend, count, recite something, start a task. Urges can't easily compete with active attention.</p>
+            </div>
+          </div>
+          <div class="acronym-row">
+            <div class="acronym-letter">S</div>
+            <div class="acronym-def">
+              <strong>Swap</strong>
+              <p>Change your internal monologue. Replace "This urge will kill me" with "This urge will pass." If you feel sad or lonely, deliberately change it: go to a coffee shop, take a walk, attend a SMART meeting.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Core Principle</div>
+        <p style="font-size:14px;color:var(--md-on-surface-variant);">DENTS isn't about eliminating urges — it's about developing a structured, sustainable way to manage them. The goal is not to get rid of urges completely but to stop being automatically controlled by them.</p>
+      </div>
+    </div>
+  </div>
+      </div>
+
+      <div id="wsPane-personify" class="ws-pane">
+<div class="tool-card" id="personify">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Practice</span>
+      <div class="tool-name">Personify and Disarm</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">The urge is not you. It's a temporary impulse shaped by past habits and stress. Giving it a name and treating it as an external manipulator creates enough mental distance to pause and choose differently.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">3-Step Process</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Name the Urge</strong>
+              <p>If this urge had a personality, what would it be? Give it a name without judgment. Examples: The Smooth Talker, The Whiner, The Hurt Child, The Negotiator, The Saboteur.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Identify Its Scripts</strong>
+              <p>What does this urge try to convince you of? Write down its lines. Examples: "You've earned this." / "This is too hard — you can't do it." / "Everyone else does it." / "You're already messed up, so why stop now?"</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Talk Back</strong>
+              <p>Write what you want to say back to reclaim control. Say it aloud, write it, or repeat it internally when the urge arrives. Examples: "You're lying to me again — I'm not listening." / "You're not in charge — I am." / "You're not worth trading my goals for."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">When External Pressure Is Involved</div>
+        <div class="key-points">
+          <ul>
+            <li>Make eye contact — show you're serious</li>
+            <li>Speak in a firm, calm, confident voice</li>
+            <li>Don't feel guilty — you have the right to choose</li>
+            <li>After saying no, change the subject. Don't keep defending your choice.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What name fits your most common urge?</li>
+          <li>What does that urge try to convince you of — and how can you respond?</li>
+          <li>How does it feel to treat the urge as something separate from yourself?</li>
+          <li>When might this strategy help you stay on track this week?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+      </div>
+
+      <div id="wsPane-boundaries" class="ws-pane">
+<div class="tool-card" id="boundaries">
+    <div class="tool-card-header">
+      <span class="tool-type type-tool">Tool</span>
+      <div class="tool-name">Setting Healthy Boundaries</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Boundaries protect your time, energy, and recovery. They're not walls — they're fences that make relationships more workable and reduce the stress and resentment that fuel urges.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Key Concepts</div>
+        <div class="key-points">
+          <ul>
+            <li>Boundaries are about your needs, not controlling others</li>
+            <li>They can be physical, emotional, or behavioral</li>
+            <li>You have the right to protect your peace and stay connected on your terms</li>
+            <li>If someone pushes back, it doesn't mean your boundary is wrong — it means it's working</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Common Challenges (Identify Yours)</div>
+        <div class="key-points">
+          <ul>
+            <li>Fear of conflict or rejection</li>
+            <li>Feeling selfish for saying no</li>
+            <li>Not knowing how to phrase it clearly</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">The Boundary Formula</div>
+        <div class="formula-block">
+          <div class="formula-line"><strong>"I feel"</strong> (name the emotion)</div>
+          <div class="formula-line"><strong>"When"</strong> (describe the specific behavior)</div>
+          <div class="formula-line"><strong>"Can I ask you to"</strong> (make the reasonable request)?</div>
+        </div>
+        <div class="example-block">
+          <div class="ex-label">Example</div>
+          <div class="ex-item">"I feel frustrated when plans change last minute. Can I ask you to let me know earlier next time?"</div>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Practice Step</div>
+        <p style="font-size:14px;color:var(--md-on-surface-variant);">Think of a real situation where you need a boundary. Fill in: What's happening that doesn't feel okay? How are you feeling? What would make you feel more respected or supported? Then use the formula above.</p>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>How did it feel to write or say your boundary out loud?</li>
+          <li>What do you think might happen if you try this in real life?</li>
+          <li>What's one small boundary you can practice setting this week?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+      </div>
+
+      <div id="wsPane-thinking-styles" class="ws-pane">
+<div class="tool-card" id="thinking-styles">
+    <div class="tool-card-header">
+      <span class="tool-type type-sheet">Reference</span>
+      <div class="tool-name">Unhelpful Thinking Styles — Quick Reference</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">The ABC and Dispute Unhelpful Beliefs tools both require you to identify the type of unhelpful thought you're having. This reference card maps the most common patterns, their signal words, and what they look like in practice — use it alongside those tools.</div>
+
+      <div class="distortion-grid">
+        <div class="distortion-card">
+          <div><div class="distortion-name">All-or-Nothing Thinking</div><div class="distortion-signal">always · never · completely · total failure</div></div>
+          <div><div class="distortion-desc">Seeing things in black and white with no middle ground. One mistake means total failure; one slip means recovery is over.</div><div class="distortion-ex">"I missed one meeting — I've completely fallen off the wagon."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Catastrophizing</div><div class="distortion-signal">terrible · worst · can't handle · disaster</div></div>
+          <div><div class="distortion-desc">Assuming the worst possible outcome is certain. Magnifies difficulties until they feel unsurvivable.</div><div class="distortion-ex">"If I feel this urge, I'm definitely going to give in and ruin everything."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Overgeneralization</div><div class="distortion-signal">always · everyone · nothing ever · every time</div></div>
+          <div><div class="distortion-desc">Drawing sweeping conclusions from a single event. One negative experience becomes an endless pattern.</div><div class="distortion-ex">"This always happens to me. I never get a break."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Mind Reading</div><div class="distortion-signal">they think · I know she · he must · they probably</div></div>
+          <div><div class="distortion-desc">Assuming you know what others are thinking — usually something negative — without actual evidence.</div><div class="distortion-ex">"Everyone at the meeting could tell I was struggling. They're judging me."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Emotional Reasoning</div><div class="distortion-signal">I feel it · it must be true · I feel like · therefore it is</div></div>
+          <div><div class="distortion-desc">Treating feelings as facts. Because you feel hopeless, you conclude the situation is hopeless.</div><div class="distortion-ex">"I feel like a failure, so I must be one."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Should Statements</div><div class="distortion-signal">I should · I must · I ought to · I have to</div></div>
+          <div><div class="distortion-desc">Rigid rules about how you or others must behave. Violations generate guilt, shame, or anger rather than motivation.</div><div class="distortion-ex">"I should be stronger than this. I shouldn't even be having urges."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Labeling</div><div class="distortion-signal">I'm a · I am such a · I'm just a</div></div>
+          <div><div class="distortion-desc">Attaching a global negative label to yourself or others based on a specific behavior. More extreme than overgeneralization.</div><div class="distortion-ex">"I'm an addict. That's just who I am. I can't change it."</div></div>
+        </div>
+        <div class="distortion-card">
+          <div><div class="distortion-name">Frustration Intolerance</div><div class="distortion-signal">can't stand · unbearable · I can't take · too much</div></div>
+          <div><div class="distortion-desc">Believing you cannot tolerate discomfort, even temporarily. Underestimates your actual capacity to endure difficulty.</div><div class="distortion-ex">"I can't stand feeling this way. I need relief right now."</div></div>
+        </div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">How to use this</div>
+        <ul>
+          <li>When an urge or difficult emotion hits, write the thought down first (the B in ABC).</li>
+          <li>Scan this list for the pattern that matches — naming it creates distance from it.</li>
+          <li>Then move to Dispute Unhelpful Beliefs: write the challenge question, then the more helpful belief.</li>
+          <li>Recurring patterns across entries point to your specific cognitive tendencies — the ones worth focusing on.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+      </div>
+
+      <div id="wsPane-dispute" class="ws-pane">
+<div class="tool-card" id="dispute">
+    <div class="tool-card-header">
+      <span class="tool-type type-guide">Guide</span>
+      <div class="tool-name">Dispute Unhelpful Beliefs</div>
+    </div>
+    <div class="tool-body">
+      <div class="tool-summary">Beliefs can be changed. You don't have to believe everything you think. This tool identifies the specific patterns of unhelpful thinking that fuel addictive behavior, then gives you a systematic practice for replacing them.</div>
+
+      <div class="tool-content-section">
+        <div class="section-label">Common Unhelpful Belief Patterns</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Type</th><th>Signal Words</th><th>The Problem</th></tr></thead>
+            <tbody>
+              <tr><td>Demands</td><td>"I must," "I have to"</td><td>Creates pressure and emotional distress</td></tr>
+              <tr><td>Overgeneralizations</td><td>"Always," "never," "only"</td><td>Misses the nuance of real life</td></tr>
+              <tr><td>Frustration intolerance</td><td>"I can't handle this"</td><td>Underestimates your resilience</td></tr>
+              <tr><td>Awfulizations</td><td>"Worst," "most unfair," "stupidest"</td><td>Exaggerates pain and difficulty</td></tr>
+              <tr><td>Self-attacks</td><td>"I always fail," "I'm worthless"</td><td>Blocks self-compassion and progress</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tool-content-section">
+        <div class="section-label">3-Step Disputing Process (Use the Worksheet)</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Write the Unhelpful Belief</strong>
+              <p>What thought is getting in your way right now?</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Ask a Challenge Question</strong>
+              <p>Is this always true? Would I say this to a friend? What's another way of seeing this?</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Write a More Helpful Belief</strong>
+              <p>Replace with something honest, balanced, and supportive of your long-term goals — not toxic positivity, not denial, just a more accurate view.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-block">
+        <div class="ex-label">Worked Examples</div>
+        <div class="ex-item"><strong>Unhelpful:</strong> "I can't deal with this without using." → <strong>Challenge:</strong> Can I? → <strong>Helpful:</strong> "It might be hard, but I can. It gets easier."</div>
+        <div class="ex-item"><strong>Unhelpful:</strong> "I always mess things up." → <strong>Challenge:</strong> Is that really true? → <strong>Helpful:</strong> "I've made mistakes, but I've also made progress. I'm still learning."</div>
+        <div class="ex-item"><strong>Unhelpful:</strong> "I'm worthless." → <strong>Challenge:</strong> Have I never done anything worthwhile? → <strong>Helpful:</strong> "I have made meaningful contributions. I have value."</div>
+      </div>
+
+      <div class="reflection-block">
+        <div class="r-label">Reflection Prompts</div>
+        <ul>
+          <li>What unhelpful beliefs do you tend to fall back on?</li>
+          <li>How do these thoughts affect your behavior and emotions?</li>
+          <li>What changes when you respond to a thought rather than just accepting it?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+      </div>
+
+      <div id="wsPane-pursuits" class="ws-pane">
 <div class="tool-card" id="pursuits">
     <div class="tool-card-header">
       <span class="tool-type type-guide">Guide</span>
@@ -2953,12 +2645,41 @@
       </div>
     </div>
   </div>
+      </div>
+
     </div>
 
   </div>
+</div>
 
-</div><!-- /container -->
-</div><!-- /page-learn -->
+<!-- ═══ PAGE: LEARN ═══ -->
+<div class="page" id="page-journal">
+  <div class="container">
+    <div style="padding-top:28px;padding-bottom:4px;">
+      <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;color:var(--md-on-surface);">Journal</div>
+      <div style="font-size:13px;color:var(--md-on-surface-variant);margin-top:4px;">Your private space to write freely</div>
+    </div>
+
+    <div class="tool-card" style="margin-top:16px;">
+      <div class="tool-card-header">
+        <span class="tool-type type-tool">Free Write</span>
+        <div class="tool-name">New Entry</div>
+      </div>
+      <div class="tool-body">
+        <p style="font-size:13.5px;color:var(--md-on-surface-variant);margin-bottom:12px;">No prompts, no structure — just write. Getting thoughts out of your head reduces emotional load and creates distance from urges.</p>
+        <textarea id="journalText" rows="5" placeholder="What&#39;s on your mind right now?"
+          style="width:100%;box-sizing:border-box;margin:0 0 10px;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;resize:vertical;font-family:var(--md-font-body);"></textarea>
+        <button class="btn-primary" onclick="saveJournalEntry()">Save Entry</button>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;">
+      <div class="ws-group-header">Past Entries</div>
+      <div id="journalList"></div>
+    </div>
+
+  </div>
+</div><!-- /page-journal -->
 
 
 <!-- ═══ PAGE: IF YOU SLIP ═══ -->
@@ -4673,22 +4394,22 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── PAGE NAVIGATION ──────────────────────────────────────
-var PAGE_IDS = ['page-rightnow', 'page-worksheets', 'page-progress', 'page-learn', 'page-slip', 'page-settings'];
+var PAGE_IDS = ['page-rightnow', 'page-worksheets', 'page-progress', 'page-journal', 'page-slip', 'page-settings'];
 
 var TOOL_PAGE_MAP = {
   'halt': 'page-rightnow', 'urge-log': 'page-rightnow', 'urge-history': 'page-progress',
-  'breathing': 'page-rightnow', 'urge-surfing': 'page-rightnow', 'journal': 'page-rightnow',
+  'breathing': 'page-rightnow', 'urge-surfing': 'page-rightnow',
   'cba': 'page-worksheets', 'abc': 'page-worksheets', 'five-q': 'page-worksheets',
   'values': 'page-worksheets', 'change-plan': 'page-worksheets', 'wheel': 'page-worksheets',
-  'dents': 'page-learn', 'personify': 'page-learn', 'boundaries': 'page-learn',
-  'thinking-styles': 'page-learn', 'dispute': 'page-learn',
-  'self-compassion': 'page-learn', 'goals': 'page-learn', 'pursuits': 'page-learn',
-  'resources': 'page-learn', 'point1': 'page-learn', 'point2': 'page-learn',
-  'point3': 'page-learn', 'point4': 'page-learn',
+  'goals-worksheet': 'page-worksheets', 'goals': 'page-worksheets',
+  'dents': 'page-worksheets', 'personify': 'page-worksheets', 'boundaries': 'page-worksheets',
+  'thinking-styles': 'page-worksheets', 'dispute': 'page-worksheets',
+  'self-compassion': 'page-worksheets', 'pursuits': 'page-worksheets',
+  'journal': 'page-journal',
   'tracker': 'page-progress',
   'lapse': 'page-slip',
   'page-rightnow': 'page-rightnow', 'page-worksheets': 'page-worksheets',
-  'page-progress': 'page-progress', 'page-learn': 'page-learn', 'page-slip': 'page-slip',
+  'page-progress': 'page-progress', 'page-journal': 'page-journal', 'page-slip': 'page-slip',
   'page-settings': 'page-settings'
 };
 
@@ -4707,41 +4428,9 @@ function showPage(id) {
 
 
 
-var _LP_IDS = [
-  'lp-cba','lp-values','lp-change-plan','lp-self-compassion',
-  'lp-halt','lp-urge-log','lp-dents','lp-breathing',
-  'lp-personify','lp-urge-surfing','lp-boundaries',
-  'lp-thinking-styles','lp-abc','lp-dispute','lp-five-q',
-  'lp-wheel','lp-goals','lp-pursuits'
-];
 
-function openLearnCard(id) {
-  var idx = document.getElementById('lpIndex');
-  var view = document.getElementById('lpView');
-  if (!idx || !view) return;
-  idx.style.display = 'none';
-  view.style.display = '';
-  _LP_IDS.forEach(function(lid) {
-    var p = document.getElementById(lid);
-    if (p) p.classList.toggle('lp-pane-active', lid === id);
-  });
-  view.scrollIntoView({ block: 'start' });
-}
 
-function closeLearnCard() {
-  var idx = document.getElementById('lpIndex');
-  var view = document.getElementById('lpView');
-  if (!idx || !view) return;
-  view.style.display = 'none';
-  _LP_IDS.forEach(function(lid) {
-    var p = document.getElementById(lid);
-    if (p) p.classList.remove('lp-pane-active');
-  });
-  idx.style.display = '';
-  idx.scrollIntoView({ block: 'start' });
-}
-
-var _WS_IDS = ['cba','values','change-plan','abc','five-q','wheel','goals-worksheet'];
+var _WS_IDS = ['cba','values','change-plan','abc','five-q','wheel','goals-worksheet','self-compassion','dents','personify','boundaries','thinking-styles','dispute','pursuits'];
 
 function openWorksheet(id) {
   var idx = document.getElementById('wsIndex');
@@ -4773,14 +4462,7 @@ function closeWorksheet() {
 }
 
 function scrollToId(id) {
-  var wsIds = ['cba','values','change-plan','abc','five-q','wheel','goals-worksheet'];
-  if (wsIds.indexOf(id) !== -1) { openWorksheet(id); return; }
-  var lpMap = {
-    'self-compassion':'lp-self-compassion','dents':'lp-dents','personify':'lp-personify',
-    'boundaries':'lp-boundaries','thinking-styles':'lp-thinking-styles','dispute':'lp-dispute',
-    'self-compassion':'lp-self-compassion','goals':'lp-goals','pursuits':'lp-pursuits'
-  };
-  if (lpMap[id]) { openLearnCard(lpMap[id]); return; }
+  if (_WS_IDS.indexOf(id) !== -1) { openWorksheet(id); return; }
   setTimeout(function() {
     var el = document.getElementById(id);
     if (el) el.scrollIntoView({ block: 'start' });
@@ -4805,7 +4487,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.4.1';
+var APP_VERSION = '2.4.2';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
