@@ -353,7 +353,7 @@
   }
   .ws-back-btn:hover { background: var(--md-surface-container-high); border-color: var(--md-secondary); }
   .ws-pane { display: none; }
-  .ws-pane.ws-pane-active { display: block; }
+  .ws-pane.ws-pane-active { display: block; padding-bottom: 24px; }
   .lp-pane { display: none; }
   .lp-pane.lp-pane-active { display: block; }
   /* ══ WS-PRIMER (collapsible guide background) ═════════════ */
@@ -2193,60 +2193,6 @@
         </div>
       </details>
 </div>
-    </div>
-
-  </div>
-</div>
-
-
-<!-- ═══ PAGE: PROGRESS ═══ -->
-<div class="page" id="page-progress">
-  <div class="container" style="padding-top:32px;">
-
-    <div class="tracker-wrap" id="tracker">
-      <div class="tracker-left">
-        <div class="tracker-eyebrow">Sobriety Tracker</div>
-        <div id="trackerDisplay">
-          <div class="tracker-empty">Set your start date to begin tracking.</div>
-        </div>
-        <div class="tracker-milestones" id="trackerMilestones" style="display:none"></div>
-      </div>
-      <div class="tracker-right">
-        <div class="tracker-date-group">
-          <div class="tracker-date-label">Sobriety Start Date</div>
-          <input type="date" class="tracker-date-input" id="trackerDate" onchange="setTrackerDate()">
-        </div>
-        <button class="btn-log-slip" id="btnLogSlip" onclick="recordSlip()" style="display:none;">Log a Slip</button>
-        <button class="btn-reset-link" onclick="resetTracker()">Full Reset</button>
-      </div>
-    </div>
-    <div class="overview-grid" id="dashboardGrid"></div>
-
-    <div class="page-section-header" style="margin-top:8px;">
-      <div class="page-section-title">Urge History</div>
-    </div>
-    <div class="tool-card" id="urge-history">
-      <div class="tool-card-header">
-        <span class="tool-type type-tool">Log</span>
-        <div class="tool-name">Urge History</div>
-      </div>
-      <div class="tool-body">
-        <div class="urge-chart-wrap" id="urgeChartWrap">
-          <div class="urge-chart-empty" id="urgeChartEmpty">Log your first urge on the Right Now tab to see your history here.</div>
-          <svg id="urgeChartSvg" class="urge-chart-svg" style="display:none"></svg>
-        </div>
-        <div class="chart-legend" id="urgeLegend" style="display:none">
-          <span><span class="legend-dot" style="background:var(--md-tertiary)"></span>Resisted</span>
-          <span><span class="legend-dot" style="background:var(--md-primary)"></span>Partial</span>
-          <span><span class="legend-dot" style="background:var(--md-error)"></span>Gave in</span>
-        </div>
-        <div class="urge-summary-grid" id="urgeSummary" style="display:none">
-          <div class="urge-summary-stat"><div class="stat-val" id="stat_total">0</div><div class="stat-label">Total Logged</div></div>
-          <div class="urge-summary-stat"><div class="stat-val" id="stat_resist">0%</div><div class="stat-label">Resistance Rate</div></div>
-          <div class="urge-summary-stat"><div class="stat-val" id="stat_avg">—</div><div class="stat-label">Avg Intensity</div></div>
-        </div>
-        <div class="urge-entries-list" id="urgeEntriesList"></div>
-      </div>
 
       <div id="wsPane-self-compassion" class="ws-pane">
 <div class="tool-card" id="self-compassion">
@@ -2675,7 +2621,60 @@
     </div>
   </div>
       </div>
+    </div>
 
+  </div>
+</div>
+
+
+<!-- ═══ PAGE: PROGRESS ═══ -->
+<div class="page" id="page-progress">
+  <div class="container" style="padding-top:32px;">
+
+    <div class="tracker-wrap" id="tracker">
+      <div class="tracker-left">
+        <div class="tracker-eyebrow">Sobriety Tracker</div>
+        <div id="trackerDisplay">
+          <div class="tracker-empty">Set your start date to begin tracking.</div>
+        </div>
+        <div class="tracker-milestones" id="trackerMilestones" style="display:none"></div>
+      </div>
+      <div class="tracker-right">
+        <div class="tracker-date-group">
+          <div class="tracker-date-label">Sobriety Start Date</div>
+          <input type="date" class="tracker-date-input" id="trackerDate" onchange="setTrackerDate()">
+        </div>
+        <button class="btn-log-slip" id="btnLogSlip" onclick="recordSlip()" style="display:none;">Log a Slip</button>
+        <button class="btn-reset-link" onclick="resetTracker()">Full Reset</button>
+      </div>
+    </div>
+    <div class="overview-grid" id="dashboardGrid"></div>
+
+    <div class="page-section-header" style="margin-top:8px;">
+      <div class="page-section-title">Urge History</div>
+    </div>
+    <div class="tool-card" id="urge-history">
+      <div class="tool-card-header">
+        <span class="tool-type type-tool">Log</span>
+        <div class="tool-name">Urge History</div>
+      </div>
+      <div class="tool-body">
+        <div class="urge-chart-wrap" id="urgeChartWrap">
+          <div class="urge-chart-empty" id="urgeChartEmpty">Log your first urge on the Right Now tab to see your history here.</div>
+          <svg id="urgeChartSvg" class="urge-chart-svg" style="display:none"></svg>
+        </div>
+        <div class="chart-legend" id="urgeLegend" style="display:none">
+          <span><span class="legend-dot" style="background:var(--md-tertiary)"></span>Resisted</span>
+          <span><span class="legend-dot" style="background:var(--md-primary)"></span>Partial</span>
+          <span><span class="legend-dot" style="background:var(--md-error)"></span>Gave in</span>
+        </div>
+        <div class="urge-summary-grid" id="urgeSummary" style="display:none">
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_total">0</div><div class="stat-label">Total Logged</div></div>
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_resist">0%</div><div class="stat-label">Resistance Rate</div></div>
+          <div class="urge-summary-stat"><div class="stat-val" id="stat_avg">—</div><div class="stat-label">Avg Intensity</div></div>
+        </div>
+        <div class="urge-entries-list" id="urgeEntriesList"></div>
+      </div>
     </div>
 
   </div>
@@ -4666,7 +4665,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.4.4';
+var APP_VERSION = '2.4.5';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
