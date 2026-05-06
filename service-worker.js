@@ -1,4 +1,4 @@
-const CACHE = 'smart-v2.4.2';
+const CACHE = 'smart-v2.4.3';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {
