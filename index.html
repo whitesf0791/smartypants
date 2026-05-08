@@ -840,6 +840,7 @@
   }
   .milestone.achieved { color: var(--md-on-tertiary-container); background: var(--md-tertiary-container); border-color: transparent; }
   .milestone.next     { color: var(--md-on-primary-container);  background: var(--md-primary-container);  border-color: transparent; }
+  .tracker-celebrate  { font-size: 13px; font-weight: 700; color: var(--md-on-tertiary-container); background: var(--md-tertiary-container); border-radius: var(--md-shape-sm); padding: 7px 14px; margin-top: 10px; display: inline-block; letter-spacing: 0.01em; }
   .tracker-right      { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
   .tracker-date-group { display: flex; flex-direction: column; gap: 5px; }
   .tracker-date-label { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--md-on-surface-variant); font-family: var(--md-font-body); }
@@ -858,6 +859,8 @@
   .journal-entry-date  { font-size: 11px; color: var(--md-on-surface-variant); }
   .journal-entry-text  { font-size: 13.5px; color: var(--md-on-surface); white-space: pre-wrap; word-break: break-word; line-height: 1.65; }
   .journal-entry-more  { font-size: 12px; color: var(--md-primary); background: none; border: none; padding: 4px 0 0; cursor: pointer; font-family: var(--md-font-body); display: block; }
+  .journal-share-btn   { background: none; border: none; padding: 0; cursor: pointer; color: var(--md-on-surface-variant); opacity: 0.55; font-size: 15px; line-height: 1; transition: opacity var(--md-dur-short) var(--md-easing-standard); }
+  .journal-share-btn:hover { opacity: 1; }
   .journal-word-count  { font-size: 11.5px; color: var(--md-on-surface-variant); text-align: right; margin-top: 4px; opacity: 0.8; }
   .journal-empty       { text-align: center; padding: 40px 20px; color: var(--md-on-surface-variant); font-size: 14px; }
   .journal-empty-icon  { font-size: 32px; margin-bottom: 12px; }
@@ -904,6 +907,9 @@
   .surf-complete small { font-size: 12.5px; color: var(--md-on-tertiary-container); opacity: 0.8; display: block; margin-top: 4px; }
 
   /* ══ BREATHING ═════════════════════════════════════════════ */
+  .breath-pattern-row { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .breath-pattern-btn { padding: 6px 14px; border-radius: var(--md-shape-full); border: 1px solid var(--md-outline); background: transparent; color: var(--md-on-surface-variant); font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--md-font-body); transition: background var(--md-dur-short) var(--md-easing-standard), color var(--md-dur-short) var(--md-easing-standard); }
+  .breath-pattern-btn.active { background: var(--md-secondary-container); color: var(--md-on-secondary-container); border-color: transparent; }
   .breath-tabs { display: flex; gap: 6px; margin-bottom: 20px; }
   /* MD3 Filter chips for breath tabs */
   .breath-tab { padding: 8px 18px; border-radius: var(--md-shape-full); border: 1px solid var(--md-outline); background: transparent; color: var(--md-on-surface-variant); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--md-font-body); transition: background var(--md-dur-short) var(--md-easing-standard); }
@@ -1057,9 +1063,15 @@
   /* ══ PRINT ═════════════════════════════════════════════════ */
   @media print {
     nav, .backup-bar, .btn-delete, .btn-primary, .btn-backup,
-    .btn-box, .btn-surf, .breath-tabs, .surf-controls, .box-btn-row { display: none !important; }
+    .btn-box, .btn-surf, .breath-tabs, .surf-controls, .box-btn-row,
+    .breath-pattern-row, .ws-back-bar, .welcome-card, .crisis-banner,
+    .btn-log-slip, .btn-reset-link, .tracker-right,
+    .journal-entry-more, .checkin-submit-row { display: none !important; }
+    .page:not(.page-active) { display: none !important; }
+    .ws-pane:not(.ws-pane-active) { display: none !important; }
     body { padding-bottom: 0 !important; background: #fff !important; color: #000 !important; font-size: 12pt; }
-    .tool-card, .overview-card, .ws-entry, .urge-entry, .example-block { background: #fff !important; border-color: #ccc !important; box-shadow: none !important; }
+    .tool-card, .overview-card, .ws-entry, .urge-entry, .example-block,
+    .journal-entry, .tracker-wrap { background: #fff !important; border-color: #ccc !important; box-shadow: none !important; }
     .point-section { page-break-inside: avoid; border-top: 1px solid #ccc; }
     .tool-card { page-break-inside: avoid; margin-bottom: 12pt; }
     a { color: #000; text-decoration: none; }
@@ -1271,6 +1283,11 @@
           <button class="breath-tab" onclick="switchTab('ground')">5-4-3-2-1 Grounding</button>
         </div>
         <div class="breath-panel active" id="panel-box">
+          <div class="breath-pattern-row" id="breathPatternRow">
+            <button class="breath-pattern-btn active" data-pattern="box"   onclick="setBreathPattern('box')">Box 4-4-4-4</button>
+            <button class="breath-pattern-btn"         data-pattern="calm"  onclick="setBreathPattern('calm')">Calm 4-7-8</button>
+            <button class="breath-pattern-btn"         data-pattern="reset" onclick="setBreathPattern('reset')">Reset 2-4-6</button>
+          </div>
           <div class="box-breath-wrap">
             <div class="box-svg-wrap">
               <svg id="boxSvg" viewBox="0 0 200 200" width="200" height="200">
@@ -2970,6 +2987,10 @@
             <div class="swatch-preview" style="background:#FEFAF3;"><div class="swatch-card" style="background:#F2EEE5;"></div><div class="swatch-dot" style="background:#386641;"></div></div>
             <div class="swatch-name">Light</div>
           </button>
+          <button class="theme-swatch" data-theme="system" onclick="applyTheme('system')" aria-label="System theme" title="Follow device">
+            <div class="swatch-preview" style="background:linear-gradient(135deg,#12121C 50%,#FEFAF3 50%);"><div class="swatch-card" style="background:linear-gradient(135deg,#1E1E2C 50%,#F2EEE5 50%);"></div><div class="swatch-dot" style="background:linear-gradient(135deg,#BBC2FF 50%,#386641 50%);"></div></div>
+            <div class="swatch-name">System</div>
+          </button>
         </div>
         <div class="settings-row-label" style="margin-top:18px;margin-bottom:10px;">Font</div>
         <p style="font-size:12px;color:var(--md-on-surface-variant);margin:0 0 10px;">Calibri and Aptos are Microsoft fonts — they look best on Windows and Microsoft 365 devices.</p>
@@ -3330,18 +3351,34 @@ function _syncThemeColor() {
   if (c) m.content = c;
 }
 
-function applyTheme(id) {
+var _systemMql = null;
+function _onSystemChange(e) { _applyThemeClasses(e.matches ? 'light' : 'dark'); }
+
+function _applyThemeClasses(id) {
   _THEME_CLASSES.forEach(function(c) { html.classList.remove(c); });
   html.classList.remove('light');
   if (_LIGHT_THEMES.indexOf(id) !== -1) html.classList.add('light');
   if (id !== 'dark' && id !== 'light') html.classList.add(id);
-  lsSet('smartTheme', id);
-  updateThemeSwatches(id);
   _syncThemeColor();
-  // Re-apply accent so tones recalculate for the new light/dark variant
   var savedAccent = lsGet(ACCENT_KEY);
   if (savedAccent) applyAccent(savedAccent);
   setTimeout(function() { try { var v = getWheelVals(); drawWheel(v); } catch(e) {} }, 50);
+}
+
+function applyTheme(id) {
+  if (_systemMql) { try { _systemMql.removeEventListener('change', _onSystemChange); } catch(e) {} _systemMql = null; }
+  lsSet('smartTheme', id);
+  updateThemeSwatches(id);
+  if (id === 'system') {
+    var pref = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    _applyThemeClasses(pref);
+    if (window.matchMedia) {
+      _systemMql = window.matchMedia('(prefers-color-scheme: light)');
+      try { _systemMql.addEventListener('change', _onSystemChange); } catch(e) {}
+    }
+    return;
+  }
+  _applyThemeClasses(id);
 }
 
 function updateThemeSwatches(id) {
@@ -3377,8 +3414,13 @@ try {
   var _lightThemesEarly = ['light'];
   var _themeClassesEarly = ['midnight','dusk'];
   if (_savedTheme && _savedTheme !== 'null') {
-    if (_lightThemesEarly.indexOf(_savedTheme) !== -1) html.classList.add('light');
-    if (_savedTheme !== 'dark' && _savedTheme !== 'light') html.classList.add(_savedTheme);
+    if (_savedTheme === 'system') {
+      var _sysLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      if (_sysLight) html.classList.add('light');
+    } else {
+      if (_lightThemesEarly.indexOf(_savedTheme) !== -1) html.classList.add('light');
+      if (_savedTheme !== 'dark' && _savedTheme !== 'light') html.classList.add(_savedTheme);
+    }
   } else {
     var _preferLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
     if (_preferLight) html.classList.add('light');
@@ -3729,6 +3771,7 @@ const JOURNAL_KEY = 'smart_journal_v1';
 const NOTIF_KEY      = 'smart_notif_enabled_v1';
 const NOTIF_LAST_KEY = 'smart_notif_last_shown_v1';
 const MILESTONES = [7,30,60,90,180,365];
+const MILESTONE_LABELS = {7:'1 wk',30:'1 mo',60:'2 mo',90:'3 mo',180:'6 mo',365:'1 yr'};
 
 function setTrackerDate() {
   var d = document.getElementById('trackerDate').value;
@@ -3811,12 +3854,17 @@ function renderTracker() {
     ? '<div class="tracker-streak-best">Best streak: ' + best + ' day' + (best === 1 ? '' : 's') + '</div>'
     : '';
 
+  var celebrateHtml = MILESTONES.indexOf(diff) !== -1
+    ? '<div class="tracker-celebrate">Milestone: ' + (MILESTONE_LABELS[diff] || diff + ' days') + ' — well done.</div>'
+    : '';
+
   display.innerHTML = '<div class="tracker-count">'
     + '<span class="tracker-num">' + diff + '</span>'
     + '<span class="tracker-unit">day' + (diff === 1 ? '' : 's') + '</span>'
     + '</div>'
     + '<div class="tracker-since">Since ' + since + '</div>'
-    + bestHtml;
+    + bestHtml
+    + celebrateHtml;
 
   if (milDiv) {
     milDiv.style.display = 'flex';
@@ -3825,7 +3873,9 @@ function renderTracker() {
       var cls = 'milestone';
       if (diff >= m) cls += ' achieved';
       else if (i === nextIdx) cls += ' next';
-      return '<span class="' + cls + '">' + (diff >= m ? '✓ ' : '') + m + ' days' + (i === nextIdx && diff < m ? ' (' + (m - diff) + ' to go)' : '') + '</span>';
+      var lbl = MILESTONE_LABELS[m] ? ' · ' + MILESTONE_LABELS[m] : '';
+      var countdown = (i === nextIdx && diff < m) ? ' (' + (m - diff) + ' to go)' : '';
+      return '<span class="' + cls + '">' + (diff >= m ? '✓ ' : '') + m + 'd' + lbl + countdown + '</span>';
     }).join('');
   }
 }
@@ -3838,15 +3888,40 @@ var boxInterval = null;
 var boxPhaseIdx = 0;
 var boxSecond   = 0;
 var boxRound    = 0;
+var boxPattern  = 'box';
 
-var BOX_PHASES = [
-  { name: 'Inhale',  cue: 'breathe in slowly',  dur: 4, color: 'var(--md-secondary)' },
-  { name: 'Hold',    cue: 'hold gently',         dur: 4, color: 'var(--md-primary)' },
-  { name: 'Exhale',  cue: 'breathe out slowly',  dur: 4, color: 'var(--md-tertiary)' },
-  { name: 'Hold',    cue: 'rest here',            dur: 4, color: 'var(--md-error)' }
-];
+var BREATH_PATTERNS = {
+  box: { phases: [
+    { name: 'Inhale', cue: 'breathe in slowly',  dur: 4, color: 'var(--md-secondary)' },
+    { name: 'Hold',   cue: 'hold gently',         dur: 4, color: 'var(--md-primary)' },
+    { name: 'Exhale', cue: 'breathe out slowly',  dur: 4, color: 'var(--md-tertiary)' },
+    { name: 'Hold',   cue: 'rest here',            dur: 4, color: 'var(--md-error)' }
+  ]},
+  calm: { phases: [
+    { name: 'Inhale', cue: 'breathe in through nose', dur: 4, color: 'var(--md-secondary)' },
+    { name: 'Hold',   cue: 'hold your breath',        dur: 7, color: 'var(--md-primary)' },
+    { name: 'Exhale', cue: 'exhale slowly through mouth', dur: 8, color: 'var(--md-tertiary)' }
+  ]},
+  reset: { phases: [
+    { name: 'Inhale', cue: 'short breath in',  dur: 2, color: 'var(--md-secondary)' },
+    { name: 'Hold',   cue: 'hold briefly',     dur: 4, color: 'var(--md-primary)' },
+    { name: 'Exhale', cue: 'long slow exhale', dur: 6, color: 'var(--md-tertiary)' }
+  ]}
+};
+
+function getBoxPhases() { return BREATH_PATTERNS[boxPattern].phases; }
 
 var BOX_PERIMETER = 640;
+
+function setBreathPattern(id) {
+  if (boxInterval) stopBox();
+  boxPattern = id;
+  document.querySelectorAll('.breath-pattern-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.pattern === id);
+  });
+  var count = document.getElementById('boxCount');
+  if (count) count.textContent = getBoxPhases()[0].dur;
+}
 
 function startBox() {
   if (boxInterval) return;
@@ -3861,6 +3936,7 @@ function stopBox() {
   clearInterval(boxInterval);
   boxInterval = null;
   boxPhaseIdx = 0; boxSecond = 0; boxRound = 0;
+  var phases = getBoxPhases();
   var phase = document.getElementById('boxPhase');
   var count = document.getElementById('boxCount');
   var cue   = document.getElementById('boxCue');
@@ -3868,7 +3944,7 @@ function stopBox() {
   var rounds = document.getElementById('boxRounds');
   var btn   = document.getElementById('btnBoxStart');
   if (phase)  phase.textContent  = 'Ready';
-  if (count)  count.textContent  = '4';
+  if (count)  count.textContent  = phases[0].dur;
   if (cue)    cue.textContent    = 'Press Start';
   if (prog)   { prog.style.stroke = 'var(--md-secondary)'; prog.style.strokeDashoffset = BOX_PERIMETER; }
   if (rounds) rounds.textContent = '';
@@ -3876,30 +3952,33 @@ function stopBox() {
 }
 
 function updateBoxDisplay() {
-  var p     = BOX_PHASES[boxPhaseIdx];
+  var phases = getBoxPhases();
+  var p      = phases[boxPhaseIdx];
   var remaining = p.dur - boxSecond;
   var phase  = document.getElementById('boxPhase');
   var count  = document.getElementById('boxCount');
   var cue    = document.getElementById('boxCue');
   var prog   = document.getElementById('boxProgress');
   var rounds = document.getElementById('boxRounds');
-  if (phase)  phase.textContent  = p.name;
-  if (count)  count.textContent  = remaining;
-  if (cue)    cue.textContent    = p.cue;
+  if (phase)  phase.textContent = p.name;
+  if (count)  count.textContent = remaining;
+  if (cue)    cue.textContent   = p.cue;
   if (prog) {
     prog.style.stroke = p.color;
-    var progress = (boxPhaseIdx * 4 + boxSecond) / 16;
-    prog.style.strokeDashoffset = BOX_PERIMETER * (1 - progress);
+    var total   = phases.reduce(function(s, ph) { return s + ph.dur; }, 0);
+    var elapsed = phases.slice(0, boxPhaseIdx).reduce(function(s, ph) { return s + ph.dur; }, 0) + boxSecond;
+    prog.style.strokeDashoffset = BOX_PERIMETER * (1 - elapsed / total);
   }
   if (rounds) rounds.textContent = 'Round ' + boxRound + ' of 3';
 }
 
 function boxTick() {
   boxSecond++;
-  var p = BOX_PHASES[boxPhaseIdx];
+  var phases = getBoxPhases();
+  var p = phases[boxPhaseIdx];
   if (boxSecond >= p.dur) {
     boxSecond = 0;
-    boxPhaseIdx = (boxPhaseIdx + 1) % 4;
+    boxPhaseIdx = (boxPhaseIdx + 1) % phases.length;
     if (boxPhaseIdx === 0) {
       boxRound++;
       if (boxRound > 3) { stopBox(); return; }
@@ -4405,15 +4484,26 @@ function renderJournal() {
     var escaped = e.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     var isLong  = e.text.length > PREVIEW;
     var preview = isLong ? escaped.substring(0, PREVIEW) + '…' : escaped;
+    var shareBtn = navigator.share
+      ? '<button class="journal-share-btn" onclick="shareJournalEntry(' + e.id + ')" title="Share" aria-label="Share entry">&#8679;</button>'
+      : '';
     return '<div class="journal-entry">'
       + '<div class="journal-entry-meta">'
       + '<span class="journal-entry-date">' + date + ' · ' + time + '</span>'
-      + '<button class="btn-delete" onclick="deleteJournalEntry(' + e.id + ')" title="Delete" aria-label="Delete entry">✕</button>'
+      + '<span style="display:flex;gap:10px;align-items:center;">' + shareBtn + '<button class="btn-delete" onclick="deleteJournalEntry(' + e.id + ')" title="Delete" aria-label="Delete entry">✕</button></span>'
       + '</div>'
       + '<div class="journal-entry-text" id="jet-' + e.id + '">' + preview + '</div>'
       + (isLong ? '<button class="journal-entry-more" id="jeb-' + e.id + '" data-expanded="" onclick="toggleJournalEntry(' + e.id + ')">Read more</button>' : '')
       + '</div>';
   }).join('') + _pagerHtml('journalList', all.length, JOURNAL_PAGE_SIZE);
+}
+
+function shareJournalEntry(id) {
+  var entry = _journalCache.find(function(e) { return e.id === id; });
+  if (!entry || !navigator.share) return;
+  var d = new Date(entry.ts);
+  var label = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  navigator.share({ title: 'Journal — ' + label, text: entry.text }).catch(function() {});
 }
 
 document.addEventListener('DOMContentLoaded', renderJournal);
@@ -4923,7 +5013,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.5.0';
+var APP_VERSION = '2.6.0';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
