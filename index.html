@@ -545,6 +545,30 @@
     .point-number { font-size: 52px; }
   }
 
+  /* ══ WELCOME CARD (first run) ══════════════════════════════ */
+  .welcome-card {
+    background: var(--md-primary-container); border: 1px solid var(--md-outline-variant);
+    border-radius: var(--md-shape-md); padding: 22px 22px 18px;
+    margin: 16px 0; position: relative;
+  }
+  .welcome-dismiss {
+    position: absolute; top: 12px; right: 14px; background: none; border: none;
+    color: var(--md-on-primary-container); opacity: 0.55; font-size: 17px;
+    cursor: pointer; padding: 2px 6px; line-height: 1;
+  }
+  .welcome-dismiss:hover { opacity: 1; }
+  .welcome-title {
+    font-family: var(--md-font-display); font-size: 18px; font-weight: 700;
+    color: var(--md-on-primary-container); letter-spacing: -0.01em; margin-bottom: 8px; padding-right: 24px;
+  }
+  .welcome-desc {
+    font-size: 13.5px; color: var(--md-on-primary-container); line-height: 1.65;
+    margin-bottom: 14px; opacity: 0.88;
+  }
+  .welcome-points { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .welcome-point  { font-size: 13px; color: var(--md-on-primary-container); display: flex; align-items: flex-start; gap: 10px; }
+  .welcome-point-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
   /* ══ CRISIS RESOURCES ══════════════════════════════════════ */
   .crisis-banner {
     background: color-mix(in srgb, var(--md-error-container) 20%, var(--md-surface-container));
@@ -1100,6 +1124,20 @@
         </a>
       </div>
     </details>
+
+    <!-- WELCOME CARD — shown on first run, dismissed to localStorage -->
+    <div class="welcome-card" id="welcomeCard">
+      <button class="welcome-dismiss" onclick="dismissWelcome()" aria-label="Dismiss">✕</button>
+      <div class="welcome-title">Welcome to SMART Recovery</div>
+      <div class="welcome-desc">This is your personal toolkit for Self-Management and Recovery Training — a science-based, non-12-step approach to building a life beyond addiction. Everything is private and stored only on your device.</div>
+      <div class="welcome-points">
+        <div class="welcome-point"><span class="welcome-point-icon">⚡</span><span><strong>Right Now</strong> — tools for active urges: breathing, urge surfing, daily check-in</span></div>
+        <div class="welcome-point"><span class="welcome-point-icon">📋</span><span><strong>Practice</strong> — worksheets and reference guides for all four SMART points</span></div>
+        <div class="welcome-point"><span class="welcome-point-icon">📈</span><span><strong>Progress</strong> — sobriety tracker, urge log, and your history over time</span></div>
+        <div class="welcome-point"><span class="welcome-point-icon">✏️</span><span><strong>Journal</strong> — a private space to write freely between sessions</span></div>
+      </div>
+      <button class="btn-primary" onclick="dismissWelcome()">Let&#39;s get started</button>
+    </div>
 
     <!-- DAILY CHECK-IN -->
     <div class="tool-card" id="daily-checkin" style="margin-top:20px;">
@@ -3070,6 +3108,13 @@
         </div>
         <div class="settings-row">
           <div class="settings-row-info">
+            <div class="settings-row-label">Save as Text</div>
+            <div class="settings-row-sub">Readable file — journal, goals, logs — easy to share with a counselor or print</div>
+          </div>
+          <button class="btn-backup" onclick="exportText()">Export Text</button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-info">
             <div class="settings-row-label">Restore from Backup</div>
             <div class="settings-row-sub">Import a previously exported JSON file</div>
           </div>
@@ -4372,6 +4417,7 @@ function renderJournal() {
 }
 
 document.addEventListener('DOMContentLoaded', renderJournal);
+document.addEventListener('DOMContentLoaded', initWelcome);
 
 // ── EXPORT / IMPORT ──────────────────────────────────────
 const BACKUP_KEYS = [
@@ -4391,6 +4437,152 @@ const BACKUP_KEYS = [
   'smart_support_v1',
   'smart_goals_v1'
 ];
+
+// ── WELCOME CARD ─────────────────────────────────────────────
+var WELCOME_KEY = 'smart_welcome_seen_v1';
+function dismissWelcome() {
+  lsSet(WELCOME_KEY, '1');
+  var card = document.getElementById('welcomeCard');
+  if (card) card.style.display = 'none';
+}
+function initWelcome() {
+  var card = document.getElementById('welcomeCard');
+  if (!card) return;
+  if (lsGet(WELCOME_KEY)) card.style.display = 'none';
+}
+
+// ── TEXT EXPORT ───────────────────────────────────────────────
+function exportText() {
+  var NL = '\n', HR = '─'.repeat(48), out = [];
+  var fmtDate = function(iso) {
+    var d = new Date(iso);
+    return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
+      + ' · ' + d.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+  };
+  var sec = function(title) { out.push(HR, title, HR, ''); };
+
+  out.push('SMART RECOVERY — PERSONAL RECORD');
+  out.push('Exported: ' + new Date().toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }));
+  out.push('');
+
+  // Sobriety
+  var sd = lsGet(TRACKER_KEY);
+  if (sd) {
+    sec('SOBRIETY TRACKER');
+    var start = new Date(sd);
+    out.push('Start Date:  ' + start.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' }));
+    out.push('Days Sober:  ' + Math.floor((Date.now() - start.getTime()) / 86400000));
+    out.push('');
+  }
+
+  // Journal
+  var jnl = getJournal();
+  if (jnl.length) {
+    sec('JOURNAL (' + jnl.length + (jnl.length === 1 ? ' entry' : ' entries') + ')');
+    jnl.forEach(function(e) { out.push('[' + fmtDate(e.ts) + ']'); out.push(e.text); out.push(''); });
+  }
+
+  // Goals
+  var goals = getGoals();
+  if (goals.length) {
+    sec('GOALS');
+    goals.forEach(function(g) {
+      out.push((g.completed ? '✓  ' : '○  ') + g.title + (g.deadline ? '  (due: ' + g.deadline + ')' : '') + '  —  ' + (g.progress || 0) + '%');
+      if (g.specific)   out.push('   Specific:   ' + g.specific);
+      if (g.measurable) out.push('   Measurable: ' + g.measurable);
+      if (g.achievable) out.push('   Achievable: ' + g.achievable);
+      if (g.relevant)   out.push('   Relevant:   ' + g.relevant);
+      out.push('');
+    });
+  }
+
+  // Urge log
+  var urges = getUrges().slice().sort(function(a,b){ return new Date(b.ts)-new Date(a.ts); });
+  if (urges.length) {
+    sec('URGE LOG (' + urges.length + ' entries)');
+    urges.forEach(function(e) {
+      var line = fmtDate(e.ts) + '  |  ' + e.intensity + '/10  |  ' + (e.outcome || '');
+      if (e.trigger) line += '  |  ' + e.trigger;
+      out.push(line);
+    });
+    out.push('');
+  }
+
+  // ABC log
+  var abc = getAbcLog().slice().reverse();
+  if (abc.length) {
+    sec('ABC LOG (' + abc.length + (abc.length === 1 ? ' entry' : ' entries') + ')');
+    abc.forEach(function(e) {
+      out.push('[' + fmtDate(e.ts) + ']');
+      if (e.a) out.push('  A — Activating event:  ' + e.a);
+      if (e.b) out.push('  B — Belief:            ' + e.b);
+      if (e.c) out.push('  C — Consequence:       ' + e.c);
+      if (e.d) out.push('  D — Dispute:           ' + e.d);
+      if (e.e) out.push('  E — Effective belief:  ' + e.e);
+      out.push('');
+    });
+  }
+
+  // CBA log
+  var cba = getCbaLog().slice().reverse();
+  if (cba.length) {
+    sec('COST-BENEFIT ANALYSIS (' + cba.length + (cba.length === 1 ? ' entry' : ' entries') + ')');
+    cba.forEach(function(e) {
+      out.push('[' + fmtDate(e.ts) + ']  ' + e.behavior);
+      if (e.bDo)   out.push('  Benefits of continuing: ' + e.bDo);
+      if (e.cDo)   out.push('  Costs of continuing:    ' + e.cDo);
+      if (e.bStop) out.push('  Benefits of stopping:   ' + e.bStop);
+      if (e.cStop) out.push('  Costs of stopping:      ' + e.cStop);
+      out.push('');
+    });
+  }
+
+  // Five Questions
+  var fq = getFiveQLog().slice().reverse();
+  if (fq.length) {
+    var FQL = ['What do I want for my future?','What am I doing to get what I want?',
+      'How do I feel about what I\'m doing now?','What could I do differently?',
+      'How would changing what I do make me feel?'];
+    sec('FIVE QUESTIONS (' + fq.length + (fq.length === 1 ? ' entry' : ' entries') + ')');
+    fq.forEach(function(e) {
+      out.push('[' + fmtDate(e.ts) + ']');
+      (e.answers || []).forEach(function(a, i) {
+        if (a) { out.push('  ' + (i+1) + '. ' + FQL[i]); out.push('     ' + a); }
+      });
+      out.push('');
+    });
+  }
+
+  // Values log
+  var vals = getValLog().slice().reverse();
+  if (vals.length) {
+    sec('VALUES LOG (' + vals.length + (vals.length === 1 ? ' entry' : ' entries') + ')');
+    vals.forEach(function(e) {
+      out.push('[' + fmtDate(e.ts) + ']  Behavior: ' + e.behavior);
+      (e.values || []).forEach(function(v, i) { if (v) out.push('  Value ' + (i+1) + ': ' + v); });
+      out.push('');
+    });
+  }
+
+  // Change Plan
+  var cp = getCp();
+  if (cp) {
+    sec('CHANGE PLAN');
+    [['cp_changes','What I want to change'],['cp_reasons','Most important reasons'],
+     ['cp_steps','Steps I will take'],['cp_support','Support I will use'],
+     ['cp_obstacles','Possible obstacles'],['cp_importance','Importance (1–10)'],
+     ['cp_confidence','Confidence (1–10)'],['cp_review','Review date']
+    ].forEach(function(p) { if (cp[p[0]]) out.push(p[1] + ': ' + cp[p[0]]); });
+    out.push('');
+  }
+
+  var blob = new Blob([out.join(NL)], { type: 'text/plain;charset=utf-8' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href = url; a.download = 'smart-recovery-' + new Date().toISOString().slice(0, 10) + '.txt';
+  a.click(); URL.revokeObjectURL(url);
+  setBackupStatus('Saved as text.');
+}
 
 function exportData() {
   const payload = {
@@ -4731,7 +4923,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.4.9';
+var APP_VERSION = '2.5.0';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
