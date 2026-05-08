@@ -734,6 +734,12 @@
   .urge-entry { background: var(--md-surface-container-high); border: 1px solid var(--md-outline-variant); border-radius: var(--md-shape-sm); padding: 10px 14px; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; font-size: 13px; }
   .urge-entry-meta    { color: var(--md-on-surface-variant); font-size: 11px; margin-bottom: 3px; opacity: 0.75; }
   .urge-entry-trigger { color: var(--md-on-surface-variant); }
+  .urge-entry-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+  .utag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: var(--md-shape-full); background: var(--md-surface-container-high); color: var(--md-on-surface-variant); border: 1px solid var(--md-outline-variant); }
+  .trigger-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .trigger-chip { padding: 5px 12px; border-radius: var(--md-shape-full); border: 1px solid var(--md-outline); background: transparent; color: var(--md-on-surface-variant); font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--md-font-body); transition: background var(--md-dur-short) var(--md-easing-standard), color var(--md-dur-short) var(--md-easing-standard); }
+  .trigger-chip.active { background: var(--md-primary-container); color: var(--md-on-primary-container); border-color: transparent; }
+  .urge-freq-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--md-on-surface-variant); margin-bottom: 8px; font-family: var(--md-font-body); }
   .urge-entry-intensity { font-size: 20px; font-weight: 700; font-family: var(--md-font-display); padding: 2px 6px; border-radius: var(--md-shape-xs); letter-spacing: -0.02em; min-width: 36px; text-align: center; }
   .urge-entry-intensity.low  { color: var(--md-on-tertiary-container); background: var(--md-tertiary-container); }
   .urge-entry-intensity.mid  { color: var(--md-on-primary-container);  background: var(--md-primary-container); }
@@ -1251,8 +1257,20 @@
               </select>
             </div>
             <div class="form-field span2">
+              <label class="form-label">Quick trigger tags</label>
+              <div class="trigger-chip-row" id="triggerChipRow">
+                <button type="button" class="trigger-chip" data-tag="Stress"    onclick="toggleTriggerChip(this)">Stress</button>
+                <button type="button" class="trigger-chip" data-tag="Boredom"   onclick="toggleTriggerChip(this)">Boredom</button>
+                <button type="button" class="trigger-chip" data-tag="Social"    onclick="toggleTriggerChip(this)">Social</button>
+                <button type="button" class="trigger-chip" data-tag="Craving"   onclick="toggleTriggerChip(this)">Craving</button>
+                <button type="button" class="trigger-chip" data-tag="Fatigue"   onclick="toggleTriggerChip(this)">Fatigue</button>
+                <button type="button" class="trigger-chip" data-tag="Conflict"  onclick="toggleTriggerChip(this)">Conflict</button>
+                <button type="button" class="trigger-chip" data-tag="Lonely"    onclick="toggleTriggerChip(this)">Lonely</button>
+              </div>
+            </div>
+            <div class="form-field span2">
               <label class="form-label" for="ul_trigger">Trigger / situation</label>
-              <input type="text" class="form-input" id="ul_trigger" placeholder="What happened just before?">
+              <input type="text" class="form-input" id="ul_trigger" placeholder="What happened just before? (optional detail)">
             </div>
             <div class="form-field">
               <label class="form-label" for="ul_coping">How you coped</label>
@@ -2743,6 +2761,14 @@
           <div class="urge-summary-stat"><div class="stat-val" id="stat_resist">0%</div><div class="stat-label">Resistance Rate</div></div>
           <div class="urge-summary-stat"><div class="stat-val" id="stat_avg">—</div><div class="stat-label">Avg Intensity</div></div>
         </div>
+        <div class="urge-freq-chart" id="urgeFreqWrap" style="display:none;margin-top:16px;">
+          <div class="urge-freq-label">Urges per day — last 14 days</div>
+          <svg id="urgeFreqSvg" class="urge-chart-svg"></svg>
+        </div>
+        <div id="urgeTriggerAnalysis" style="display:none;margin-top:14px;">
+          <div class="urge-freq-label">Top trigger tags</div>
+          <div id="urgeTriggerChips" class="urge-entry-tags" style="margin-bottom:10px;"></div>
+        </div>
         <div class="urge-entries-list" id="urgeEntriesList"></div>
       </div>
     </div>
@@ -3483,18 +3509,27 @@ function saveUrges(entries) {
   lsSet(URGE_KEY, JSON.stringify(entries));
 }
 
+function toggleTriggerChip(btn) {
+  btn.classList.toggle('active');
+}
+
+function _getSelectedTags() {
+  return [...document.querySelectorAll('.trigger-chip.active')].map(function(b) { return b.dataset.tag; });
+}
+
 function addUrgeEntry() {
   const intensity = parseInt(document.getElementById('ul_intensity').value);
   const outcome   = document.getElementById('ul_outcome').value;
   const trigger   = document.getElementById('ul_trigger').value.trim();
   const coping    = document.getElementById('ul_coping').value.trim();
   const notes     = document.getElementById('ul_notes').value.trim();
+  const tags      = _getSelectedTags();
 
   const entries = getUrges();
   entries.push({
     id: Date.now(),
     ts: new Date().toISOString(),
-    intensity, outcome, trigger, coping, notes
+    intensity, outcome, trigger, coping, notes, tags
   });
   saveUrges(entries);
   renderDashboard();
@@ -3506,6 +3541,7 @@ function addUrgeEntry() {
   document.getElementById('ul_coping').value = '';
   document.getElementById('ul_notes').value = '';
   document.getElementById('ul_outcome').value = 'resisted';
+  document.querySelectorAll('.trigger-chip').forEach(function(b) { b.classList.remove('active'); });
 
   _pagerPage['urgeEntriesList'] = 0;
   renderUrgeLog();
@@ -3551,6 +3587,28 @@ function renderUrgeLog() {
     renderUrgeChart(entries, chartEl);
   }
 
+  // Frequency bar chart
+  const freqWrap = document.getElementById('urgeFreqWrap');
+  const freqSvg  = document.getElementById('urgeFreqSvg');
+  if (freqWrap && freqSvg) { freqWrap.style.display = ''; renderUrgeFreqChart(entries, freqSvg); }
+
+  // Trigger tag analysis
+  const trigAnalysis = document.getElementById('urgeTriggerAnalysis');
+  const trigChips    = document.getElementById('urgeTriggerChips');
+  if (trigAnalysis && trigChips) {
+    const tagCounts = {};
+    entries.forEach(function(e) { (e.tags || []).forEach(function(t) { tagCounts[t] = (tagCounts[t] || 0) + 1; }); });
+    const sorted = Object.entries(tagCounts).sort(function(a,b) { return b[1]-a[1]; });
+    if (sorted.length) {
+      trigAnalysis.style.display = '';
+      trigChips.innerHTML = sorted.map(function(kv) {
+        return '<span class="utag" style="font-size:11px;padding:3px 10px;">' + esc(kv[0]) + ' <span style="opacity:0.55">\xd7' + kv[1] + '</span></span>';
+      }).join('');
+    } else {
+      trigAnalysis.style.display = 'none';
+    }
+  }
+
   // Entry list (paginated, most recent first)
   const URGE_PAGE_SIZE = 8;
   _pagerRender['urgeEntriesList'] = renderUrgeLog;
@@ -3567,10 +3625,14 @@ function renderUrgeLog() {
     const time = d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
     const lvl  = e.intensity <= 3 ? 'low' : e.intensity <= 6 ? 'mid' : 'high';
     const oc   = e.outcome || 'resisted';
+    const tagsHtml = (e.tags && e.tags.length)
+      ? '<div class="urge-entry-tags">' + e.tags.map(t => '<span class="utag">'+esc(t)+'</span>').join('') + '</div>'
+      : '';
     return `<div class="urge-entry">
       <div>
         <div class="urge-entry-meta">${date} · ${time}</div>
-        <div class="urge-entry-trigger">${esc(e.trigger) || '—'}${e.coping ? ' · <em>Coped:</em> '+esc(e.coping) : ''}</div>
+        ${tagsHtml}
+        <div class="urge-entry-trigger">${esc(e.trigger) || (tagsHtml ? '' : '—')}${e.coping ? ' · <em>Coped:</em> '+esc(e.coping) : ''}</div>
         <div class="urge-entry-outcome outcome-${oc.replace(' ','-')}">${outcomeLabel[oc]||oc}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
@@ -3633,6 +3695,55 @@ function renderUrgeChart(entries, svg) {
 
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.innerHTML = gridLines + trendLine + dots + xLabels;
+}
+
+function renderUrgeFreqChart(entries, svg) {
+  const W = 480, H = 90, PAD = { t: 8, r: 12, b: 22, l: 28 };
+  const DAYS = 14;
+  const iW = W - PAD.l - PAD.r;
+  const iH = H - PAD.t - PAD.b;
+
+  // Build day buckets (today back 13 days)
+  const buckets = {};
+  const today = new Date();
+  for (var i = DAYS - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    buckets[d.toISOString().slice(0, 10)] = 0;
+  }
+  entries.forEach(function(e) {
+    const key = new Date(e.ts).toISOString().slice(0, 10);
+    if (key in buckets) buckets[key]++;
+  });
+
+  const days = Object.keys(buckets);
+  const vals = days.map(function(k) { return buckets[k]; });
+  const maxVal = Math.max.apply(null, vals.concat([1]));
+
+  const slotW = iW / DAYS;
+  const barW  = Math.max(slotW - 3, 2);
+  const todayKey = today.toISOString().slice(0, 10);
+
+  let bars = '', xLabels = '';
+  days.forEach(function(d, i) {
+    const x = PAD.l + i * slotW;
+    const h = (vals[i] / maxVal) * iH;
+    const y = PAD.t + iH - h;
+    const isToday = (d === todayKey);
+    bars += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + Math.max(h, 1.5).toFixed(1) + '" rx="2"'
+      + ' fill="' + (isToday ? 'var(--md-primary)' : 'var(--md-secondary-container)') + '" opacity="0.9"/>';
+    if (i === 0 || i === DAYS - 1) {
+      const label = new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      xLabels += '<text x="' + (x + barW / 2).toFixed(1) + '" y="' + (H - 4) + '" font-size="8" fill="var(--md-on-surface-variant)"'
+        + ' text-anchor="' + (i === 0 ? 'start' : 'end') + '" font-family="Work Sans,sans-serif">' + label + '</text>';
+    }
+  });
+
+  const yLabel = '<text x="' + (PAD.l - 4) + '" y="' + (PAD.t + 6) + '" font-size="9" fill="var(--md-on-surface-variant)"'
+    + ' text-anchor="end" font-family="Work Sans,sans-serif">' + maxVal + '</text>';
+
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.innerHTML = bars + xLabels + yLabel;
 }
 
 // Init urge log on load
@@ -4986,6 +5097,25 @@ function closeWorksheet() {
   idx.scrollIntoView({ block: 'start' });
 }
 
+// Swipe-right to close worksheet on touch devices
+(function() {
+  var sx, sy;
+  document.addEventListener('touchstart', function(e) {
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    if (sx === undefined) return;
+    var dx = e.changedTouches[0].clientX - sx;
+    var dy = Math.abs(e.changedTouches[0].clientY - sy);
+    var view = document.getElementById('wsView');
+    if (dx > 70 && dy < 50 && view && view.style.display !== 'none') {
+      closeWorksheet();
+    }
+    sx = undefined;
+  }, { passive: true });
+})();
+
 function scrollToId(id) {
   if (_WS_IDS.indexOf(id) !== -1) { openWorksheet(id); return; }
   setTimeout(function() {
@@ -5013,7 +5143,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.6.0';
+var APP_VERSION = '2.7.0';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
