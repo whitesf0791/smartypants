@@ -824,14 +824,22 @@
   html.light  .tracker-date-input { color-scheme: light; }
   html.midnight .tracker-date-input,
   html.dusk .tracker-date-input { color-scheme: dark; }
+  html.light input[type="date"],
+  html.light input[type="color"] { color-scheme: light; }
   .tracker-empty { font-size: 13.5px; color: var(--md-on-surface-variant); font-style: italic; padding: 4px 0; opacity: 0.7; }
 
   /* ══ JOURNAL ═══════════════════════════════════════════════ */
-  .journal-entry       { border-top: 1px solid var(--md-outline-variant); padding: 10px 0; }
-  .journal-entry:first-child { border-top: none; }
-  .journal-entry-meta  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-  .journal-entry-date  { font-size: 11px; color: var(--md-on-surface-variant); opacity: 0.75; }
-  .journal-entry-text  { font-size: 13.5px; color: var(--md-on-surface-variant); white-space: pre-wrap; word-break: break-word; }
+  .journal-entry       { background: var(--md-surface-container); border: 1px solid var(--md-outline-variant); border-radius: var(--md-shape-md); padding: 14px 16px; margin-bottom: 8px; }
+  .journal-entry-meta  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .journal-entry-date  { font-size: 11px; color: var(--md-on-surface-variant); }
+  .journal-entry-text  { font-size: 13.5px; color: var(--md-on-surface); white-space: pre-wrap; word-break: break-word; line-height: 1.65; }
+  .journal-entry-more  { font-size: 12px; color: var(--md-primary); background: none; border: none; padding: 4px 0 0; cursor: pointer; font-family: var(--md-font-body); display: block; }
+  .journal-word-count  { font-size: 11.5px; color: var(--md-on-surface-variant); text-align: right; margin-top: 4px; opacity: 0.8; }
+  .journal-empty       { text-align: center; padding: 40px 20px; color: var(--md-on-surface-variant); font-size: 14px; }
+  .journal-empty-icon  { font-size: 32px; margin-bottom: 12px; }
+  .journal-empty small { display: block; font-size: 12px; margin-top: 6px; opacity: 0.7; }
+  .journal-header-row  { display: flex; justify-content: space-between; align-items: baseline; }
+  .journal-count       { font-size: 11px; font-weight: 400; color: var(--md-on-surface-variant); }
 
   /* ══ EXTERNAL RESOURCES ════════════════════════════════════ */
   .resources-section { padding: 28px 0 44px; }
@@ -2703,13 +2711,18 @@
       <div class="tool-body">
         <p style="font-size:13.5px;color:var(--md-on-surface-variant);margin-bottom:12px;">No prompts, no structure — just write. Getting thoughts out of your head reduces emotional load and creates distance from urges.</p>
         <textarea id="journalText" rows="5" placeholder="What&#39;s on your mind right now?"
-          style="width:100%;box-sizing:border-box;margin:0 0 10px;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;resize:vertical;font-family:var(--md-font-body);"></textarea>
-        <button class="btn-primary" onclick="saveJournalEntry()">Save Entry</button>
+          oninput="updateJournalCount()"
+          style="width:100%;box-sizing:border-box;margin:0 0 4px;padding:9px 11px;border:1px solid var(--md-outline-variant);border-radius:8px;background:var(--md-surface-container);color:var(--md-on-surface);font-size:13.5px;resize:vertical;font-family:var(--md-font-body);"></textarea>
+        <div class="journal-word-count" id="journalWordCount">0 words</div>
+        <button class="btn-primary" onclick="saveJournalEntry()" style="margin-top:10px;">Save Entry</button>
       </div>
     </div>
 
     <div style="margin-top:24px;">
-      <div class="ws-group-header">Past Entries</div>
+      <div class="journal-header-row">
+        <div class="ws-group-header" style="margin:0 0 6px;">Past Entries</div>
+        <span class="journal-count" id="journalEntryCount"></span>
+      </div>
       <div id="journalList"></div>
     </div>
 
@@ -3599,14 +3612,14 @@ function drawWheel(vals) {
   const cx = 130, cy = 130, R = 95, LR = 125;
   const IS_LIGHT = document.documentElement.classList.contains('light');
 
-  // Compute CSS var colors by sampling computed style
+  // Compute colors from MD3 CSS custom properties
   const cs = getComputedStyle(document.documentElement);
-  const COL_FILL   = cs.getPropertyValue('--blue').trim() || '#2FB3FF';
+  const COL_FILL   = cs.getPropertyValue('--md-primary').trim();
   const COL_STROKE = COL_FILL;
-  const COL_GRID   = cs.getPropertyValue('--border').trim() || 'rgba(110,116,190,0.18)';
-  const COL_SPOKE  = cs.getPropertyValue('--border-accent').trim() || 'rgba(110,116,190,0.36)';
-  const COL_TEXT   = cs.getPropertyValue('--text-muted').trim() || '#8E94C0';
-  const COL_VAL    = cs.getPropertyValue('--text-heading').trim() || '#ECEEF8';
+  const COL_GRID   = cs.getPropertyValue('--md-outline-variant').trim();
+  const COL_SPOKE  = cs.getPropertyValue('--md-outline').trim();
+  const COL_TEXT   = cs.getPropertyValue('--md-on-surface-variant').trim();
+  const COL_VAL    = cs.getPropertyValue('--md-on-surface').trim();
 
   let out = '';
 
@@ -4277,6 +4290,17 @@ function getJournal() {
   try { return JSON.parse(lsGet(JOURNAL_KEY)) || []; } catch(e) { return []; }
 }
 
+var _journalCache = [];
+
+function updateJournalCount() {
+  var el = document.getElementById('journalText');
+  var c  = document.getElementById('journalWordCount');
+  if (!el || !c) return;
+  var t = el.value.trim();
+  var n = t ? t.split(/\s+/).length : 0;
+  c.textContent = n + (n === 1 ? ' word' : ' words');
+}
+
 function saveJournalEntry() {
   var el = document.getElementById('journalText');
   if (!el) return;
@@ -4286,6 +4310,7 @@ function saveJournalEntry() {
   entries.unshift({ id: Date.now(), ts: new Date().toISOString(), text: text });
   lsSet(JOURNAL_KEY, JSON.stringify(entries));
   el.value = '';
+  updateJournalCount();
   renderJournal();
 }
 
@@ -4295,28 +4320,53 @@ function deleteJournalEntry(id) {
   renderJournal();
 }
 
+function toggleJournalEntry(id) {
+  var entry = _journalCache.find(function(e) { return e.id === id; });
+  if (!entry) return;
+  var textEl = document.getElementById('jet-' + id);
+  var btn    = document.getElementById('jeb-' + id);
+  if (!textEl || !btn) return;
+  var escaped = entry.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if (btn.dataset.expanded === '1') {
+    textEl.innerHTML = escaped.substring(0, 280) + '…';
+    btn.textContent  = 'Read more';
+    btn.dataset.expanded = '';
+  } else {
+    textEl.innerHTML = escaped;
+    btn.textContent  = 'Show less';
+    btn.dataset.expanded = '1';
+  }
+}
+
 function renderJournal() {
-  var list = document.getElementById('journalList');
+  var list     = document.getElementById('journalList');
+  var countEl  = document.getElementById('journalEntryCount');
   if (!list) return;
   var all = getJournal();
+  _journalCache = all;
+  if (countEl) countEl.textContent = all.length ? all.length + (all.length === 1 ? ' entry' : ' entries') : '';
   if (!all.length) {
-    list.innerHTML = '';
+    list.innerHTML = '<div class="journal-empty"><div class="journal-empty-icon">✏️</div><p>No entries yet.</p><small>Everything you write is stored only on this device and never shared.</small></div>';
     return;
   }
-  var page = _pagerPage['journalList'] || 0;
+  var PREVIEW = 280;
+  var page  = _pagerPage['journalList'] || 0;
   var start = page * JOURNAL_PAGE_SIZE;
   var slice = all.slice(start, start + JOURNAL_PAGE_SIZE);
   list.innerHTML = slice.map(function(e) {
-    var d = new Date(e.ts);
+    var d    = new Date(e.ts);
     var date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     var time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
     var escaped = e.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var isLong  = e.text.length > PREVIEW;
+    var preview = isLong ? escaped.substring(0, PREVIEW) + '…' : escaped;
     return '<div class="journal-entry">'
       + '<div class="journal-entry-meta">'
       + '<span class="journal-entry-date">' + date + ' · ' + time + '</span>'
       + '<button class="btn-delete" onclick="deleteJournalEntry(' + e.id + ')" title="Delete" aria-label="Delete entry">✕</button>'
       + '</div>'
-      + '<div class="journal-entry-text">' + escaped + '</div>'
+      + '<div class="journal-entry-text" id="jet-' + e.id + '">' + preview + '</div>'
+      + (isLong ? '<button class="journal-entry-more" id="jeb-' + e.id + '" data-expanded="" onclick="toggleJournalEntry(' + e.id + ')">Read more</button>' : '')
       + '</div>';
   }).join('') + _pagerHtml('journalList', all.length, JOURNAL_PAGE_SIZE);
 }
@@ -4681,7 +4731,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ── SETTINGS PAGE ─────────────────────────────────────────
-var APP_VERSION = '2.4.8';
+var APP_VERSION = '2.4.9';
 var UPDATE_API_URL = 'https://api.github.com/repos/whitesf0791/smartypants/contents/index.html?ref=main';
 
 function initSettingsPage() {
